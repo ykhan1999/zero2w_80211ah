@@ -5,3 +5,7 @@
 [submodule "drivers/morse_driver"]
 	path = drivers/morse_driver
 	url = git@github.com:ykhan1999/morse_driver.git
+[submodule "drivers/hostap"]
+	path = drivers/hostap
+	url = git@github.com:ykhan1999/hostap.git
+	branch = v1.16
