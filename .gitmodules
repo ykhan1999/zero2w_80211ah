@@ -1,0 +1,4 @@
+[submodule "kernel/1.16.x"]
+	path = kernel/1.16.x
+	url = git@github.com:ykhan1999/rpi-linux.git
+	branch = mm/rpi-6.12.21/1.16.x
