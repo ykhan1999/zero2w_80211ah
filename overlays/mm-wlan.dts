@@ -1,0 +1,36 @@
+/dts-v1/;
+/plugin/;
+
+/ {
+	compatible = "brcm,bcm2835";
+
+	fragment@0 {
+		target = <&rp1_mmc0>;
+
+		__overlay__ {
+                    #address-cells = <1>;
+                    #size-cells = <0>;
+                    cap-sd-highspeed;
+                    cap-mmc-highspeed;
+                    non-removable;
+                    disable-wp;
+                    cap-sdio-irq;
+                    no-1-8-v;
+                        rpi1mmc0_pwrseq {
+                                compatible = "mmc-pwrseq-simple";
+                                reset-gpios = <&gpio 5 1>;
+                                post-power-on-delay-ms = <5000>;
+                        };
+			function@2 {
+				compatible = "morse,mm610x";
+				reg = <2>;
+				status = "okay";
+				reset-gpios = <&gpio 5 1>;
+				power-gpios = <&gpio 3 0>,
+                                              <&gpio 7 0>;
+				bus-width = <1>;
+			};
+		};
+	};
+};
+

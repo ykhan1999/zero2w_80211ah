@@ -1,0 +1,135 @@
+# Start a Debian build container with your current dir mounted at /work
+
+sudo docker run -it \
+  -v "$PWD":/work -w /work \
+  debian:bookworm bash
+
+apt-get update
+apt-get install -y \
+  git bc bison flex libssl-dev libncurses-dev \
+  build-essential fakeroot kmod rsync dwarves \
+  ccache tar xz-utils device-tree-compiler \
+  crossbuild-essential-arm64
+
+git clone --branch mm/rpi-6.12.21/1.16.x https://github.com/MorseMicro/rpi-linux.git
+
+export ARCH=arm64
+export CROSS_COMPILE=aarch64-linux-gnu-
+export KERNEL=kernel8
+export O=/work/build-zero2w-aarch64
+
+rm -rf "$O" && mkdir -p "$O"
+cd rpi-linux
+
+make O="$O" bcm2711_defconfig
+make -j"$(nproc)" O="$O" Image modules dtbs
+
+# Morse driver
+
+apt install wget
+wget https://github.com/MorseMicro/morse_driver/archive/refs/tags/1.16.4.tar.gz
+tar -xzvf 1.16.4.tar.gz
+cd morse_driver-1.16.4/mmrc-submodule
+rm -r *
+wget https://github.com/MorseMicro/mm_rate_control/archive/cf45ca7520663b91ba1f57b5e04542d17aa226a3.zip
+apt install -y unzip
+unzip cf45ca7520663b91ba1f57b5e04542d17aa226a3.zip
+rm cf45ca7520663b91ba1f57b5e04542d17aa226a3.zip
+mv mm_rate_control-cf45ca7520663b91ba1f57b5e04542d17aa226a3/* .
+rm -r mm_rate_control-cf45ca7520663b91ba1f57b5e04542d17aa226a3/
+cd ..
+
+export ARCH=arm64
+export CROSS_COMPILE=aarch64-linux-gnu-
+export KERNEL_SRC=/work/build-zero2w-aarch64
+
+make \
+  ARCH="$ARCH" CROSS_COMPILE="$CROSS_COMPILE" \
+  KERNEL_SRC="$KERNEL_SRC" \
+  CONFIG_WLAN_VENDOR_MORSE=m \
+  CONFIG_MORSE_SPI=y \
+  CONFIG_MORSE_USER_ACCESS=y \
+  CONFIG_MORSE_VENDOR_COMMAND=y
+
+# morse_cli
+# from the pi
+
+wget https://github.com/MorseMicro/morse_cli/archive/refs/tags/1.16.4.tar.gz
+tar -xzvf 1.16.4.tar.gz
+
+sudo apt update
+sudo apt install -y build-essential git pkg-config ccache
+sudo apt install -y raspberrypi-kernel-headers
+sudo apt install -y libnl-3-dev libnl-genl-3-dev libusb-1.0-0-dev
+
+cd morse_cli-1.16.4
+CFLAGS="$(pkg-config --cflags libnl-3.0 libnl-genl-3.0 libusb-1.0)" \
+LDFLAGS="$(pkg-config --libs   libnl-3.0 libnl-genl-3.0 libusb-1.0)" \
+sudo make all
+
+# hostapd
+# from the pi
+
+wget https://github.com/MorseMicro/hostap/archive/refs/tags/1.16.4.tar.gz
+tar -xzvf 1.16.4.tar.gz.1
+cd hostap-1.16.4
+cp hostapd/defconfig hostapd/.config
+
+sudo apt update
+sudo apt install -y \
+  build-essential pkg-config \
+  libnl-3-dev libnl-genl-3-dev \
+  libssl-dev
+
+export STAGING_DIR="$HOME/stage/hostapd-rel_1_16_4_2025_Sep_18"
+mkdir -p "$STAGING_DIR"
+
+pkg-config --cflags libnl-3.0 libnl-genl-3.0 openssl
+pkg-config --libs   libnl-3.0 libnl-genl-3.0 openssl
+
+CFLAGS="$(pkg-config --cflags libnl-3.0 libnl-genl-3.0 openssl)" \
+LIBS="$(pkg-config --libs   libnl-3.0 libnl-genl-3.0 openssl) -lm -lpthread" \
+BINDIR=/usr/sbin \
+MORSE_VERSION=rel_1_16_4_2025_Sep_18 \
+make -C hostapd V=1
+
+DESTDIR="$STAGING_DIR" BINDIR=/usr/sbin make -C hostapd install
+
+# wpa_supplicant
+# from the pi
+# using the same directory as hostapd
+
+sudo apt update
+sudo apt install -y \
+  build-essential pkg-config \
+  libnl-3-dev libnl-genl-3-dev \
+  libssl-dev \
+  libdbus-1-dev
+
+cd ~/hostap-1.16.4/wpa_supplicant
+cp defconfig .config
+#Remove -werror cflag
+cd ..
+make -C wpa_supplicant clean
+
+CFLAGS="$(pkg-config --cflags libnl-3.0 libnl-genl-3.0 openssl)" \
+LIBS="$(pkg-config --libs   libnl-3.0 libnl-genl-3.0 openssl) -lm -lpthread" \
+BINDIR=/usr/sbin \
+MORSE_VERSION=rel_1_16_4_2025_Sep_18 \
+make -C wpa_supplicant V=1
+
+export STAGING_DIR="$HOME/stage/wpasupplicant-rel_1_16_4_2025_Sep_18"
+mkdir -p "$STAGING_DIR"
+
+cd wpa_supplicant
+install -D wpa_supplicant_s1g "$STAGING_DIR/usr/sbin/wpa_supplicant_s1g"
+install -D wpa_cli_s1g        "$STAGING_DIR/usr/sbin/wpa_cli_s1g"
+install -D wpa_passphrase_s1g "$STAGING_DIR/usr/sbin/wpa_passphrase_s1g"
+
+DESTDIR="$STAGING_DIR" BINDIR=/usr/sbin sudo make -C wpa_supplicant install
+
+###TBD
+
+-DTS
+-Firmware blobs
+-SPI map
