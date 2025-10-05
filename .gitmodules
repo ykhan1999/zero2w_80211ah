@@ -9,3 +9,6 @@
 	path = drivers/hostap
 	url = git@github.com:ykhan1999/hostap.git
 	branch = v1.16
+[submodule "drivers/morse_cli"]
+	path = drivers/morse_cli
+	url = git@github.com:ykhan1999/morse_cli.git
