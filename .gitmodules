@@ -2,3 +2,6 @@
 	path = kernel/1.16.x
 	url = git@github.com:ykhan1999/rpi-linux.git
 	branch = mm/rpi-6.12.21/1.16.x
+[submodule "drivers/morse_driver"]
+	path = drivers/morse_driver
+	url = git@github.com:ykhan1999/morse_driver.git
