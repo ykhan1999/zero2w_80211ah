@@ -1,0 +1,118 @@
+name: Build & Release Debian packages
+
+on:
+  push:
+    tags:
+      - 'v*'           # e.g. v1.2.3
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    name: Build .deb packages (Debian Trixie)
+    runs-on: ubuntu-latest
+    container:
+      image: debian:trixie
+
+    outputs:
+      deb_count: ${{ steps.check.outputs.deb_count }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Install build tools
+        run: |
+          set -eux
+          apt-get update
+          apt-get install -y --no-install-recommends \
+            dpkg dpkg-dev fakeroot findutils xz-utils file
+
+      - name: Build all packages in packages/
+        id: build
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p dist
+
+          shopt -s nullglob
+          built=0
+          for dir in packages/*; do
+            [[ -d "$dir" ]] || continue
+            [[ -d "$dir/DEBIAN" ]] || { echo "Skipping $(basename "$dir") (no DEBIAN/ dir)"; continue; }
+
+            pkg="$(basename "$dir")"
+            echo "::group::Building $pkg"
+
+            # 1) Minimal, layout-agnostic normalization:
+            #    - Directories to 0755
+            #    - Maintainer scripts executable if present
+            #    (Leave all other file perms as-is, so executables can live anywhere.)
+            find "$dir" -type d -print0 | xargs -0 chmod 0755
+            for s in preinst postinst prerm postrm; do
+              if [[ -f "$dir/DEBIAN/$s" ]]; then
+                chmod 0755 "$dir/DEBIAN/$s"
+              fi
+            done
+
+            # 2) Build the .deb with fakeroot
+            out="dist/${pkg}.deb"
+            fakeroot dpkg-deb --build "$dir" "$out"
+
+            # 3) Show a quick summary
+            file "$out" || true
+            dpkg-deb --info "$out" || true
+            dpkg-deb --contents "$out" | head -n 50 || true
+
+            built=$((built+1))
+            echo "::endgroup::"
+          done
+
+          echo "Built $built package(s)."
+
+      - name: Check artifacts
+        id: check
+        shell: bash
+        run: |
+          set -euo pipefail
+          count=$(ls -1 dist/*.deb 2>/dev/null | wc -l || true)
+          echo "deb_count=$count" >> "$GITHUB_OUTPUT"
+          if [[ "$count" -gt 0 ]]; then
+            ls -l dist
+          else
+            echo "No .deb artifacts were produced."
+          fi
+
+      - name: Upload build artifacts
+        if: ${{ steps.check.outputs.deb_count > 0 }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: debs
+          path: dist/*.deb
+          if-no-files-found: ignore
+
+  release:
+    name: Create GitHub Release
+    needs: build
+    if: ${{ needs.build.outputs.deb_count > 0 }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: debs
+          path: dist
+
+      - name: Create release and upload assets
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ github.ref_name }}
+          name: ${{ github.ref_name }} (Debian Trixie)
+          draft: false
+          prerelease: false
+          files: dist/*.deb
+          fail_on_unmatched_files: false
