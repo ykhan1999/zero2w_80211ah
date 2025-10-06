@@ -66,7 +66,7 @@ sudo apt install -y libnl-3-dev libnl-genl-3-dev libusb-1.0-0-dev
 cd morse_cli-1.16.4
 CFLAGS="$(pkg-config --cflags libnl-3.0 libnl-genl-3.0 libusb-1.0)" \
 LDFLAGS="$(pkg-config --libs   libnl-3.0 libnl-genl-3.0 libusb-1.0)" \
-sudo make all
+sudo make CONFIG_MORSE_TRANS_NL80211=1
 
 # hostapd
 # from the pi
@@ -128,30 +128,3 @@ install -D wpa_cli_s1g        "$STAGING_DIR/usr/sbin/wpa_cli_s1g"
 install -D wpa_passphrase_s1g "$STAGING_DIR/usr/sbin/wpa_passphrase_s1g"
 
 DESTDIR="$STAGING_DIR" BINDIR=/usr/sbin sudo make -C wpa_supplicant install
-
--SPI map
-
-
-
-
-
-
-
-#######INSTALL SCRIPT########
-sudo mkdir -p /tmp/rpi-fix/
-wget https://y3782016.eero.online/packages/rpilinux-zero2w_1.0-2.deb
-sudo dpkg -x rpilinux-zero2w_1.0-2.deb /tmp/rpi-fix/
-sudo cp /tmp/rpi-fix/boot/firmware/*.dtb /boot/firmware/
-sudo cp /tmp/rpi-fix/boot/firmware/config.txt /boot/firmware/config.txt
-sudo cp /tmp/rpi-fix/boot/firmware/kernel8.img /boot/firmware/
-sudo cp /tmp/rpi-fix/boot/firmware/overlays/* /boot/firmware/overlays/
-sudo cp -r /tmp/rpi-fix/lib/modules/6.12.21-v8 /lib/modules/6.12.21-v8
-sudo depmod -a "6.12.21-v8"
-reboots
-wget https://y3782016.eero.online/packages/hostapd.deb
-wget https://y3782016.eero.online/packages/morse_cli.deb
-wget https://y3782016.eero.online/packages/wpa_supplicant.deb
-sudo apt install -y ./hostapd.deb
-sudo apt install -y ./morse_cli.deb
-sudo apt install -y ./wpa_supplicant.deb
-sudo depmod -a

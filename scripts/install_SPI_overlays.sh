@@ -18,6 +18,7 @@ sudo cp $SCRIPT_DIR/helpers/morse.conf.SPI.patch /etc/modprobe.d/morse.conf
 sudo cp $SCRIPT_DIR/helpers/start_morse.service.SPI.patch /etc/systemd/system/start_morse.service
 mkdir -p /usr/local/bin/
 sudo cp $SCRIPT_DIR/helpers/start_morse.sh.SPI.patch /usr/local/bin/start_morse.sh
+sudo chmod +x /usr/local/bin/start_morse.sh
 sudo systemctl enable start_morse
 
 #reboot to apply
