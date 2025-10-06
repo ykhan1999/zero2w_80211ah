@@ -1,3 +1,9 @@
+####################################
+### Step 1: Cross-compile kernel ###
+####################################
+
+# Instructions below are for cross compilation; tested on a x86_64 machine
+
 # Start a Debian build container with your current dir mounted at /work
 
 sudo docker run -it \
@@ -24,6 +30,10 @@ cd rpi-linux
 make O="$O" bcm2711_defconfig
 make -j"$(nproc)" O="$O" Image modules dtbs
 make O="$O" INSTALL_MOD_PATH="$O/stage" modules_install
+
+############################################
+### Step 2: Cross-compile driver for SPI ###
+############################################
 
 # Morse driver
 
@@ -52,8 +62,11 @@ make \
   CONFIG_MORSE_USER_ACCESS=y \
   CONFIG_MORSE_VENDOR_COMMAND=y
 
-# morse_cli
-# from the pi
+##############################
+### Step 3: Compile drivers ##
+##############################
+
+##NOTE!! This was done from the Pi itself, NOT a cross compile!##
 
 wget https://github.com/MorseMicro/morse_cli/archive/refs/tags/1.16.4.tar.gz
 tar -xzvf 1.16.4.tar.gz
