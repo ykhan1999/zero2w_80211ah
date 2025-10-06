@@ -1,0 +1,10 @@
+Package: mm-morsecli
+Version: 1.16.4-1
+Section: base
+Priority: optional
+Architecture: arm64
+Depends: libnl-3-dev, libnl-genl-3-dev
+Maintainer: Morse Micro
+Description: The Morse Micro Command Line Interface
+ The Morse Micro CLI for mm6108 Morse
+ Micro chip

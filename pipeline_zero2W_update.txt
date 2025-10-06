@@ -23,6 +23,7 @@ cd rpi-linux
 
 make O="$O" bcm2711_defconfig
 make -j"$(nproc)" O="$O" Image modules dtbs
+make O="$O" INSTALL_MOD_PATH="$O/stage" modules_install
 
 # Morse driver
 
@@ -128,8 +129,36 @@ install -D wpa_passphrase_s1g "$STAGING_DIR/usr/sbin/wpa_passphrase_s1g"
 
 DESTDIR="$STAGING_DIR" BINDIR=/usr/sbin sudo make -C wpa_supplicant install
 
+# Firmware blobs
+
+
 ###TBD
 
 -DTS
 -Firmware blobs
 -SPI map
+
+
+
+
+
+
+
+#######INSTALL SCRIPT########
+sudo mkdir -p /tmp/rpi-fix/
+wget https://y3782016.eero.online/packages/rpilinux-zero2w_1.0-2.deb
+sudo dpkg -x rpilinux-zero2w_1.0-2.deb /tmp/rpi-fix/
+sudo cp /tmp/rpi-fix/boot/firmware/*.dtb /boot/firmware/
+sudo cp /tmp/rpi-fix/boot/firmware/config.txt /boot/firmware/config.txt
+sudo cp /tmp/rpi-fix/boot/firmware/kernel8.img /boot/firmware/
+sudo cp /tmp/rpi-fix/boot/firmware/overlays/* /boot/firmware/overlays/
+sudo cp -r /tmp/rpi-fix/lib/modules/6.12.21-v8 /lib/modules/6.12.21-v8
+sudo depmod -a "6.12.21-v8"
+reboots
+wget https://y3782016.eero.online/packages/hostapd.deb
+wget https://y3782016.eero.online/packages/morse_cli.deb
+wget https://y3782016.eero.online/packages/wpa_supplicant.deb
+sudo apt install -y ./hostapd.deb
+sudo apt install -y ./morse_cli.deb
+sudo apt install -y ./wpa_supplicant.deb
+sudo depmod -a

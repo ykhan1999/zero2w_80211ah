@@ -1,0 +1,8 @@
+Package: rpilinux-zero2w
+Version: 1.0-2
+Section: base
+Priority: optional
+Architecture: arm64
+Depends: 
+Maintainer: Yousef Khan <yousefkhan125@gmail.com>
+Description: morse rpi-linux 6.12.21 kernel with morse.ko and dot11ah.ko drivers

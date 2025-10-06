@@ -1,0 +1,6 @@
+#!/bin/sh
+set -e
+KVER="6.12.21-v8"
+echo "Running depmod for $KVER..."
+depmod -a "$KVER" || true
+exit 0

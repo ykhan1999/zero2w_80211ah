@@ -12,3 +12,6 @@
 [submodule "drivers/morse_cli"]
 	path = drivers/morse_cli
 	url = git@github.com:ykhan1999/morse_cli.git
+[submodule "firmware/morse-firmware"]
+	path = firmware/morse-firmware
+	url = git@github.com:ykhan1999/morse-firmware.git

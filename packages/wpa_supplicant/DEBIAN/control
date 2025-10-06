@@ -1,0 +1,9 @@
+Package: mm-wpa-supplicant
+Version: 1.16.4-1
+Section: base
+Priority: optional
+Architecture: arm64
+Depends: libnl-route-3-dev, libnl-3-dev, libnl-genl-3-dev, openssl
+Maintainer: Morse Micro
+Description: The Morse Micro WPA Supplicant for S1G
+ The WPA Supplicant userspace for S1G
