@@ -1,0 +1,13 @@
+[Unit]
+Description=Start Morse Micro driver
+After=network.target
+Before=dnsmasq.service hostapd.service static_ip.service
+
+[Service]
+Type=oneshot
+ExecStart=/usr/local/bin/start_morse.sh
+User=root
+RemainAfterExit=yes
+
+[Install]
+WantedBy=multi-user.target
