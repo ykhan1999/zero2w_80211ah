@@ -1,0 +1,15 @@
+#SPI interface (GPIO 7-11, only 8-11 used)
+#+----------------+--------------------+----------------------------+------------------------------+
+#| HC01P Pin      | SPI Role           | RP5 Signal / GPIO          | Notes                        |
+#+----------------+--------------------+----------------------------+------------------------------+
+#| 3V3            | Power              | 3V3 (Pin 1 or 17)          | Module VDD 3.3 V             |
+#| GND            | Ground             | Any GND (6/9/14/20/25/30…) | Common ground                |
+#| INT            | Host IRQ           | GPIO 25  (Pin 22)          | Module -> host interrupt     |
+#| RESET          | Reset.             | GPIO 5   (Pin 29)          | Active LOW                   |
+#| BUSY           |  Wake.             | GPIO 7   (Pin 26)          | In POWER device tree overlay |
+#| WAKE           | WL_REG_ON / EN     | GPIO 3   (Pin 5)           | Active HIGH                  |
+#| CLK            | SPI0 SCLK          | GPIO 11  (Pin 23)          | SDIO clock                   |
+#| MISO           | SPI0 MISO          | GPIO 9   (Pin 21)          | 1-bit data line              |
+#| MOSI           | SPI0 MOSI          | GPIO 10  (Pin 19)          | SDIO command line            |
+#| CS             | SPI0 CEO0          | GPIO 8   (Pin 24)          |                              |
+#+----------------+--------------------+----------------------------+------------------------------+

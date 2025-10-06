@@ -1,5 +1,5 @@
 sudo mkdir -p /tmp/rpi-fix/
-wget https://y3782016.eero.online/packages/rpilinux-zero2w_1.0-2.deb
+wget https://github.com/ykhan1999/zero2w_80211ah/releases/download/main/rpilinux-zero2w_1.0-2.deb
 sudo dpkg -x rpilinux-zero2w_1.0-2.deb /tmp/rpi-fix/
 sudo cp /tmp/rpi-fix/boot/firmware/*.dtb /boot/firmware/
 sudo cp /tmp/rpi-fix/boot/firmware/config.txt /boot/firmware/config.txt

@@ -129,13 +129,6 @@ install -D wpa_passphrase_s1g "$STAGING_DIR/usr/sbin/wpa_passphrase_s1g"
 
 DESTDIR="$STAGING_DIR" BINDIR=/usr/sbin sudo make -C wpa_supplicant install
 
-# Firmware blobs
-
-
-###TBD
-
--DTS
--Firmware blobs
 -SPI map
 
 
