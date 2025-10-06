@@ -1,17 +1,20 @@
 [submodule "kernel/1.16.x"]
 	path = kernel/1.16.x
-	url = git@github.com:ykhan1999/rpi-linux.git
+	url = git@github.com:ykhan1999/rpi-linux
 	branch = mm/rpi-6.12.21/1.16.x
 [submodule "drivers/morse_driver"]
 	path = drivers/morse_driver
-	url = git@github.com:ykhan1999/morse_driver.git
+	url = git@github.com:ykhan1999/morse_driver
 [submodule "drivers/hostap"]
 	path = drivers/hostap
-	url = git@github.com:ykhan1999/hostap.git
+	url = git@github.com:ykhan1999/hostap
 	branch = v1.16
 [submodule "drivers/morse_cli"]
 	path = drivers/morse_cli
-	url = git@github.com:ykhan1999/morse_cli.git
+	url = git@github.com:ykhan1999/morse_cli
 [submodule "firmware/morse-firmware"]
 	path = firmware/morse-firmware
-	url = git@github.com:ykhan1999/morse-firmware.git
+	url = git@github.com:ykhan1999/morse-firmware
+[submodule "drivers/morse_"]
+	path = drivers/morse_
+	url = git@github.com:ykhan1999/morse_cli
