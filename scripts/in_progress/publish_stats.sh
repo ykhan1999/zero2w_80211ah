@@ -6,7 +6,7 @@ set -eu
 MQTT_HOST="${MQTT_HOST:-192.168.4.123}"
 MQTT_PORT="${MQTT_PORT:-1883}"
 MQTT_USER="${MQTT_USER:-ha_mqtt}"
-MQTT_PASS="${MQTT_PASS:-2T2fBYPB0xtddZsC}"
+MQTT_PASS="${MQTT_PASS:-}"
 MQTT_TOPIC="${MQTT_TOPIC:-RPI5/HT-HC01P/stats}"
 
 IFACE="${IFACE:-wlan1}"                        # morse_cli interface

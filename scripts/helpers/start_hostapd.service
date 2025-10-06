@@ -1,0 +1,12 @@
+[Unit]
+Description=Start hostapd for wlan1
+After=network.target start_morse.service static_ip.service
+Before=dnsmasq.service
+
+[Service]
+ExecStart=/usr/local/bin/start_hostapd.sh
+Restart=on-failure
+User=root
+
+[Install]
+WantedBy=multi-user.target
