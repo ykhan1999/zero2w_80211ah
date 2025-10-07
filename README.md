@@ -79,14 +79,15 @@ Done! Your module should be brought up now, and you should see the interface "wl
 ./zero2w_80211ah/scripts/init_AP.sh
 ```
 
-* Turn on AP with NAT forwarding to wlan0 (the 2.4GHz network)
+### Turn on AP with NAT forwarding to wlan0 (the 2.4GHz network)
+
 ```bash
 ./zero2w_80211ah/scripts/start_AP.sh
 ```
 
 After running the command, you should be able to connect a HaLow STA to your AP and access resources on the 2.4GHz network (including the internet).
 
-* Turn off AP and NAT forwarding
+### Turn off AP and NAT forwarding
 ```bash
 ./zero2w_80211ah/scripts/stop_AP.sh
 ```
