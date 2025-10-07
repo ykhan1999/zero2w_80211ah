@@ -74,19 +74,22 @@ Done! Your module should be brought up now, and you should see the interface "wl
 
 ### AP Mode setup
 
-1. Edit the sample config (zero2w_80211ah/sample_configs/hostapd.conf) with your desired parameters, and then run the initialization script:
+0. (One-time setup) Edit the sample config (zero2w_80211ah/sample_configs/hostapd.conf) with your desired parameters, and then run the initialization script:
 ```bash
-./zero2w_80211ah/scripts/setup_AP.sh
+./zero2w_80211ah/scripts/init_AP.sh
 ```
-By itself, the script will set up a system service to automatically bring up the AP on every boot and assign a static IP. Note that this will NOT forward any traffic unless you set up NAT forwarding as below.
 
-2.  (Optional) Set up NAT forwarding. The script will forward traffic from wlan1 (HaLow interface) through wlan0 (2.4Ghz interface). So, if you're connected to the internet through your 2.4Ghz interface, you'll be able to access the internet through the HaLow interface.
+* Turn on AP with NAT forwarding to wlan0 (the 2.4GHz network)
 ```bash
-./zero2w_80211ah/scripts/NAT_forwarding.sh
-#recommend reboot now but may not be necessary
-sudo reboot
+./zero2w_80211ah/scripts/start_AP.sh
 ```
-And done! Using a HaLow station, you should now be able to connect to the AP and access the internet.
+
+After running the command, you should be able to connect a HaLow STA to your AP and access resources on the 2.4GHz network (including the internet).
+
+* Turn off AP and NAT forwarding
+```bash
+./zero2w_80211ah/scripts/stop_AP.sh
+```
 
 ### STA mode setup
 

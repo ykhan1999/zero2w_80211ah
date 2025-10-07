@@ -1,0 +1,13 @@
+[Unit]
+Description=Assign static IP to wlan1
+After=network.target start_morse.service
+Before=dnsmasq.service start_hostapd.service
+
+[Service]
+Type=oneshot
+ExecStart=/usr/local/bin/assign_wlan1_ip.sh
+User=root
+RemainAfterExit=yes
+
+[Install]
+WantedBy=multi-user.target
