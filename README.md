@@ -72,7 +72,7 @@ sudo reboot
 ```
 Done! Your module should be brought up now, and you should see the interface "wlan1" when you run ifconfig. 
 
-### AP Mode setup
+## AP Mode
 
 0. (One-time setup) Edit the sample config (zero2w_80211ah/sample_configs/hostapd.conf) with your desired parameters, and then run the initialization script:
 ```bash
@@ -91,7 +91,7 @@ After running the command, you should be able to connect a HaLow STA to your AP 
 ./zero2w_80211ah/scripts/stop_AP.sh
 ```
 
-### STA mode setup
+## STA mode
 
 TBD, check back for updates
 
