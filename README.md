@@ -74,7 +74,7 @@ Done! Your module should be brought up now, and you should see the interface "wl
 
 ## AP Mode
 
-0. (One-time setup) Edit the sample config (zero2w_80211ah/sample_configs/hostapd.conf) with your desired parameters, and then run the initialization script:
+First, run the configuration script:
 ```bash
 ./zero2w_80211ah/scripts/init_AP.sh
 ```

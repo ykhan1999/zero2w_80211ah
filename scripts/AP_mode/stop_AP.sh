@@ -8,7 +8,7 @@ sudo systemctl stop start_hostapd.service
 sudo systemctl disable start_hostapd.service
 
 #Disable NAT forwarding and DHCP server
-sudo $SCRIPT_DIR/AP_helpers/toggle_NAT.sh --off
+sudo $SCRIPT_DIR/../helpers/AP/toggle_NAT.sh --off
 
 #disable static ip assignment
 sudo systemctl disable static_ip.service
