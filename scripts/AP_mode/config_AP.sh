@@ -44,7 +44,7 @@ SERVICE="/etc/systemd/system/static_ip.service"
 SCRIPT="/usr/local/bin/assign_wlan1_ip.sh"
 
 if [ ! -f "$SERVICE" ] || [ ! -f "$SCRIPT" ]; then
-  echo "First time setup: Installing start_hostapd service and script"
+  echo "First time setup: Installing static_IP service and script"
   sudo cp $SCRIPT_DIR/../helpers/AP/services/static_ip.service /etc/systemd/system/
   sudo cp $SCRIPT_DIR/../helpers/AP/services/assign_wlan1_ip.sh /usr/local/bin/
   sudo chmod +x /usr/local/bin/assign_wlan1_ip.sh

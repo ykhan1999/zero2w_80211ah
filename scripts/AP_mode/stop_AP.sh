@@ -4,7 +4,7 @@ SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
 
 #Stop hostapd gracefully
 sudo systemctl stop start_hostapd.service
-#Disable system services
+#Disable system service
 sudo systemctl disable start_hostapd.service
 
 #Disable NAT forwarding and DHCP server
