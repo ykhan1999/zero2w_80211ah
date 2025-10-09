@@ -1,5 +1,8 @@
 #!/usr/bin/env bash
 
+#helper to get current dir
+
+SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
 
 # ----------- FIRST TIME CONFIG -------------
 
@@ -7,7 +10,7 @@
 PKG="dnsmasq"
 
 if ! dpkg -s "$PKG" >/dev/null 2>&1; then
-  echo "First time setup: installing $dnsmasq now..."
+  echo "First time setup: installing $PKG now..."
   sudo apt-get update -y
   sudo apt-get install -y "$PKG"
 fi
@@ -50,3 +53,7 @@ if [ ! -f "$SERVICE" ] || [ ! -f "$SCRIPT" ]; then
   sudo chmod +x /usr/local/bin/assign_wlan1_ip.sh
   sudo systemctl daemon-reload
 fi
+
+echo "Initial setup all done!"
+
+#TBD - parse flags for config

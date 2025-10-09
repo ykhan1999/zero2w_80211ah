@@ -56,19 +56,17 @@ Connect the SPI pins to the Raspberry Pi headers per the table below:
 sudo apt-get update
 sudo apt install git
 git clone https://github.com/ykhan1999/zero2w_80211ah
-./zero2w_80211ah/scripts/install_kernel.sh
-#Should auto reboot, but if it doesn't:
-sudo reboot
+./zero2w_80211ah/scripts/init/install_kernel.sh
+#Wait for system reboot before proceeding
 ```
 4. Install the drivers
 ```bash
-./zero2w_80211ah/scripts/install_drivers.sh
+./zero2w_80211ah/scripts/init/install_drivers.sh
 ```
 5. Install the device tree overlay and patches for the SPI interface
 ```bash
-./zero2w_80211ah/scripts/install_SPI_overlays.sh
-#If no auto reboot:
-sudo reboot
+./zero2w_80211ah/scripts/init/install_SPI_overlays.sh
+#Wait for reboot before proceeding
 ```
 Done! Your module should be brought up now, and you should see the interface "wlan1" when you run ifconfig. 
 
@@ -76,20 +74,20 @@ Done! Your module should be brought up now, and you should see the interface "wl
 
 First, run the configuration script:
 ```bash
-./zero2w_80211ah/scripts/init_AP.sh
+./zero2w_80211ah/scripts/AP_mode/config_AP.sh
 ```
 
 ### Turn on AP with NAT forwarding to wlan0 (the 2.4GHz network)
 
 ```bash
-./zero2w_80211ah/scripts/start_AP.sh
+./zero2w_80211ah/scripts/AP_mode/start_AP.sh
 ```
 
 After running the command, you should be able to connect a HaLow STA to your AP and access resources on the 2.4GHz network (including the internet).
 
 ### Turn off AP and NAT forwarding
 ```bash
-./zero2w_80211ah/scripts/stop_AP.sh
+./zero2w_80211ah/scripts/AP_mode/stop_AP.sh
 ```
 
 ## STA mode
