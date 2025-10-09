@@ -13,6 +13,7 @@ if ! dpkg -s "$PKG" >/dev/null 2>&1; then
   echo "First time setup: installing $PKG now..."
   sudo apt-get update -y
   sudo apt-get install -y "$PKG"
+  echo "$PKG installed!"
 fi
 
 #2. Is IPv4 forwarding enabled at the kernel level?
@@ -22,10 +23,11 @@ LINE="net.ipv4.ip_forward=1"
 
 # create conf file if missing or corrupt
 if [ ! -f "$CONF" ] || ! grep -qx "$LINE" "$CONF"; then
-  echo "First time setup: Ensuring $CONF contains correct setting..."
+  echo "First time setup: Enable ipv4 forward at kernel level..."
   sudo rm -f "$CONF"
   echo "$LINE" | sudo tee "$CONF" >/dev/null
   sudo sysctl --system >/dev/null
+  echo "ipv4 forwarding capability enabled!"
 fi
 
 #3. Is the start_hostapd service installed?
@@ -40,6 +42,7 @@ if [ ! -f "$SERVICE" ] || [ ! -f "$SCRIPT" ]; then
   sudo cp $SCRIPT_DIR/../helpers/AP/configs/hostapd.conf /usr/local/etc/hostapd.conf
   sudo chmod +x /usr/local/bin/start_hostapd.sh
   sudo systemctl daemon-reload
+  echo "done installing start_hostapd service!"
 fi
 
 #4. Is the static IP service installed?
@@ -52,8 +55,7 @@ if [ ! -f "$SERVICE" ] || [ ! -f "$SCRIPT" ]; then
   sudo cp $SCRIPT_DIR/../helpers/AP/services/assign_wlan1_ip.sh /usr/local/bin/
   sudo chmod +x /usr/local/bin/assign_wlan1_ip.sh
   sudo systemctl daemon-reload
+  echo "done installing static_IP service!"
 fi
-
-echo "Initial setup all done!"
 
 #TBD - parse flags for config
