@@ -1,7 +1,5 @@
 #!/usr/bin/env bash
 
-SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
-
 # Default values
 MODE=""
 WAN=wlan0
@@ -35,7 +33,7 @@ fi
 if [[ "$MODE" == "on" ]]; then
   echo "Turning ON forwarding with WAN=$WAN and LAN=$LAN"
   #apply nftables ruleset
-  sudo cp ${SCRIPT_DIR}/configs/nftables_forward.conf /etc/nftables.conf
+  sudo cp /usr/local/etc/nftables_forward.conf.disabled /etc/nftables.conf
   #restart nftables if active, if inactive then start
   enabled="$(systemctl is-enabled nftables)"
   if [[ "$enabled" != "enabled" ]]; then
@@ -44,11 +42,11 @@ if [[ "$MODE" == "on" ]]; then
      sudo systemctl restart nftables
   fi
   #Start DHCP server
-  sudo cp ${SCRIPT_DIR}/configs/dnsmasq_DHCP.conf /etc/dnsmasq.d/lan-$LAN.conf
+  sudo cp /usr/local/etc/dnsmasq_DHCP.conf.disabled /etc/dnsmasq.d/lan-$LAN.conf
   sudo systemctl restart dnsmasq
   echo "DHCP server enabled"
   #keep networkmanager away from $LAN
-  sudo cp ${SCRIPT_DIR}/configs/netman_unmanaged.conf /etc/NetworkManager/conf.d/unmanaged.conf
+  sudo cp /usr/local/etc/netman_unmanaged.conf.disabled /etc/NetworkManager/conf.d/unmanaged.conf
   sudo systemctl restart NetworkManager
   echo "NAT forwarding ENABLED on ${LAN} -> ${WAN}"
 
@@ -56,7 +54,7 @@ if [[ "$MODE" == "on" ]]; then
 elif [[ "$MODE" == "off" ]]; then
   echo "Turning OFF all forwarding"
   #apply default nftables ruleset
-  sudo cp ${SCRIPT_DIR}/configs/nftables_noforward.conf /etc/nftables.conf
+  sudo cp /usr/local/etc/nftables_noforward.conf.disabled /etc/nftables.conf
   sudo systemctl restart nftables
   #turn off DHCP
   sudo rm -r /etc/dnsmasq.d/lan-$LAN.conf

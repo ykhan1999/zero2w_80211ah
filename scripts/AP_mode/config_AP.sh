@@ -40,10 +40,14 @@ if [ ! -f "$SERVICE" ]; then
   sudo cp $SCRIPT_DIR/usr_local_bin/80211ah_AP_start.sh /usr/local/bin/
   sudo cp $SCRIPT_DIR/usr_local_bin/80211ah_AP_stop.sh /usr/local/bin/
   sudo cp $SCRIPT_DIR/usr_local_bin/toggle_NAT.sh /usr/local/bin/
-  sudo cp $SCRIPT_DIR/config/hostapd.conf /usr/local/etc/hostapd.conf
+  sudo cp $SCRIPT_DIR/config/hostapd.conf /usr/local/etc/
+  sudo cp $SCRIPT_DIR/config/dnsmasq_DHCP.conf.disabled /usr/local/etc/
+  sudo cp $SCRIPT_DIR/config/netman_unmanaged.conf.disabled /usr/local/etc/
+  sudo cp $SCRIPT_DIR/config/nftables_forward.conf.disabled /usr/local/etc/
+  sudo cp $SCRIPT_DIR/config/nftables_noforward.conf.disabled /usr/local/etc/
   sudo chmod +x /usr/local/bin/80211ah_AP_start.sh
   sudo chmod +x /usr/local/bin/80211ah_AP_stop.sh
-  sudo chmod +x /usr/local/bin/toggle_NAT.sh.sh
+  sudo chmod +x /usr/local/bin/toggle_NAT.sh
   sudo systemctl daemon-reload
   echo "done installing 80211ah_AP service!"
 fi
