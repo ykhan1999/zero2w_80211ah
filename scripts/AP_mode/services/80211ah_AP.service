@@ -3,8 +3,9 @@ Description=Start 80211ah AP mode
 After=network.target start_morse.service dnsmasq.service
 
 [Service]
+Type=forking
 ExecStart=/usr/local/bin/80211ah_AP_start.sh
-ExecStop=/usr/local/bin/80211ah_AP_stop.sh
+ExecStopPost=/usr/local/bin/80211ah_AP_stop.sh
 Restart=on-failure
 User=root
 
