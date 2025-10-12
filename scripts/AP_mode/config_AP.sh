@@ -30,32 +30,22 @@ if [ ! -f "$CONF" ] || ! grep -qx "$LINE" "$CONF"; then
   echo "ipv4 forwarding capability enabled!"
 fi
 
-#3. Is the start_hostapd service installed?
-SERVICE="/etc/systemd/system/start_hostapd.service"
-SCRIPT="/usr/local/bin/start_hostapd.sh"
+#3. Is the 80211ah_AP service installed?
+SERVICE="/etc/systemd/system/80211ah_AP.service"
 
-if [ ! -f "$SERVICE" ] || [ ! -f "$SCRIPT" ]; then
-  echo "First time setup: Installing start_hostapd service and script"
+if [ ! -f "$SERVICE" ]; then
+  echo "First time setup: Installing 80211ah_AP service and script"
   sudo mkdir -p /usr/local/etc
-  sudo cp $SCRIPT_DIR/../helpers/AP/services/start_hostapd.service /etc/systemd/system/
-  sudo cp $SCRIPT_DIR/../helpers/AP/services/start_hostapd.sh /usr/local/bin/
-  sudo cp $SCRIPT_DIR/../helpers/AP/configs/hostapd.conf /usr/local/etc/hostapd.conf
-  sudo chmod +x /usr/local/bin/start_hostapd.sh
+  sudo cp $SCRIPT_DIR/services/80211ah_AP.service /etc/systemd/system/
+  sudo cp $SCRIPT_DIR/usr_local_bin/80211ah_AP_start.sh /usr/local/bin/
+  sudo cp $SCRIPT_DIR/usr_local_bin/80211ah_AP_stop.sh /usr/local/bin/
+  sudo cp $SCRIPT_DIR/usr_local_bin/toggle_NAT.sh /usr/local/bin/
+  sudo cp $SCRIPT_DIR/config/hostapd.conf /usr/local/etc/hostapd.conf
+  sudo chmod +x /usr/local/bin/80211ah_AP_start.sh
+  sudo chmod +x /usr/local/bin/80211ah_AP_stop.sh
+  sudo chmod +x /usr/local/bin/toggle_NAT.sh.sh
   sudo systemctl daemon-reload
-  echo "done installing start_hostapd service!"
-fi
-
-#4. Is the static IP service installed?
-SERVICE="/etc/systemd/system/static_ip.service"
-SCRIPT="/usr/local/bin/assign_wlan1_ip.sh"
-
-if [ ! -f "$SERVICE" ] || [ ! -f "$SCRIPT" ]; then
-  echo "First time setup: Installing static_IP service and script"
-  sudo cp $SCRIPT_DIR/../helpers/AP/services/static_ip.service /etc/systemd/system/
-  sudo cp $SCRIPT_DIR/../helpers/AP/services/assign_wlan1_ip.sh /usr/local/bin/
-  sudo chmod +x /usr/local/bin/assign_wlan1_ip.sh
-  sudo systemctl daemon-reload
-  echo "done installing static_IP service!"
+  echo "done installing 80211ah_AP service!"
 fi
 
 #TBD - parse flags for config

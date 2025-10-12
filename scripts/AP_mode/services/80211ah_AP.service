@@ -1,10 +1,10 @@
 [Unit]
-Description=Start hostapd for wlan1
+Description=Start 80211ah AP mode
 After=network.target start_morse.service dnsmasq.service
-Before=static_ip.service
 
 [Service]
-ExecStart=/usr/local/bin/start_hostapd.sh
+ExecStart=/usr/local/bin/80211ah_AP_start.sh
+ExecStop=/usr/local/bin/80211ah_AP_stop.sh
 Restart=on-failure
 User=root
 
