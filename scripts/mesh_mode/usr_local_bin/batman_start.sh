@@ -95,3 +95,11 @@ if [[ "$MODE" == "gateway" ]]; then
     #create a flag so that the system knows gateway mode is on
     echo "gateway=active" > /usr/local/etc/batman_gateway_status.txt
 fi
+
+#Additional settings for client conf
+if [[ "$MODE" == "client" ]]; then
+    #Get DHCP lease
+    dhclient -v bat0
+    #ip routing test
+    ip route add default via 192.168.10.1 dev bat0 table 10
+fi

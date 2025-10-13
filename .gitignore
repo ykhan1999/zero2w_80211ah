@@ -2,3 +2,4 @@ build/
 ._pipeline*
 *DS_Store*
 ._source_compile_instructions.txt
+notes.txt

@@ -33,10 +33,6 @@ fi
 if [[ "$MODE" == "on" ]]; then
   echo "Turning ON forwarding with WAN=$WAN and LAN=$LAN"
 
-  #keep networkmanager away from $LAN
-  cp /usr/local/etc/netman_unmanaged.conf.batman.disabled /etc/NetworkManager/conf.d/unmanaged.conf
-  systemctl restart NetworkManager
-
   #apply nftables ruleset
   cp /usr/local/etc/nftables_forward.conf.batman.disabled /etc/nftables.conf
 
@@ -56,9 +52,6 @@ elif [[ "$MODE" == "off" ]]; then
   #apply default nftables ruleset
   cp /usr/local/etc/nftables_noforward.conf.batman.disabled /etc/nftables.conf
   systemctl restart nftables
-  #give network manager control again
-  rm -r /etc/NetworkManager/conf.d/unmanaged.conf
-  systemctl restart NetworkManager
   echo "NAT forwarding DISABLED for ${LAN}"
 
 else

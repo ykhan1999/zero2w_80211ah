@@ -16,7 +16,17 @@ if ! dpkg -s "$PKG" >/dev/null 2>&1; then
   echo "$PKG installed!"
 fi
 
-#2. Is IPv4 forwarding enabled at the kernel level?
+#2. Is DHCP client installed?
+PKG="isc-dhcp-client"
+
+if ! dpkg -s "$PKG" >/dev/null 2>&1; then
+  echo "First time setup: installing $PKG now..."
+  sudo apt-get update -y
+  sudo apt-get install -y "$PKG"
+  echo "$PKG installed!"
+fi
+
+#3. Is IPv4 forwarding enabled at the kernel level?
 
 CONF="/etc/sysctl.d/99-ipforward.conf"
 LINE="net.ipv4.ip_forward=1"
@@ -30,7 +40,7 @@ if [ ! -f "$CONF" ] || ! grep -qx "$LINE" "$CONF"; then
   echo "ipv4 forwarding capability enabled!"
 fi
 
-#3. Is the 80211ah_mesh service installed?
+#4. Is the 80211ah_mesh service installed?
 SERVICE1="/etc/systemd/system/batman_mesh_gateway.service"
 SERVICE2="/etc/systemd/system/batman_mesh_client.service"
 
@@ -54,3 +64,14 @@ if [ ! -f "$SERVICE1" ] || [ ! -f "$SERVICE2" ] ; then
   echo "done installing batman_mesh service!"
 fi
 
+#5. Are we keeping NetworkManager from touching the batman interface?
+
+CONF="/etc/NetworkManager/conf.d/unmanaged.conf"
+LINE="unmanaged-devices=interface-name:bat0"
+
+# create conf file if missing or corrupt
+if [ ! -f "$CONF" ] || ! grep -qx "$LINE" "$CONF"; then
+  echo "Keeping NetworkManager away from bat0"
+  sudo cp /usr/local/etc/netman_unmanaged.conf.batman.disabled $CONF
+  sudo systemctl restart NetworkManager
+fi
