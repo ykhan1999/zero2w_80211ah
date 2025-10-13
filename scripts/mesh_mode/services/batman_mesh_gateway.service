@@ -3,7 +3,8 @@ Description=Start 80211ah mesh mode (using batman)
 After=network.target start_morse.service dnsmasq.service
 
 [Service]
-Type=simple
+Type=oneshot
+RemainAfterExit=yes
 ExecStart=/usr/local/bin/batman_start.sh --gateway
 ExecStopPost=/usr/local/bin/batman_stop.sh
 Restart=on-failure

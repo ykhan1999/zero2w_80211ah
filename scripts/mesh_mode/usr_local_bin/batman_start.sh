@@ -39,6 +39,9 @@ ip link set wlan1 down
 ip addr flush dev wlan1
 ip link set wlan1 up
 
+#cleanup old instance of wpa_supplicant if present
+rm -r /var/run/wpa_supplicant_s1g/wlan1
+
 #load BATMAN driver
 modprobe batman-adv
 
@@ -64,10 +67,6 @@ ip link set up dev bat0
 
 #Additional settings for gateway conf
 if [[ "$MODE" == "gateway" ]]; then
-    #Gateway mode: assign static IP
-    ip addr flush dev bat0
-    ip addr add 192.168.10.1/24 dev bat0
-
     #Gateway mode: IP forwarding and DHCP server
     /usr/local/bin/toggle_NAT_batman.sh --on
 
