@@ -57,7 +57,7 @@ elif [[ "$MODE" == "off" ]]; then
   cp /usr/local/etc/nftables_noforward.conf.disabled /etc/nftables.conf
   systemctl restart nftables
   #turn off DHCP
-  rm -r /etc/dnsmasq.d/lan-$LAN.conf
+  rm -r /etc/dnsmasq.d/*.conf
   systemctl stop dnsmasq
   echo "DHCP server disabled"
   #give network manager control again

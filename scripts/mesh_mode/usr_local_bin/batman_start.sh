@@ -45,6 +45,12 @@ rm -r /var/run/wpa_supplicant_s1g/wlan1
 #load BATMAN driver
 modprobe batman-adv
 
+#GATEWAY MODE: NAT FORWARD
+if [[ "$MODE" == "gateway" ]]; then
+    #Gateway mode: Enable NAT forwarding
+    /usr/local/bin/toggle_NAT_batman.sh --on
+fi
+
 #start wpa_supplicant
 wpa_supplicant_s1g -i wlan1 -c /usr/local/etc/halow_ibss.conf -B
 
@@ -67,8 +73,21 @@ ip link set up dev bat0
 
 #Additional settings for gateway conf
 if [[ "$MODE" == "gateway" ]]; then
-    #Gateway mode: IP forwarding and DHCP server
-    /usr/local/bin/toggle_NAT_batman.sh --on
+    #Start DHCP server
+    cp /usr/local/etc/dnsmasq_DHCP.conf.batman.disabled /etc/dnsmasq.d/lan-bat0.conf
+
+    #restart dnsmasq if active, if inactive then start
+    enabled="$(systemctl is-enabled dnsmasq)"
+    if [[ "$enabled" != "enabled" ]]; then
+       systemctl enable --now dnsmasq
+    else
+       systemctl restart dnsmasq
+    fi
+    echo "DHCP server enabled"
+
+    #add static IP
+    ip addr flush dev bat0
+    ip addr add 192.168.10.1/24 dev bat0
 
     #Gateway mode: advertise as a server
     batctl gw server
@@ -76,4 +95,3 @@ if [[ "$MODE" == "gateway" ]]; then
     #create a flag so that the system knows gateway mode is on
     echo "gateway=active" > /usr/local/etc/batman_gateway_status.txt
 fi
-

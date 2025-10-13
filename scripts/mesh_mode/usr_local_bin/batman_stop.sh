@@ -23,4 +23,9 @@ if [[ -f "$FILE" ]] && grep -q "gateway=active" "$FILE"; then
     echo "Gateway is active. Turning off NAT forwarding and DHCP server..."
     /usr/local/bin/toggle_NAT_batman.sh --off
     rm -r /usr/local/etc/batman_gateway_status.txt
+    #turn off DHCP
+    echo "disabling DHCP server..."
+    systemctl disable dnsmasq
+    rm -r /etc/dnsmasq.d/*.conf
+    echo "DHCP server disabled"
 fi
