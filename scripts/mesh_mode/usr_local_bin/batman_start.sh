@@ -28,6 +28,17 @@ if [[ -z "$MODE" ]]; then
   exit 1
 fi
 
+#restart driver module for fresh bringup
+systemctl stop start_morse
+modprobe -r morse
+systemctl restart start_morse
+echo "Driver module restarted"
+
+#flush static IP if present
+ip link set wlan1 down
+ip addr flush dev wlan1
+ip link set wlan1 up
+
 #load BATMAN driver
 modprobe batman-adv
 
@@ -35,21 +46,6 @@ modprobe batman-adv
 wpa_supplicant_s1g -i wlan1 -c /usr/local/etc/halow_ibss.conf -B
 
 #wait for IBSS bringup
-while true; do
-    STATUS=$(wpa_cli_s1g -i wlan1 status 2>/dev/null | grep "wpa_state=COMPLETED")
-    if [[ -n "$STATUS" ]]; then
-        echo "IBSS brought up on wlan1"
-        break
-    fi
-    sleep 1
-done
-
-#flush static IP if present
-ip link set wlan1 down
-ip addr flush dev wlan1
-ip link set wlan1 up
-
-#wait for IBSS bringup again
 while true; do
     STATUS=$(wpa_cli_s1g -i wlan1 status 2>/dev/null | grep "wpa_state=COMPLETED")
     if [[ -n "$STATUS" ]]; then
