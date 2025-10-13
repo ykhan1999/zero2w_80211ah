@@ -12,12 +12,12 @@ sudo cp $SCRIPT_DIR/../../overlays/*.dtbo /boot/firmware/overlays/
 ####Patch morse driver to reset module until it's recognized
 
 #Don't autostart morse
-sudo cp $SCRIPT_DIR/../helpers/init/morse.conf.SPI.patch /etc/modprobe.d/morse.conf
+sudo cp $SCRIPT_DIR/helpers/morse.conf.SPI.patch /etc/modprobe.d/morse.conf
 
 #service to reset chip until driver is recognized
-sudo cp $SCRIPT_DIR/../helpers/init/start_morse.service.SPI.patch /etc/systemd/system/start_morse.service
+sudo cp $SCRIPT_DIR/helpers/start_morse.service.SPI.patch /etc/systemd/system/start_morse.service
 mkdir -p /usr/local/bin/
-sudo cp $SCRIPT_DIR/../helpers/init/start_morse.sh.SPI.patch /usr/local/bin/start_morse.sh
+sudo cp $SCRIPT_DIR/helpers/start_morse.sh.SPI.patch /usr/local/bin/start_morse.sh
 sudo chmod +x /usr/local/bin/start_morse.sh
 sudo systemctl enable start_morse
 

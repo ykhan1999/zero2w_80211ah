@@ -1,0 +1,5 @@
+interface=bat0
+bind-interfaces
+dhcp-range=192.168.10.10,192.168.10.100,12h
+dhcp-option=option:router,192.168.10.1
+dhcp-option=option:dns-server,192.168.10.1

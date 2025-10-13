@@ -1,11 +1,11 @@
 [Unit]
-Description=Start 80211ah AP mode
+Description=Start 80211ah mesh mode (using batman)
 After=network.target start_morse.service dnsmasq.service
 
 [Service]
 Type=simple
-ExecStart=/usr/local/bin/80211ah_AP_start.sh
-ExecStopPost=/usr/local/bin/80211ah_AP_stop.sh
+ExecStart=/usr/local/bin/batman_start.sh --client
+ExecStopPost=/usr/local/bin/batman_stop.sh
 Restart=on-failure
 User=root
 
