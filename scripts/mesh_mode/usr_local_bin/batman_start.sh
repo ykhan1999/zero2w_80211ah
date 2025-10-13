@@ -26,6 +26,7 @@ done
 if [[ -z "$MODE" ]]; then
   echo "Usage: $0 --gateway|--client"
   exit 1
+fi
 
 #load BATMAN driver
 modprobe batman-adv

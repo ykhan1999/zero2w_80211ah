@@ -78,11 +78,9 @@ ip link set wlan1 up
 
 #watchdog
 TRIGGER_OFF="AP-DISABLED"
-sleep 1
 while IFS= read -r line || [ -n "$line" ]; do
     if [[ "$line" == *"$TRIGGER_OFF"* ]]; then
-#        systemctl restart 80211ah_AP
-        echo "TRIGGERED"
+        systemctl restart 80211ah_AP
         exit 1
     fi
 done < <(tail -f -n +1 /usr/local/etc/hostapd.log)

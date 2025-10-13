@@ -51,6 +51,6 @@ if [ ! -f "$SERVICE1" ] || [ ! -f "$SERVICE2" ] ; then
   sudo chmod +x /usr/local/bin/batman_stop.sh
   sudo chmod +x /usr/local/bin/toggle_NAT_batman.sh
   sudo systemctl daemon-reload
-  echo "done installing 80211ah_AP service!"
+  echo "done installing batman_mesh service!"
 fi
 
