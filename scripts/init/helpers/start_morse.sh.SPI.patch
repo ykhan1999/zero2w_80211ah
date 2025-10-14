@@ -1,16 +1,18 @@
 #!/usr/bin/env bash
-pinctrl set 5 op dl
-sleep 2
-pinctrl set 5 pu dh
-sleep 4
-modprobe morse enable_wiphy=0 enable_otp_check=1 country=US bcf=bcf_boardtype_0801.bin spi_clock_speed=24000000 slow_clock_mode=0 fw_bin_file=mm6108.bin debug_mask=2
-sleep 4
-while ! dmesg | grep -q "Driver loaded with kernel module parameters"; do
-    modprobe -r morse
-    pinctrl set 5 dl
+while true; do
+    modprobe -r morse || true
+    pinctrl set 5 op dl
     sleep 2
-    pinctrl set 5 dh
+    pinctrl set 5 pu dh
     sleep 4
     modprobe morse enable_wiphy=0 enable_otp_check=1 country=US bcf=bcf_boardtype_0801.bin spi_clock_speed=24000000 slow_clock_mode=0 fw_bin_file=mm6108.bin debug_mask=2
-    sleep 4
+
+    sleep 5
+    echo "Checking to see if driver loaded..."
+    if dmesg --since "15 seconds ago" | grep "Driver loaded with kernel module parameters"; then
+        echo "Morse driver loaded!"
+        break 
+    else
+       echo "Morse driver failed to load, trying again..."
+    fi
 done

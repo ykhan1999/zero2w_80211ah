@@ -34,9 +34,10 @@ modprobe -r morse
 systemctl restart start_morse
 echo "Driver module restarted"
 
-#flush static IP if present
+#flush static IP if present and set MTU to 1536 to accomodate batman-adv header
 ip link set wlan1 down
 ip addr flush dev wlan1
+ip link set mtu 1536 dev wlan1
 ip link set wlan1 up
 
 #cleanup old instance of wpa_supplicant if present
@@ -98,8 +99,10 @@ fi
 
 #Additional settings for client conf
 if [[ "$MODE" == "client" ]]; then
+    #todo: wait for connection 192.168.10.1 before trying for DHCP lease
     #Get DHCP lease
-    dhclient -v bat0
+#    ip addr flush dev bat0
+#    dhclient -v bat0
     #ip routing test
-    ip route add default via 192.168.10.1 dev bat0 table 10
+#    ip route add default via 192.168.10.1 dev bat0 table 10
 fi
