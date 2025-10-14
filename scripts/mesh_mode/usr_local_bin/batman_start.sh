@@ -98,11 +98,11 @@ if [[ "$MODE" == "gateway" ]]; then
 fi
 
 #Additional settings for client conf
-if [[ "$MODE" == "client" ]]; then
-    #todo: wait for connection 192.168.10.1 before trying for DHCP lease
-    #Get DHCP lease
+#if [[ "$MODE" == "client" ]]; then
+#    #todo: wait for connection 192.168.10.1 before trying for DHCP lease
+#    #Get DHCP lease
 #    ip addr flush dev bat0
 #    dhclient -v bat0
-    #ip routing test
+#    #ip routing test
 #    ip route add default via 192.168.10.1 dev bat0 table 10
-fi
+#fi
