@@ -1,3 +1,4 @@
+flush ruleset
 define wan = "wlan0"
 define lan = "wlan1"
 
