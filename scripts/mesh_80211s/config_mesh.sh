@@ -6,6 +6,16 @@ SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
 
 # ----------- FIRST TIME CONFIG -------------
 
+#1. Is python3 installed?
+PKG="python3"
+
+if ! dpkg -s "$PKG" >/dev/null 2>&1; then
+  echo "First time setup: installing $PKG now..."
+  sudo apt-get update -y
+  sudo apt-get install -y "$PKG"
+  echo "$PKG installed!"
+fi
+
 #1. Is dnsmasq installed?
 PKG="dnsmasq"
 
@@ -51,6 +61,7 @@ if [ ! -f "$SERVICE1" ] || [ ! -f "$SERVICE2" ] ; then
   sudo cp $SCRIPT_DIR/usr_local_bin/80211s_start.sh /usr/local/bin/
   sudo cp $SCRIPT_DIR/usr_local_bin/80211s_stop.sh /usr/local/bin/
   sudo cp $SCRIPT_DIR/usr_local_bin/toggle_NAT_80211s.sh /usr/local/bin/
+  sudo cp $SCRIPT_DIR/usr_local_bin/gateway_serve_DNS.sh /usr/local/bin/
   sudo cp $SCRIPT_DIR/config/halow_80211s.conf /usr/local/etc/
   sudo cp $SCRIPT_DIR/config/dnsmasq_DHCP.conf.80211s.disabled /usr/local/etc/
   sudo cp $SCRIPT_DIR/config/netman_unmanaged.conf.80211s.disabled /usr/local/etc/
@@ -59,6 +70,7 @@ if [ ! -f "$SERVICE1" ] || [ ! -f "$SERVICE2" ] ; then
   sudo chmod +x /usr/local/bin/80211s_start.sh
   sudo chmod +x /usr/local/bin/80211s_stop.sh
   sudo chmod +x /usr/local/bin/toggle_NAT_80211s.sh
+  sudo chmod +x /usr/local/bin/gateway_serve_DNS.sh
   sudo systemctl daemon-reload
   echo "done installing 80211s_mesh service!"
 fi

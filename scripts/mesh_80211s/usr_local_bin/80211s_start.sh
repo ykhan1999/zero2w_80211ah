@@ -82,12 +82,16 @@ while true; do
     sleep 1
 done
 
+#Additional settings for gateway mode
+if [[ "$MODE" == "gateway" ]]; then
+  #serve DNS servers over wlan1
+  /usr/local/bin/gateway_serve_DNS.sh
+fi
+
 #Additional settings for client conf
-#if [[ "$MODE" == "client" ]]; then
-#    #todo: wait for connection 192.168.10.1 before trying for DHCP lease
-#    #Get DHCP lease
-#    ip addr flush dev bat0
-#    dhclient -v bat0
-#    #ip routing test
-#    ip route add default via 192.168.10.1 dev bat0 table 10
-#fi
+####Upon failure, these should periodically retry, in case the gateway goes down and comes back up
+if [[ "$MODE" == "client" ]]; then
+  #get DHCP lease
+  dhclient -i wlan1
+  #todo: get and apply DNS settings
+fi
