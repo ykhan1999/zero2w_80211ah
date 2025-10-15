@@ -59,11 +59,10 @@ if [[ "$MODE" == "gateway" ]]; then
     fi
     echo "DHCP server enabled"
 
-    #add static IP
-    ip link set wlan1 down
-    ip addr flush dev wlan1
-    ip addr add 192.168.50.1/24 dev wlan1
-    ip link set wlan1 up
+    #assign static IP and persist
+    cp /usr/local/etc/10-wlan1.network.80211s.disabled /etc/systemd/network/10-wlan1.network
+    systemctl enable systemd-networkd
+    systemctl start systemd-networkd
 
     #create a flag so that the system knows gateway mode is on
     echo "gateway=active" > /usr/local/etc/80211s_gateway_status.txt
