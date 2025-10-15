@@ -63,7 +63,7 @@ if [ ! -f "$SERVICE1" ] || [ ! -f "$SERVICE2" ] ; then
   echo "done installing 80211s_mesh service!"
 fi
 
-#6. Are we keeping NetworkManager from touching the batman interface?
+#6. Are we keeping NetworkManager from touching the interface?
 
 CONF="/etc/NetworkManager/conf.d/unmanaged.conf"
 LINE="unmanaged-devices=interface-name:wlan1"

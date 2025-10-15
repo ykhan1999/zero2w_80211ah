@@ -1,1 +1,1 @@
-sudo systemctl enable --now batman_mesh_gateway.service
+sudo systemctl enable --now 80211s_gateway.service
