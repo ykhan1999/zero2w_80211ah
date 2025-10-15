@@ -90,7 +90,18 @@ fi
 #Additional settings for client conf
 ####Upon failure, these should periodically retry, in case the gateway goes down and comes back up
 if [[ "$MODE" == "client" ]]; then
-  #get DHCP lease
-  dhclient -i wlan1
-  #todo: get and apply DNS settings
+  while true; do
+      sleep 60
+      #get DHCP lease
+      dhclient -i wlan1
+      #get and apply DNS settings
+      HOST="192.168.50.1"
+      PORT=8080
+      REMOTE_FILE="nameservers.conf"
+      URL="http://${B_HOST}:${PORT}/${REMOTE_FILE}"
+      wget $URL --output-document=/tmp/dns_hosts_dl.txt
+      if grep -qE '^nameserver[[:space:]]+([0-9]{1,3}\.){3}[0-9]{1,3}$' /tmp/dns_hosts_dl.txt; then
+      cp /tmp/dns_hosts_dl.txt /etc/resolv.conf
+      fi
+  done
 fi
