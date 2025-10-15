@@ -1,0 +1,14 @@
+[Unit]
+Description=Start 80211ah mesh mode (using 80211s)
+After=network.target start_morse.service dnsmasq.service
+
+[Service]
+Type=oneshot
+RemainAfterExit=yes
+ExecStart=/usr/local/bin/80211s_start.sh --gateway
+ExecStopPost=/usr/local/bin/80211s_stop.sh
+Restart=on-failure
+User=root
+
+[Install]
+WantedBy=multi-user.target
