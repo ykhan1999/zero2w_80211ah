@@ -43,30 +43,13 @@ ip link set wlan1 up
 #cleanup old instance of wpa_supplicant if present
 rm -r /var/run/wpa_supplicant_s1g/wlan1 || true
 
-#GATEWAY MODE: NAT FORWARD
+#GATEWAY MODE: NAT FORWARD & dnsmasq
 if [[ "$MODE" == "gateway" ]]; then
-    #Gateway mode: Enable NAT forwarding
+    ##Gateway mode: Enable NAT forwarding
     /usr/local/bin/toggle_NAT_80211s.sh --on
-fi
 
-#start wpa_supplicant
-wpa_supplicant_s1g -D nl80211 -i wlan1 -c /usr/local/etc/halow_80211s.conf -B
-
-#wait for bringup
-while true; do
-    STATUS=$(wpa_cli_s1g -i wlan1 status 2>/dev/null | grep "wpa_state=COMPLETED")
-    if [[ -n "$STATUS" ]]; then
-        echo "80211s brought up on wlan1"
-        break
-    fi
-    sleep 1
-done
-
-#Additional settings for gateway conf
-if [[ "$MODE" == "gateway" ]]; then
-    #Start DHCP server
+    ##Start DHCP server
     cp /usr/local/etc/dnsmasq_DHCP.conf.80211s.disabled /etc/dnsmasq.d/lan-wlan1.conf
-
     #restart dnsmasq if active, if inactive then start
     enabled="$(systemctl is-enabled dnsmasq)"
     if [[ "$enabled" != "enabled" ]]; then
@@ -85,6 +68,19 @@ if [[ "$MODE" == "gateway" ]]; then
     #create a flag so that the system knows gateway mode is on
     echo "gateway=active" > /usr/local/etc/80211s_gateway_status.txt
 fi
+
+#start wpa_supplicant
+wpa_supplicant_s1g -D nl80211 -i wlan1 -c /usr/local/etc/halow_80211s.conf -B
+
+#wait for bringup
+while true; do
+    STATUS=$(wpa_cli_s1g -i wlan1 status 2>/dev/null | grep "wpa_state=COMPLETED")
+    if [[ -n "$STATUS" ]]; then
+        echo "80211s brought up on wlan1"
+        break
+    fi
+    sleep 1
+done
 
 #Additional settings for client conf
 #if [[ "$MODE" == "client" ]]; then
