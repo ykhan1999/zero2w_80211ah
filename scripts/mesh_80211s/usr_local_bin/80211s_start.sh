@@ -56,7 +56,7 @@ wpa_supplicant_s1g -D nl80211 -i wlan1 -c /usr/local/etc/halow_80211s.conf -B
 while true; do
     STATUS=$(wpa_cli_s1g -i wlan1 status 2>/dev/null | grep "wpa_state=COMPLETED")
     if [[ -n "$STATUS" ]]; then
-        echo "IBSS brought up on wlan1"
+        echo "80211s brought up on wlan1"
         break
     fi
     sleep 1
