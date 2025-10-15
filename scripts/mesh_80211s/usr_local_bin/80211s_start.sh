@@ -45,7 +45,10 @@ rm -r /var/run/wpa_supplicant_s1g/wlan1 || true
 
 #GATEWAY MODE: NAT FORWARD & dnsmasq
 if [[ "$MODE" == "gateway" ]]; then
-    ##Gateway mode: Enable NAT forwarding
+    #create a flag telling the system gateway mode is on
+    echo "gateway=active" > /usr/local/etc/80211s_gateway_status.txt
+
+    #Enable NAT forwarding
     /usr/local/bin/toggle_NAT_80211s.sh --on
 
     ##Start DHCP server
@@ -63,9 +66,6 @@ if [[ "$MODE" == "gateway" ]]; then
     cp /usr/local/etc/10-wlan1.network.80211s.disabled /etc/systemd/network/10-wlan1.network
     systemctl enable systemd-networkd
     systemctl start systemd-networkd
-
-    #create a flag so that the system knows gateway mode is on
-    echo "gateway=active" > /usr/local/etc/80211s_gateway_status.txt
 fi
 
 #start wpa_supplicant

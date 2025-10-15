@@ -8,10 +8,12 @@ pkill -f 'wpa_supplicant_s1g'
 #deactivate NAT forwarding
 FILE="/usr/local/etc/80211s_gateway_status.txt"
 if [[ -f "$FILE" ]] && grep -q "gateway=active" "$FILE"; then
+    #stop serving DNS names
+    pkill -f "python3 -m http.server $PORT" 2>/dev/null
+
     #disable NAT forwarding
     echo "Gateway is active. Turning off NAT forwarding and DHCP server..."
     /usr/local/bin/toggle_NAT_80211s.sh --off
-    rm -r /usr/local/etc/80211s_gateway_status.txt
 
     #turn off DHCP
     echo "disabling DHCP server..."
@@ -23,6 +25,9 @@ if [[ -f "$FILE" ]] && grep -q "gateway=active" "$FILE"; then
     rm -r /etc/systemd/network/10-wlan1.network
     systemctl stop systemd-networkd
     systemctl disable systemd-networkd
+
+    #disable gateway flag
+    rm -r /usr/local/etc/80211s_gateway_status.txt
 fi
 
 #flush current IP
