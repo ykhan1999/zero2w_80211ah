@@ -46,8 +46,8 @@ SERVICE2="/etc/systemd/system/80211s_mesh_client.service"
 if [ ! -f "$SERVICE1" ] || [ ! -f "$SERVICE2" ] ; then
   echo "First time setup: Installing 80211s_mesh service and script"
   sudo mkdir -p /usr/local/etc
-  sudo cp $SCRIPT_DIR/services/80211s_mesh_gateway.service /etc/systemd/system/
-  sudo cp $SCRIPT_DIR/services/80211s_mesh_client.service /etc/systemd/system/
+  sudo cp $SCRIPT_DIR/services/80211s_gateway.service /etc/systemd/system/
+  sudo cp $SCRIPT_DIR/services/80211s_client.service /etc/systemd/system/
   sudo cp $SCRIPT_DIR/usr_local_bin/80211s_start.sh /usr/local/bin/
   sudo cp $SCRIPT_DIR/usr_local_bin/80211s_stop.sh /usr/local/bin/
   sudo cp $SCRIPT_DIR/usr_local_bin/toggle_NAT_80211s.sh /usr/local/bin/
