@@ -4,4 +4,4 @@ dhcp-range=192.168.50.2,192.168.50.255,12h
 dhcp-option=option:router,192.168.50.1
 dhcp-option=option:dns-server,192.168.50.1
 # Forward to the upstream nameservers that NetworkManager uses for wlan0
-resolv-file=/var/run/NetworkManager/resolv.conf
+# resolv-file=/var/run/NetworkManager/resolv.conf
