@@ -1,6 +1,6 @@
 [Unit]
 Description=Start 80211ah mesh mode (using 80211s)
-After=network.target start_morse.service dnsmasq.service
+After=network.target start_morse.service
 
 [Service]
 Type=simple

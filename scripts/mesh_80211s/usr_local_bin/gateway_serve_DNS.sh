@@ -43,6 +43,6 @@ fi
 pkill -f "python3 -m http.server $PORT" 2>/dev/null || true
 
 # Start HTTP server bound to wlan1 IP in background
-nohup python3 -m http.server "$PORT" --bind "$LAN_IP" --directory "$OUTDIR" >/tmp/nodeB_dns_http.log 2>&1 &
+python3 -m http.server "$PORT" --bind "$LAN_IP" --directory "$OUTDIR"
 
 echo "Serving $OUTFILE at: http://$LAN_IP:$PORT/$(basename "$OUTFILE")"

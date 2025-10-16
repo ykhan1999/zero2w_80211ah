@@ -77,12 +77,15 @@ done
 
 #Additional settings for gateway mode
 if [[ "$MODE" == "gateway" ]]; then
+  #begin serving DNS
+  enabled="$(systemctl is-enabled 80211s_serve_dns)"
+  if [[ "$enabled" != "enabled" ]]; then
+     systemctl enable --now 80211s_serve_dns
+  else
+     systemctl restart 80211s_serve_dns
+  fi
+  #make sure we have an IP
   while true; do
-      #if not serving DNS servers over wlan1, do so
-      if ! pgrep -f "python3 -m http.server $PORT"; then
-        /usr/local/bin/gateway_serve_DNS.sh
-      fi
-      #if we don't have an IP, get one
       if ! ip addr show wlan1 | grep -q "inet "; then
         systemctl restart systemd-networkd
       fi

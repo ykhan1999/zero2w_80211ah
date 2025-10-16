@@ -10,6 +10,8 @@ FILE="/usr/local/etc/80211s_gateway_status.txt"
 if [[ -f "$FILE" ]] && grep -q "gateway=active" "$FILE"; then
     #stop serving DNS names
     pkill -f "python3 -m http.server $PORT" 2>/dev/null
+    systemctl stop 80211s_serve_dns
+    systemctl disable 80211s_serve_dns
 
     #disable NAT forwarding
     echo "Gateway is active. Turning off NAT forwarding and DHCP server..."
