@@ -11,7 +11,6 @@ URL=$(cat "/tmp/url")
 # Download assets from the latest release (filenames must be consistent across releases)
 assets=(
   hostapd.deb
-  morse_cli.deb
   morse_firmware.deb
 )
 
@@ -28,8 +27,15 @@ done
 
 #for some reason, wpa_supplicant_s1g doesn't play nice with package manager
 
+#install deps
+sudo apt-get install -y libnl-route-3-dev
+sudo apt-get install -y libnl-3-dev
+sudo apt-get install -y libnl-genl-3-dev
+sudo apt-get install -y openssl
+
 assets=(
   wpa_supplicant.deb
+  morse_cli.deb
 )
 
 for a in "${assets[@]}"; do
