@@ -97,7 +97,7 @@ fi
 #Check that we have a DHCP lease and get one if not
 if [[ "$MODE" == "client" ]]; then
   #counter var for use later
-  counter=59
+  counter=14
   while true; do
       #get DHCP lease if it exists
       if ! ip addr show wlan1 | grep -q "inet "; then
@@ -105,7 +105,7 @@ if [[ "$MODE" == "client" ]]; then
       fi
       #at start and every minute, check that our dns servers are correct, and update if not
       counter=$(($counter + 1))
-      if [[ $counter -ge 60 ]]; then
+      if [[ $counter -ge 15 ]]; then
           #reset counter
           counter=0
           #init variables to connect to host
