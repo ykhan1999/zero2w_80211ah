@@ -3,8 +3,7 @@ Description=Start 80211ah mesh mode (80211s protocol)
 After=network.target start_morse.service dnsmasq.service
 
 [Service]
-Type=oneshot
-RemainAfterExit=yes
+Type=simple
 ExecStart=/usr/local/bin/80211s_start.sh --client
 ExecStopPost=/usr/local/bin/80211s_stop.sh
 Restart=on-failure

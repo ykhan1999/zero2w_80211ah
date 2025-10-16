@@ -16,16 +16,6 @@ if ! dpkg -s "$PKG" >/dev/null 2>&1; then
   echo "$PKG installed!"
 fi
 
-#1. Is dnsmasq installed?
-PKG="dnsmasq"
-
-if ! dpkg -s "$PKG" >/dev/null 2>&1; then
-  echo "First time setup: installing $PKG now..."
-  sudo apt-get update -y
-  sudo apt-get install -y "$PKG"
-  echo "$PKG installed!"
-fi
-
 #2. Is DHCP client installed?
 PKG="isc-dhcp-client"
 
@@ -63,7 +53,6 @@ if [ ! -f "$SERVICE1" ] || [ ! -f "$SERVICE2" ] ; then
   sudo cp $SCRIPT_DIR/usr_local_bin/toggle_NAT_80211s.sh /usr/local/bin/
   sudo cp $SCRIPT_DIR/usr_local_bin/gateway_serve_DNS.sh /usr/local/bin/
   sudo cp $SCRIPT_DIR/config/halow_80211s.conf /usr/local/etc/
-  sudo cp $SCRIPT_DIR/config/dnsmasq_DHCP.conf.80211s.disabled /usr/local/etc/
   sudo cp $SCRIPT_DIR/config/netman_unmanaged.conf.80211s.disabled /usr/local/etc/
   sudo cp $SCRIPT_DIR/config/nftables_forward.conf.80211s.disabled /usr/local/etc/
   sudo cp $SCRIPT_DIR/config/nftables_noforward.conf.80211s.disabled /usr/local/etc/
