@@ -43,7 +43,7 @@ ip link set wlan1 up
 #cleanup old instance of wpa_supplicant if present
 rm -r /var/run/wpa_supplicant_s1g/wlan1 || true
 
-#GATEWAY MODE: NAT FORWARD & dnsmasq
+#GATEWAY MODE: NAT FORWARD, DHCP, and static IP
 if [[ "$MODE" == "gateway" ]]; then
     #create a flag telling the system gateway mode is on
     echo "gateway=active" > /usr/local/etc/80211s_gateway_status.txt
