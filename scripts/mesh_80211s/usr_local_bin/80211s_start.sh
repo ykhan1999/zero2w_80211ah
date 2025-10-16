@@ -77,8 +77,17 @@ done
 
 #Additional settings for gateway mode
 if [[ "$MODE" == "gateway" ]]; then
-  #serve DNS servers over wlan1
-  /usr/local/bin/gateway_serve_DNS.sh
+  while true; do
+      #if not serving DNS servers over wlan1, do so
+      if ! pgrep -f "python3 -m http.server $PORT"; then
+        /usr/local/bin/gateway_serve_DNS.sh
+      fi
+      #if we don't have an IP, get one
+      if ! ip addr show wlan1 | grep -q "inet "; then
+        systemctl restart systemd-networkd
+      fi
+      sleep 1
+  done
 fi
 
 #Additional settings for client conf
@@ -87,7 +96,6 @@ if [[ "$MODE" == "client" ]]; then
   #counter var for use later
   counter=59
   while true; do
-      sleep 1
       #get DHCP lease if it exists
       if ! ip addr show wlan1 | grep -q "inet "; then
           dhclient -i wlan1 || true
@@ -112,5 +120,6 @@ if [[ "$MODE" == "client" ]]; then
               cp /tmp/dns_hosts_dl.txt /etc/resolv.conf
           fi
       fi
+      sleep 1
   done
 fi
