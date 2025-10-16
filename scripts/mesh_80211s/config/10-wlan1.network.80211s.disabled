@@ -8,5 +8,5 @@ DHCPServer=true
 ConfigureWithoutCarrier=yes
 
 [DHCPServer]
-PoolOffset=100
+PoolOffset=50
 PoolSize=100
