@@ -40,6 +40,8 @@ make O="$O" INSTALL_MOD_PATH="$O/stage" modules_install
 apt install wget
 wget https://github.com/MorseMicro/morse_driver/archive/refs/tags/1.16.4.tar.gz
 tar -xzvf 1.16.4.tar.gz
+rm 1.16.4.tar.gz
+
 cd morse_driver-1.16.4/mmrc-submodule
 rm -r *
 wget https://github.com/MorseMicro/mm_rate_control/archive/cf45ca7520663b91ba1f57b5e04542d17aa226a3.zip
@@ -70,6 +72,7 @@ make \
 
 wget https://github.com/MorseMicro/morse_cli/archive/refs/tags/1.16.4.tar.gz
 tar -xzvf 1.16.4.tar.gz
+rm 1.16.4.tar.gz
 
 sudo apt update
 sudo apt install -y build-essential git pkg-config ccache
