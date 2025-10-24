@@ -40,6 +40,8 @@ make O="$O" INSTALL_MOD_PATH="$O/stage" modules_install
 apt install wget
 wget https://github.com/MorseMicro/morse_driver/archive/refs/tags/1.16.4.tar.gz
 tar -xzvf 1.16.4.tar.gz
+rm 1.16.4.tar.gz
+
 cd morse_driver-1.16.4/mmrc-submodule
 rm -r *
 wget https://github.com/MorseMicro/mm_rate_control/archive/cf45ca7520663b91ba1f57b5e04542d17aa226a3.zip
@@ -70,6 +72,7 @@ make \
 
 wget https://github.com/MorseMicro/morse_cli/archive/refs/tags/1.16.4.tar.gz
 tar -xzvf 1.16.4.tar.gz
+rm 1.16.4.tar.gz
 
 sudo apt update
 sudo apt install -y build-essential git pkg-config ccache
@@ -84,6 +87,7 @@ sudo make CONFIG_MORSE_TRANS_NL80211=1
 # hostapd
 # from the pi
 
+cd ..
 wget https://github.com/MorseMicro/hostap/archive/refs/tags/1.16.4.tar.gz
 tar -xzvf 1.16.4.tar.gz.1
 cd hostap-1.16.4
@@ -93,7 +97,11 @@ sudo apt update
 sudo apt install -y \
   build-essential pkg-config \
   libnl-3-dev libnl-genl-3-dev \
-  libssl-dev
+  libssl-dev build-essential pkg-config \
+  libssl-dev libnl-3-dev libnl-genl-3-dev libnl-route-3-dev
+
+##NOTE!! On package configuration application, in the Daemons using outdated
+##       libraries dialog, select <OK>
 
 export STAGING_DIR="$HOME/stage/hostapd-rel_1_16_4_2025_Sep_18"
 mkdir -p "$STAGING_DIR"
@@ -120,17 +128,21 @@ sudo apt install -y \
   libssl-dev \
   libdbus-1-dev
 
+##NOTE!! On package configuration application, in the Daemons using outdated
+##       libraries dialog, select <OK>
+
 cd ~/hostap-1.16.4/wpa_supplicant
 cp defconfig .config
 #Remove -werror cflag
 cd ..
 make -C wpa_supplicant clean
 
-CFLAGS="$(pkg-config --cflags libnl-3.0 libnl-genl-3.0 openssl)" \
+CFLAGS="$(pkg-config --cflags libnl-3.0 libnl-genl-3.0 libnl-route-3.0 openssl)" \
+LDFLAGS="$(pkg-config --libs libnl-3.0 libnl-genl-3.0 libnl-route-3.0 openssl)" \
 LIBS="$(pkg-config --libs   libnl-3.0 libnl-genl-3.0 openssl) -lm -lpthread" \
 BINDIR=/usr/sbin \
 MORSE_VERSION=rel_1_16_4_2025_Sep_18 \
-make -C wpa_supplicant V=1
+make -C wpa_supplicant V=1 EXTRA_CFLAGS="-Wno-deprecated-declarations"
 
 export STAGING_DIR="$HOME/stage/wpasupplicant-rel_1_16_4_2025_Sep_18"
 mkdir -p "$STAGING_DIR"
@@ -139,5 +151,9 @@ cd wpa_supplicant
 install -D wpa_supplicant_s1g "$STAGING_DIR/usr/sbin/wpa_supplicant_s1g"
 install -D wpa_cli_s1g        "$STAGING_DIR/usr/sbin/wpa_cli_s1g"
 install -D wpa_passphrase_s1g "$STAGING_DIR/usr/sbin/wpa_passphrase_s1g"
+install -D wpa_supplicant_s1g   "$STAGING_DIR/usr/sbin/wpa_supplicant"
+install -D wpa_cli_s1g          "$STAGING_DIR/usr/sbin/wpa_cli"
+install -D wpa_passphrase_s1g   "$STAGING_DIR/usr/sbin/wpa_passphrase"
 
-DESTDIR="$STAGING_DIR" BINDIR=/usr/sbin sudo make -C wpa_supplicant install
+##NOTE!! The above effectively installs, this is not needed
+# DESTDIR="$STAGING_DIR" BINDIR=/usr/sbin sudo make -C wpa_supplicant install
