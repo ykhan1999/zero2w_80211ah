@@ -8,10 +8,14 @@ A tested and working framework to add 802.11ah (WiFi HaLow) support to the Raspb
 ### Currently active
 * Scripts to quickly install kernel modules & drivers for AP and STA (client) support 
 * Easy AP mode setup with static IP and NAT forwarding --> Allows users to connect to AP's HaLow network and forward traffic through the AP's 2.4 GHz link
+* Easy mesh mode (802.11s)
+	* Gateway mode - essentially acts as an AP, with NAT forwarding from the connected 2.4GHz through the HaLow network
+        * Client mode - Can access resources on Gateway's 2.4Ghz network
 
 ### TBD
 
-* (Easy STA mode setup with NAT forwarding --> Allow user to connect to STA's 2.4 GHz network and forward traffic through the HaLow link
+* Mesh mode - add NAT forwarding from 2.4Ghz to HaLow on client
+* Easy STA mode setup with NAT forwarding --> Allow user to connect to STA's 2.4 GHz network and forward traffic through the HaLow link
 * Custom, open-source HAT for easy interfacing between Zero 2W and HT-HC01P
 * Web GUI and iOS/Android app with...
 	* Easy configuration wizard & reset options
@@ -19,7 +23,6 @@ A tested and working framework to add 802.11ah (WiFi HaLow) support to the Raspb
 	* Stats monitoring
 	* Web terminal for direct CLI access
 * Add support for SDIO and other MM6108-based chips
-* Add watchdog to restart if unexpected errors occur
 
 ## Quick start guide
 
@@ -76,6 +79,7 @@ First, run the configuration script:
 ```bash
 ./zero2w_80211ah/scripts/AP_mode/config_AP.sh
 ```
+This only needs to be done once.
 
 ### Turn on AP with NAT forwarding to wlan0 (the 2.4GHz network)
 
@@ -88,6 +92,34 @@ After running the command, you should be able to connect a HaLow STA to your AP 
 ### Turn off AP and NAT forwarding
 ```bash
 ./zero2w_80211ah/scripts/AP_mode/stop_AP.sh
+```
+
+## Mesh mode
+
+Currently only supports 802.11s over IBSS. First, run the configuration script:
+```bash
+./zero2w_80211ah/scripts/mesh_80211s/config_mesh.sh
+```
+This only needs to be done once.
+
+### Enable gateway mode with NAT forwarding
+
+```bash
+./zero2w_80211ah/scripts/mesh_80211s/enable_mesh_gateway.sh
+```
+Should function similarly to the AP mode described above.
+
+### Enable client mode
+
+```bash
+./zero2w_80211ah/scripts/mesh_80211s/enable_mesh_client.sh
+```
+Allows access of upstream 2.4GHz network via gateway through HaLow mesh link.
+
+### Disable
+
+```bash
+./zero2w_80211ah/scripts/mesh_80211s/disable_mesh.sh
 ```
 
 ## STA mode
