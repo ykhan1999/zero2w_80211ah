@@ -11,7 +11,6 @@ URL=$(cat "/tmp/url")
 # Download assets from the latest release (filenames must be consistent across releases)
 assets=(
   hostapd.deb
-  morse_firmware.deb
 )
 
 for a in "${assets[@]}"; do
@@ -25,7 +24,7 @@ for a in "${assets[@]}"; do
   sudo apt install -y ./${a}
 done
 
-#for some reason, wpa_supplicant_s1g doesn't play nice with package manager
+#for some reason, wpa_supplicant_s1g and morse_firmware don't play nice with package manager
 
 #install deps
 sudo apt-get install -y libnl-route-3-dev
@@ -36,6 +35,7 @@ sudo apt-get install -y openssl
 assets=(
   wpa_supplicant.deb
   morse_cli.deb
+  morse_firmware.deb
 )
 
 for a in "${assets[@]}"; do
