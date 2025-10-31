@@ -24,9 +24,26 @@ if [[ -f "$FILE" ]] && grep -q "gateway=active" "$FILE"; then
 
     #disable gateway flag
     rm -r /usr/local/etc/80211s_gateway_status.txt
+else
+###for client mode
+    #disable NAT forwarding
+    /usr/local/bin/toggle_NAT_80211ac.sh --off
+
+    #remove static IP and DHCP
+    rm -r /etc/systemd/network/10-wlan0.network
+    systemctl stop systemd-networkd
+    systemctl disable systemd-networkd
+
+    #give networkmanager control again of wlan0
+    cp /usr/local/etc/netman_unmanaged.conf.80211s.disabled /etc/NetworkManager/conf.d/unmanaged.conf
+    systemctl restart NetworkManager
 fi
 
 #flush current IP
 ip link set wlan1 down
 ip addr flush dev wlan1
 ip link set wlan1 up
+
+ip link set wlan0 down
+ip addr flush dev wlan0
+ip link set wlan0 up

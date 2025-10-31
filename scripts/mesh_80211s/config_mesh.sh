@@ -52,15 +52,20 @@ if [ ! -f "$SERVICE1" ] || [ ! -f "$SERVICE2" ] ; then
   sudo cp $SCRIPT_DIR/usr_local_bin/80211s_start.sh /usr/local/bin/
   sudo cp $SCRIPT_DIR/usr_local_bin/80211s_stop.sh /usr/local/bin/
   sudo cp $SCRIPT_DIR/usr_local_bin/toggle_NAT_80211s.sh /usr/local/bin/
+  sudo cp $SCRIPT_DIR/usr_local_bin/toggle_NAT_80211ac.sh /usr/local/bin/
   sudo cp $SCRIPT_DIR/usr_local_bin/gateway_serve_DNS.sh /usr/local/bin/
   sudo cp $SCRIPT_DIR/config/halow_80211s.conf /usr/local/etc/
   sudo cp $SCRIPT_DIR/config/netman_unmanaged.conf.80211s.disabled /usr/local/etc/
+  sudo cp $SCRIPT_DIR/config/netman_unmanaged.conf.80211s_ac.disabled /usr/local/etc/
   sudo cp $SCRIPT_DIR/config/nftables_forward.conf.80211s.disabled /usr/local/etc/
+  sudo cp $SCRIPT_DIR/config/nftables_forward.conf.80211ac.disabled /usr/local/etc/
   sudo cp $SCRIPT_DIR/config/nftables_noforward.conf.80211s.disabled /usr/local/etc/
   sudo cp $SCRIPT_DIR/config/10-wlan1.network.80211s.disabled /usr/local/etc/
+  sudo cp $SCRIPT_DIR/config/10-wlan0.network.80211ac.disabled /usr/local/etc/
   sudo chmod +x /usr/local/bin/80211s_start.sh
   sudo chmod +x /usr/local/bin/80211s_stop.sh
   sudo chmod +x /usr/local/bin/toggle_NAT_80211s.sh
+  sudo chmod +x /usr/local/bin/toggle_NAT_80211ac.sh
   sudo chmod +x /usr/local/bin/gateway_serve_DNS.sh
   sudo rm -r /etc/systemd/network/99-default.link
   sudo systemctl daemon-reload
