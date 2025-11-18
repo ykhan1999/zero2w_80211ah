@@ -39,9 +39,57 @@ if [ ! -f "$CONF" ] || ! grep -qx "$LINE" "$CONF"; then
   echo "ipv4 forwarding capability enabled!"
 fi
 
-#4. Is the 80211ah_mesh service installed?
-SERVICE1="/etc/systemd/system/80211s_mesh_gateway.service"
-SERVICE2="/etc/systemd/system/80211s_mesh_client.service"
+#4. Is NetMan being kept from wlan1?
+
+CONF="/etc/NetworkManager/conf.d/unmanaged.conf"
+LINE="unmanaged-devices=interface-name:wlan1"
+
+# create conf file if missing or corrupt
+if [ ! -f "$CONF" ] || ! grep -qx "$LINE" "$CONF"; then
+  echo "Keeping NetworkManager away from wlan1"
+  sudo cp /usr/local/etc/netman_unmanaged.conf.80211s.disabled $CONF
+  sudo systemctl restart NetworkManager
+fi
+
+# ----------- USER CONFIG -------------
+
+#prompt user
+read -rp "Enter HaLow SSID: " SSID
+read -rsp "Enter HaLow password: " PASSWORD
+read -rp "Enter Hotspot SSID: " HSSID
+read -rsp "Enter Hotspot password: " HPASSWORD
+
+#ensure there is input
+if [[ -z "$SSID" || -z "$PASSWORD" || -z "$HSSID" || -z "$HPASSWORD" ]]; then
+    echo "Error: SSID and password cannot be empty."
+    exit 1
+fi
+
+# Escape characters that might break sed
+ESCAPED_SSID=$(printf '%s\n' "$NEW_SSID" | sed 's/[&/\"]/\\&/g')
+ESCAPED_PASS=$(printf '%s\n' "$NEW_PASS" | sed 's/[&/\"]/\\&/g')
+ESCAPED_HSSID=$(printf '%s' "$NEW_HSSID" | sed 's/[&/\"]/\\&/g')
+ESCAPED_HPASS=$(printf '%s' "$NEW_HPASS" | sed 's/[&/\"]/\\&/g')
+
+# Supply the config file with the new HaLow SSID and pw
+CONFIG_FILE=$SCRIPT_DIR/config/halow_80211s.conf
+sed -i \
+    -e "s/ssid=\"[^\"]*\"/ssid=\"$ESCAPED_SSID\"/" \
+    -e "s/sae_password=\"[^\"]*\"/sae_password=\"$ESCAPED_PASS\"/" \
+    "$CONFIG_FILE"
+
+echo "Updated SSID and password in $CONFIG_FILE"
+
+#Supply the 80211s_start file with the new hotspot SSID and pw
+START_FILE=$SCRIPT_DIR/usr_local_bin/80211s_start.sh
+sed -i \
+    -e "s/ssid [^ ]*/ssid $ESCAPED_HSSID/" \
+    -e "s/password \"[^\"]*\"/password \"$ESCAPED_HPASS\"/" \
+    "$START_FILE"
+
+echo "Updated hotspot SSID and password in $START_FILE"
+
+# ----------- Install updated config -------------
 
 if [ ! -f "$SERVICE1" ] || [ ! -f "$SERVICE2" ] ; then
   echo "First time setup: Installing 80211s_mesh service and script"
@@ -52,34 +100,17 @@ if [ ! -f "$SERVICE1" ] || [ ! -f "$SERVICE2" ] ; then
   sudo cp $SCRIPT_DIR/usr_local_bin/80211s_start.sh /usr/local/bin/
   sudo cp $SCRIPT_DIR/usr_local_bin/80211s_stop.sh /usr/local/bin/
   sudo cp $SCRIPT_DIR/usr_local_bin/toggle_NAT_80211s.sh /usr/local/bin/
-  sudo cp $SCRIPT_DIR/usr_local_bin/toggle_NAT_80211ac.sh /usr/local/bin/
   sudo cp $SCRIPT_DIR/usr_local_bin/gateway_serve_DNS.sh /usr/local/bin/
   sudo cp $SCRIPT_DIR/config/halow_80211s.conf /usr/local/etc/
   sudo cp $SCRIPT_DIR/config/netman_unmanaged.conf.80211s.disabled /usr/local/etc/
-  sudo cp $SCRIPT_DIR/config/netman_unmanaged.conf.80211s_ac.disabled /usr/local/etc/
   sudo cp $SCRIPT_DIR/config/nftables_forward.conf.80211s.disabled /usr/local/etc/
-  sudo cp $SCRIPT_DIR/config/nftables_forward.conf.80211ac.disabled /usr/local/etc/
   sudo cp $SCRIPT_DIR/config/nftables_noforward.conf.80211s.disabled /usr/local/etc/
   sudo cp $SCRIPT_DIR/config/10-wlan1.network.80211s.disabled /usr/local/etc/
-  sudo cp $SCRIPT_DIR/config/10-wlan0.network.80211ac.disabled /usr/local/etc/
   sudo chmod +x /usr/local/bin/80211s_start.sh
   sudo chmod +x /usr/local/bin/80211s_stop.sh
   sudo chmod +x /usr/local/bin/toggle_NAT_80211s.sh
-  sudo chmod +x /usr/local/bin/toggle_NAT_80211ac.sh
   sudo chmod +x /usr/local/bin/gateway_serve_DNS.sh
-  sudo rm -r /etc/systemd/network/99-default.link
+  sudo rm -r /etc/systemd/network/99-default.link 2>/dev/null
   sudo systemctl daemon-reload
   echo "done installing 80211s_mesh service!"
-fi
-
-#5. Are we keeping NetworkManager from touching the interface?
-
-CONF="/etc/NetworkManager/conf.d/unmanaged.conf"
-LINE="unmanaged-devices=interface-name:wlan1"
-
-# create conf file if missing or corrupt
-if [ ! -f "$CONF" ] || ! grep -qx "$LINE" "$CONF"; then
-  echo "Keeping NetworkManager away from wlan1"
-  sudo cp /usr/local/etc/netman_unmanaged.conf.80211s.disabled $CONF
-  sudo systemctl restart NetworkManager
 fi

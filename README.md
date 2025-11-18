@@ -14,15 +14,13 @@ A tested and working framework to add 802.11ah (WiFi HaLow) support to the Raspb
 
 ### TBD
 
-* Mesh mode - add NAT forwarding from 2.4Ghz to HaLow on client
-* Easy STA mode setup with NAT forwarding --> Allow user to connect to STA's 2.4 GHz network and forward traffic through the HaLow link
 * Custom, open-source HAT for easy interfacing between Zero 2W and HT-HC01P
+	* Coming soon! Custom board is currently in testing.
 * Web GUI and iOS/Android app with...
 	* Easy configuration wizard & reset options
 	* Advanced options (channel, bandwidth, tx power, etc.)
 	* Stats monitoring
 	* Web terminal for direct CLI access
-* Add support for SDIO and other MM6108-based chips
 
 ## Quick start guide
 
@@ -73,48 +71,28 @@ git clone https://github.com/ykhan1999/zero2w_80211ah
 ```
 Done! Your module should be brought up now, and you should see the interface "wlan1" when you run ifconfig. 
 
-## AP Mode
-
-First, run the configuration script:
-```bash
-./zero2w_80211ah/scripts/AP_mode/config_AP.sh
-```
-This only needs to be done once.
-
-### Turn on AP with NAT forwarding to wlan0 (the 2.4GHz network)
-
-```bash
-./zero2w_80211ah/scripts/AP_mode/start_AP.sh
-```
-
-After running the command, you should be able to connect a HaLow STA to your AP and access resources on the 2.4GHz network (including the internet).
-
-### Turn off AP and NAT forwarding
-```bash
-./zero2w_80211ah/scripts/AP_mode/stop_AP.sh
-```
-
 ## Mesh mode
 
 Currently only supports 802.11s over IBSS. First, run the configuration script:
 ```bash
 ./zero2w_80211ah/scripts/mesh_80211s/config_mesh.sh
 ```
-This only needs to be done once.
+
+You will be prompted to set up a HaLow SSID and password, and a Hotspot SSID and password. The HaLow SSID and password will be used by both the mesh client and the mesh gateway, whereas the Hotspot SSID and password will be used by the mesh client for the 2.4GHz network.
 
 ### Enable gateway mode with NAT forwarding
 
 ```bash
 ./zero2w_80211ah/scripts/mesh_80211s/enable_mesh_gateway.sh
 ```
-Should function similarly to the AP mode described above.
+Will essentially act as an AP, forwarding traffic from the HaLow network through the 2.4GHz network (ie., the one connected to the internet)
 
 ### Enable client mode
 
 ```bash
 ./zero2w_80211ah/scripts/mesh_80211s/enable_mesh_client.sh
 ```
-Allows access of upstream 2.4GHz network via gateway through HaLow mesh link.
+Acts as a hotspot for the HaLow network, forwarding traffic from the 2.4GHz hotspot through the HaLow network
 
 ### Disable
 
@@ -122,13 +100,13 @@ Allows access of upstream 2.4GHz network via gateway through HaLow mesh link.
 ./zero2w_80211ah/scripts/mesh_80211s/disable_mesh.sh
 ```
 
-## STA mode
-
-TBD, check back for updates
-
 ## Building from source (advanced)
 
 See source_compile_instructions.txt; instructions are provided for compiling the kernel and modules and installing into a staging directory. To install on your device, see zero2w_80211ah/packages as a reference for where to install everything.
+
+## Technical limitations
+
+This software currently only supports the Raspberry Pi Zero 2W and the Heltec HT-HC01P HaLow module. Those interested in seeing additional support are encouraged to contribute to the repo.
 
 ## Acknowledgements
 

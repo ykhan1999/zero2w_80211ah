@@ -95,22 +95,8 @@ fi
 
 #Additional settings for client conf
 if [[ "$MODE" == "client" ]]; then
-  ####host AP on wlan0 and route traffic through wlan1
-  #keep netman away from wlan0
-  cp /usr/local/etc/netman_unmanaged.conf.80211s_ac.disabled /etc/NetworkManager/conf.d/unmanaged.conf
-  systemctl restart NetworkManager
-  #DHCP server on wlan0
-  cp /usr/local/etc/10-wlan0.network.80211ac.disabled /etc/systemd/network/10-wlan0.network
-  #restart or start systemd-networkd
-  enabled="$(systemctl is-enabled systemd-networkd)"
-  if [[ "$enabled" != "enabled" ]]; then
-     systemctl enable --now systemd-networkd
-  else
-     systemctl restart systemd-networkd
-  fi
-  #nat forward
-  /usr/local/bin/toggle_NAT_80211ac.sh --on
-
+  ####host hotspot on wlan0
+  nmcli dev wifi hotspot ifname wlan0 ssid test password "test1234"
   #####DHCP settings for wlan0
   #counter var for use later
   counter=14
