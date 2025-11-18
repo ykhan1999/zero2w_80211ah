@@ -7,10 +7,9 @@ A tested and working framework to add 802.11ah (WiFi HaLow) support to the Raspb
 
 ### Currently active
 * Scripts to quickly install kernel modules & drivers for AP and STA (client) support 
-* Easy AP mode setup with static IP and NAT forwarding --> Allows users to connect to AP's HaLow network and forward traffic through the AP's 2.4 GHz link
 * Easy mesh mode (802.11s)
 	* Gateway mode - essentially acts as an AP, with NAT forwarding from the connected 2.4GHz through the HaLow network
-        * Client mode - Can access resources on Gateway's 2.4Ghz network
+        * Client mode - Can access resources on Gateway's 2.4Ghz network through the HaLow link
 
 ### TBD
 
