@@ -53,6 +53,42 @@ fi
 
 # ----------- USER CONFIG -------------
 
+#init empty default variables
+SSID=""
+PASSWORD=""
+HSSID=""
+HPASSWORD=""
+
+#parse flags
+while [[ $# -gt 0 ]]; do
+    case "$1" in
+        --ssid)
+            SSID="$2"
+            shift 2
+            ;;
+        --password)
+            PASSWORD="$2"
+            shift 2
+            ;;
+        --halow-ssid)
+            HSSID="$2"
+            shift 2
+            ;;
+        --halow-password)
+            HPASSWORD="$2"
+            shift 2
+            ;;
+        -h|--help)
+            echo "Usage: $0 [--ssid NAME] [--password PASS] [--halow-ssid NAME] [--halow-password PASS]"
+            exit 0
+            ;;
+        *)
+            echo "Unknown option: $1"
+            exit 1
+            ;;
+    esac
+done
+
 #prompt user
 read -rp "Enter HaLow SSID: " SSID
 read -rsp "Enter HaLow password: " PASSWORD
@@ -66,10 +102,10 @@ if [[ -z "$SSID" || -z "$PASSWORD" || -z "$HSSID" || -z "$HPASSWORD" ]]; then
 fi
 
 # Escape characters that might break sed
-ESCAPED_SSID=$(printf '%s\n' "$NEW_SSID" | sed 's/[&/\"]/\\&/g')
-ESCAPED_PASS=$(printf '%s\n' "$NEW_PASS" | sed 's/[&/\"]/\\&/g')
-ESCAPED_HSSID=$(printf '%s' "$NEW_HSSID" | sed 's/[&/\"]/\\&/g')
-ESCAPED_HPASS=$(printf '%s' "$NEW_HPASS" | sed 's/[&/\"]/\\&/g')
+ESCAPED_SSID=$(printf '%s\n' "$SSID" | sed 's/[&/\"]/\\&/g')
+ESCAPED_PASS=$(printf '%s\n' "$PASS" | sed 's/[&/\"]/\\&/g')
+ESCAPED_HSSID=$(printf '%s' "$HSSID" | sed 's/[&/\"]/\\&/g')
+ESCAPED_HPASS=$(printf '%s' "$HPASS" | sed 's/[&/\"]/\\&/g')
 
 # Supply the config file with the new HaLow SSID and pw
 CONFIG_FILE=$SCRIPT_DIR/config/halow_80211s.conf
