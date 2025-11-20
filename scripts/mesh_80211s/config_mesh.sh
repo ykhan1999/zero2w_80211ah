@@ -90,16 +90,13 @@ while [[ $# -gt 0 ]]; do
     esac
 done
 
-#prompt user
-read -rp "Enter HaLow SSID: " SSID
-read -rsp "Enter HaLow password: " PASSWORD
-read -rp "Enter Hotspot SSID: " HSSID
-read -rsp "Enter Hotspot password: " HPASSWORD
-
-#ensure there is input
+#prompt user if no input to flags
 if [[ -z "$SSID" || -z "$PASSWORD" || -z "$HSSID" || -z "$HPASSWORD" ]]; then
-    echo "Error: SSID and password cannot be empty."
-    exit 1
+    #prompt user
+    read -rp "Enter HaLow SSID: " SSID
+    read -rsp "Enter HaLow password: " PASSWORD
+    read -rp "Enter Hotspot SSID: " HSSID
+    read -rsp "Enter Hotspot password: " HPASSWORD
 fi
 
 # Escape characters that might break sed
