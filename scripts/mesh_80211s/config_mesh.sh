@@ -62,29 +62,29 @@ HPASSWORD=""
 #parse flags
 while [[ $# -gt 0 ]]; do
     case "$1" in
-        --ssid)
+        --halow-ssid)
             SSID="$2"
             shift 2
             ;;
-        --password)
+        --halow-password)
             PASSWORD="$2"
             shift 2
             ;;
-        --halow-ssid)
+        --hotspot-ssid)
             HSSID="$2"
             shift 2
             ;;
-        --halow-password)
+        --hotspot-password)
             HPASSWORD="$2"
             shift 2
             ;;
         -h|--help)
-            echo "Usage: $0 [--ssid NAME] [--password PASS] [--halow-ssid NAME] [--halow-password PASS]"
+            echo "Usage: $0 [--halow-ssid HALOW_SSID_NAME] [--halow-password HALOW_SSID_PASS] [--hotspot-ssid NAME] [--hotspot-password PASS]"
             exit 0
             ;;
         *)
             echo "Unknown option: $1"
-            echo "Usage: $0 [--ssid NAME] [--password PASS] [--halow-ssid NAME] [--halow-password PASS]"
+            echo "Usage: $0 [--halow-ssid HALOW_SSID_NAME] [--halow-password HALOW_SSID_PASS] [--hotspot-ssid NAME] [--hotspot-password PASS]"
             exit 1
             ;;
     esac
