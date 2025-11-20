@@ -117,7 +117,7 @@ echo "Updated SSID and password in $CONFIG_FILE"
 #Supply the 80211s_start file with the new hotspot SSID and pw
 START_FILE=$SCRIPT_DIR/usr_local_bin/80211s_start.sh
 sed -i \
-    -e "s/ssid \"[^\"]*\"/ssid $ESCAPED_HSSID/" \
+    -e "s/ssid \"[^\"]*\"/ssid \"$ESCAPED_HSSID\"/" \
     -e "s/password \"[^\"]*\"/password \"$ESCAPED_HPASS\"/" \
     "$START_FILE"
 
