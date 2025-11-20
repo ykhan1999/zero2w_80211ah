@@ -84,6 +84,7 @@ while [[ $# -gt 0 ]]; do
             ;;
         *)
             echo "Unknown option: $1"
+            echo "Usage: $0 [--ssid NAME] [--password PASS] [--halow-ssid NAME] [--halow-password PASS]"
             exit 1
             ;;
     esac
