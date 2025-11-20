@@ -101,9 +101,9 @@ fi
 
 # Escape characters that might break sed
 ESCAPED_SSID=$(printf '%s\n' "$SSID" | sed 's/[&/\"]/\\&/g')
-ESCAPED_PASS=$(printf '%s\n' "$PASS" | sed 's/[&/\"]/\\&/g')
+ESCAPED_PASS=$(printf '%s\n' "$PASSWORD" | sed 's/[&/\"]/\\&/g')
 ESCAPED_HSSID=$(printf '%s' "$HSSID" | sed 's/[&/\"]/\\&/g')
-ESCAPED_HPASS=$(printf '%s' "$HPASS" | sed 's/[&/\"]/\\&/g')
+ESCAPED_HPASS=$(printf '%s' "$HPASSWORD" | sed 's/[&/\"]/\\&/g')
 
 # Supply the config file with the new HaLow SSID and pw
 CONFIG_FILE=$SCRIPT_DIR/config/halow_80211s.conf
@@ -117,7 +117,7 @@ echo "Updated SSID and password in $CONFIG_FILE"
 #Supply the 80211s_start file with the new hotspot SSID and pw
 START_FILE=$SCRIPT_DIR/usr_local_bin/80211s_start.sh
 sed -i \
-    -e "s/ssid [^ ]*/ssid $ESCAPED_HSSID/" \
+    -e "s/ssid \"[^\"]*\"/ssid $ESCAPED_HSSID/" \
     -e "s/password \"[^\"]*\"/password \"$ESCAPED_HPASS\"/" \
     "$START_FILE"
 

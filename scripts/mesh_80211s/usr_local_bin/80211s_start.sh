@@ -96,7 +96,7 @@ fi
 #Additional settings for client conf
 if [[ "$MODE" == "client" ]]; then
   ####host hotspot on wlan0
-  nmcli dev wifi hotspot ifname wlan0 ssid test password "test1234"
+  nmcli dev wifi hotspot ifname wlan0 ssid "test" password "test1234"
   #####DHCP settings for wlan0
   #counter var for use later
   counter=14
