@@ -60,7 +60,7 @@ if [[ "$MODE" == "on" ]]; then
 
     if [[ "$ROLE" == "client" ]]; then
     #apply nftables ruleset
-    cp /usr/local/etc/nftables_forward.conf.client.disabled /etc/nftables.conf
+    cp /usr/local/etc/nftables_forward.client.disabled /etc/nftables.conf
 
     #restart nftables if active, if inactive then start
     enabled="$(systemctl is-enabled nftables)"
