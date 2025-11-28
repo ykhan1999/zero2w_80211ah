@@ -128,22 +128,26 @@ echo "Updated hotspot SSID and password in $START_FILE"
 if [ ! -f "$SERVICE1" ] || [ ! -f "$SERVICE2" ] ; then
   echo "First time setup: Installing 80211s_mesh service and script"
   sudo mkdir -p /usr/local/etc
-  sudo cp $SCRIPT_DIR/services/80211s_gateway.service /etc/systemd/system/
-  sudo cp $SCRIPT_DIR/services/80211s_client.service /etc/systemd/system/
-  sudo cp $SCRIPT_DIR/services/80211s_serve_dns.service /etc/systemd/system/
-  sudo cp $SCRIPT_DIR/usr_local_bin/80211s_start.sh /usr/local/bin/
-  sudo cp $SCRIPT_DIR/usr_local_bin/80211s_stop.sh /usr/local/bin/
-  sudo cp $SCRIPT_DIR/usr_local_bin/toggle_NAT_80211s.sh /usr/local/bin/
-  sudo cp $SCRIPT_DIR/usr_local_bin/gateway_serve_DNS.sh /usr/local/bin/
-  sudo cp $SCRIPT_DIR/config/halow_80211s.conf /usr/local/etc/
-  sudo cp $SCRIPT_DIR/config/netman_unmanaged.conf.80211s.disabled /usr/local/etc/
-  sudo cp $SCRIPT_DIR/config/nftables_forward.conf.80211s.disabled /usr/local/etc/
-  sudo cp $SCRIPT_DIR/config/nftables_noforward.conf.80211s.disabled /usr/local/etc/
-  sudo cp $SCRIPT_DIR/config/10-wlan1.network.80211s.disabled /usr/local/etc/
-  sudo chmod +x /usr/local/bin/80211s_start.sh
-  sudo chmod +x /usr/local/bin/80211s_stop.sh
-  sudo chmod +x /usr/local/bin/toggle_NAT_80211s.sh
-  sudo chmod +x /usr/local/bin/gateway_serve_DNS.sh
+  # Copy all systemd services
+  for f in "$SCRIPT_DIR"/services/*; do
+   [ -e "$f" ] || continue
+   sudo cp "$f" /etc/systemd/system/
+  done
+
+  # Copy all scripts to /usr/local/bin and make them executable
+  for f in "$SCRIPT_DIR"/usr_local_bin/*; do
+   [ -e "$f" ] || continue
+   dest="/usr/local/bin/$(basename "$f")"
+   sudo cp "$f" "$dest"
+   sudo chmod +x "$dest"
+  done
+
+  # Copy all config files to /usr/local/etc
+  for f in "$SCRIPT_DIR"/config/*; do
+   [ -e "$f" ] || continue
+   sudo cp "$f" /usr/local/etc/
+  done
+  
   sudo rm -r /etc/systemd/network/99-default.link 2>/dev/null
   sudo systemctl daemon-reload
   echo "done installing 80211s_mesh service!"
