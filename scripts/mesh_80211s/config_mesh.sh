@@ -115,40 +115,38 @@ sed -i \
 echo "Updated SSID and password in $CONFIG_FILE"
 
 #Supply the 80211s_start file with the new hotspot SSID and pw
-START_FILE=$SCRIPT_DIR/usr_local_bin/80211s_start.sh
+CONFIG_FILE=$SCRIPT_DIR/config/2.4_80211.conf
 sed -i \
-    -e "s/ssid \"[^\"]*\"/ssid \"$ESCAPED_HSSID\"/" \
-    -e "s/password \"[^\"]*\"/password \"$ESCAPED_HPASS\"/" \
-    "$START_FILE"
+    -e "s/ssid=\"[^\"]*\"/ssid=\"$ESCAPED_SSID\"/" \
+    -e "s/psk=\"[^\"]*\"/psk=\"$ESCAPED_PASS\"/" \
+    "$CONFIG_FILE"
 
-echo "Updated hotspot SSID and password in $START_FILE"
+echo "Updated SSID and password in $CONFIG_FILE"
 
 # ----------- Install updated config -------------
 
-if [ ! -f "$SERVICE1" ] || [ ! -f "$SERVICE2" ] ; then
-  echo "First time setup: Installing 80211s_mesh service and script"
-  sudo mkdir -p /usr/local/etc
-  # Copy all systemd services
-  for f in "$SCRIPT_DIR"/services/*; do
-   [ -e "$f" ] || continue
-   sudo cp "$f" /etc/systemd/system/
-  done
+echo "Installing 80211s_mesh service and script"
+sudo mkdir -p /usr/local/etc
+# Copy all systemd services
+for f in "$SCRIPT_DIR"/services/*; do
+  [ -e "$f" ] || continue
+  sudo cp "$f" /etc/systemd/system/
+done
 
-  # Copy all scripts to /usr/local/bin and make them executable
-  for f in "$SCRIPT_DIR"/usr_local_bin/*; do
-   [ -e "$f" ] || continue
-   dest="/usr/local/bin/$(basename "$f")"
-   sudo cp "$f" "$dest"
-   sudo chmod +x "$dest"
-  done
+# Copy all scripts to /usr/local/bin and make them executable
+for f in "$SCRIPT_DIR"/usr_local_bin/*; do
+  [ -e "$f" ] || continue
+  dest="/usr/local/bin/$(basename "$f")"
+  sudo cp "$f" "$dest"
+  sudo chmod +x "$dest"
+done
 
-  # Copy all config files to /usr/local/etc
-  for f in "$SCRIPT_DIR"/config/*; do
-   [ -e "$f" ] || continue
-   sudo cp "$f" /usr/local/etc/
-  done
-  
-  sudo rm -r /etc/systemd/network/99-default.link 2>/dev/null
-  sudo systemctl daemon-reload
-  echo "done installing 80211s_mesh service!"
-fi
+# Copy all config files to /usr/local/etc
+for f in "$SCRIPT_DIR"/config/*; do
+  [ -e "$f" ] || continue
+  sudo cp "$f" /usr/local/etc/
+done
+
+sudo rm -r /etc/systemd/network/99-default.link 2>/dev/null || true
+sudo systemctl daemon-reload
+echo "done updating 80211s_mesh service!"

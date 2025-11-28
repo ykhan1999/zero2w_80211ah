@@ -95,8 +95,23 @@ fi
 
 #Additional settings for client conf
 if [[ "$MODE" == "client" ]]; then
-  ####host hotspot on wlan0
-  nmcli dev wifi hotspot ifname wlan0 ssid "test" password "test1234"
+  #####start AP for wlan0
+  #keep netman out of the way
+  systemctl stop NetworkManager.service
+  systemctl disable NetworkManager.service
+  #Start AP on wlan0
+  rm -r /var/run/wpa_supplicant/wlan0 || true
+  wpa_supplicant -D nl80211 -i wlan1 -c /usr/local/etc/2.4_80211.conf -B
+  #enable DHCP server on wlan0
+  cp /usr/local/etc/10-wlan0.network.80211s.disabled /etc/systemd/network/10-wlan0.network
+  #restart or start systemd-networkd
+  enabled="$(systemctl is-enabled systemd-networkd)"
+  if [[ "$enabled" != "enabled" ]]; then
+      systemctl enable --now systemd-networkd
+  else
+      systemctl restart systemd-networkd
+  fi
+
   #####DHCP settings for wlan0
   #counter var for use later
   counter=14

@@ -26,7 +26,16 @@ if [[ -f "$FILE" ]] && grep -q "gateway=active" "$FILE"; then
     rm -r /usr/local/etc/80211s_gateway_status.txt
 else
 ###for client mode
-    #set wlan0 down and restore previous connection
+    #remove DHCP server
+    rm -r /etc/systemd/network/10-wlan0.network
+    systemctl stop systemd-networkd
+    systemctl disable systemd-networkd
+    
+    #stop wpa_supplicant
+    pkill -f "wpa_supplicant"
+
+    #restart netman and restore previous connection
+    sudo systemctl enable --now NetworkManager.service
     nmcli dev down wlan0
     sudo nmcli con up preconfigured
 fi
