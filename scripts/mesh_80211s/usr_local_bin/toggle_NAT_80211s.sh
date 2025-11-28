@@ -45,7 +45,7 @@ fi
 if [[ "$MODE" == "on" ]]; then
   
   #for gateway
-  if [[ "$ROLE" == "gateway"]]; then
+  if [[ "$ROLE" == "gateway" ]]; then
     #apply nftables ruleset
     cp /usr/local/etc/nftables_forward.conf.80211s.disabled /etc/nftables.conf
 
@@ -58,7 +58,7 @@ if [[ "$MODE" == "on" ]]; then
     fi
   fi
 
-    if [[ "$ROLE" == "client"]]; then
+    if [[ "$ROLE" == "client" ]]; then
     #apply nftables ruleset
     cp /usr/local/etc/nftables_forward.conf.client.disabled /etc/nftables.conf
 
