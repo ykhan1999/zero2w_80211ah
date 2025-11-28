@@ -101,7 +101,7 @@ if [[ "$MODE" == "client" ]]; then
   systemctl disable NetworkManager.service
   #Start AP on wlan0
   rm -r /var/run/wpa_supplicant/wlan0 || true
-  wpa_supplicant -D nl80211 -i wlan1 -c /usr/local/etc/2.4_80211.conf -B
+  wpa_supplicant -D nl80211 -i wlan0 -c /usr/local/etc/2.4_80211.conf -B
   #enable DHCP server on wlan0
   cp /usr/local/etc/10-wlan0.network.80211s.disabled /etc/systemd/network/10-wlan0.network
   #restart or start systemd-networkd
