@@ -2,10 +2,8 @@
 
 # Default values
 MODE=""
-WAN=wlan0
-LAN=wlan1
+ROLE=""
 
-# Parse arguments
 while [[ $# -gt 0 ]]; do
   case "$1" in
     --on)
@@ -16,6 +14,14 @@ while [[ $# -gt 0 ]]; do
       MODE="off"
       shift
       ;;
+    --gateway)
+      ROLE="gateway"
+      shift
+      ;;
+    --client)
+      ROLE="client"
+      shift
+      ;;
     *)
       echo "Unknown argument: $1"
       exit 1
@@ -23,28 +29,47 @@ while [[ $# -gt 0 ]]; do
   esac
 done
 
-# Check required args
+# Validate required args
 if [[ -z "$MODE" ]]; then
-  echo "Usage: $0 --on|--off"
+  echo "Usage: $0 --on|--off [--gateway|--client]"
+  exit 1
+fi
+
+# Ensure only one role is chosen
+if [[ "$ROLE" == "gateway" && "$ROLE" == "client" ]]; then
+  echo "Error: cannot specify both --gateway and --client"
   exit 1
 fi
 
 # Turn on NAT forwarding
 if [[ "$MODE" == "on" ]]; then
-  echo "Turning ON forwarding with WAN=$WAN and LAN=$LAN"
+  
+  #for gateway
+  if [[ "$ROLE" == "gateway"]]; then
+    #apply nftables ruleset
+    cp /usr/local/etc/nftables_forward.conf.80211s.disabled /etc/nftables.conf
 
-  #apply nftables ruleset
-  cp /usr/local/etc/nftables_forward.conf.80211s.disabled /etc/nftables.conf
-
-  #restart nftables if active, if inactive then start
-  enabled="$(systemctl is-enabled nftables)"
-  if [[ "$enabled" != "enabled" ]]; then
-     systemctl enable --now nftables
-  else
-     systemctl restart nftables
+    #restart nftables if active, if inactive then start
+    enabled="$(systemctl is-enabled nftables)"
+    if [[ "$enabled" != "enabled" ]]; then
+      systemctl enable --now nftables
+    else
+      systemctl restart nftables
+    fi
   fi
 
-  echo "NAT forwarding ENABLED on ${LAN} -> ${WAN}"
+    if [[ "$ROLE" == "client"]]; then
+    #apply nftables ruleset
+    cp /usr/local/etc/nftables_forward.conf.client.disabled /etc/nftables.conf
+
+    #restart nftables if active, if inactive then start
+    enabled="$(systemctl is-enabled nftables)"
+    if [[ "$enabled" != "enabled" ]]; then
+      systemctl enable --now nftables
+    else
+      systemctl restart nftables
+    fi
+  fi
 
 #Turn off NAT forwarding
 elif [[ "$MODE" == "off" ]]; then

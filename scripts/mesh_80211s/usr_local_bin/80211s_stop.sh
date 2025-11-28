@@ -15,7 +15,7 @@ if [[ -f "$FILE" ]] && grep -q "gateway=active" "$FILE"; then
 
     #disable NAT forwarding
     echo "Gateway is active. Turning off NAT forwarding and DHCP server..."
-    /usr/local/bin/toggle_NAT_80211s.sh --off
+    /usr/local/bin/toggle_NAT_80211s.sh --off --gateway
 
     #remove static IP daemon and DHCP server
     rm -r /etc/systemd/network/10-wlan1.network
@@ -38,6 +38,9 @@ else
     sudo systemctl enable --now NetworkManager.service
     nmcli dev down wlan0
     sudo nmcli con up preconfigured
+
+    #turn off NAT forwarding
+    /usr/local/bin/toggle_NAT_80211s.sh --off --client
 fi
 
 #flush current IP

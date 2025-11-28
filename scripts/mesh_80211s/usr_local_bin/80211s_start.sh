@@ -49,7 +49,7 @@ if [[ "$MODE" == "gateway" ]]; then
     echo "gateway=active" > /usr/local/etc/80211s_gateway_status.txt
 
     #Enable NAT forwarding
-    /usr/local/bin/toggle_NAT_80211s.sh --on
+    /usr/local/bin/toggle_NAT_80211s.sh --on --gateway
 
     #assign persistent DHCP server and static IP
     cp /usr/local/etc/10-wlan1.network.80211s.disabled /etc/systemd/network/10-wlan1.network
@@ -111,6 +111,8 @@ if [[ "$MODE" == "client" ]]; then
   else
       systemctl restart systemd-networkd
   fi
+  #enable NAT forwarding
+  /usr/local/bin/toggle_NAT_80211s.sh --on --client
 
   #####DHCP settings for wlan0
   #counter var for use later
