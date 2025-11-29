@@ -141,6 +141,12 @@ if [[ "$MODE" == "client" ]]; then
           { [[ ! -f /etc/resolv.conf ]] || ! cmp -s /etc/resolv.conf /tmp/dns_hosts_dl.txt; }; then
               cp /tmp/dns_hosts_dl.txt /etc/resolv.conf
           fi
+          #make sure we have an IP
+          if ! ip addr show wlan1 | grep -q "inet "; then
+          systemctl restart systemd-networkd
+         fi
+      sleep 1
+  done
       fi
       sleep 1
   done
