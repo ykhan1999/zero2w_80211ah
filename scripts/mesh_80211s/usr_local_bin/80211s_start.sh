@@ -116,15 +116,21 @@ if [[ "$MODE" == "client" ]]; then
 
   #####DHCP settings for wlan0
   #counter var for use later
-  counter=14
+  counter=59
   while true; do
     #get DHCP lease if it exists
     if ! ip addr show wlan1 | grep -q "inet "; then
         dhclient -i wlan1 || true
     fi
+    #make sure we have an IP for wlan0
+    #make sure we have an IP
+    if ! ip addr show wlan0 | grep -q "inet "; then
+    systemctl restart systemd-networkd
+    fi
+
     #at start and every minute, check that our dns servers are correct, and update if not
     counter=$(($counter + 1))
-    if [[ $counter -ge 15 ]]; then
+    if [[ $counter -ge 60 ]]; then
       #reset counter
       counter=0
       #init variables to connect to host
@@ -141,13 +147,6 @@ if [[ "$MODE" == "client" ]]; then
       { [[ ! -f /etc/resolv.conf ]] || ! cmp -s /etc/resolv.conf /tmp/dns_hosts_dl.txt; }; then
           cp /tmp/dns_hosts_dl.txt /etc/resolv.conf
       fi
-    #make sure we have an IP
-      if ! ip addr show wlan1 | grep -q "inet "; then
-      systemctl restart systemd-networkd
-      fi
-    fi
-    sleep 1
-  done
     fi
     sleep 1
   done
