@@ -123,11 +123,9 @@ if [[ "$MODE" == "client" ]]; then
         dhclient -i wlan1 || true
     fi
     #make sure we have an IP for wlan0
-    #make sure we have an IP
     if ! ip addr show wlan0 | grep -q "inet "; then
     systemctl restart systemd-networkd
     fi
-
     #at start and every minute, check that our dns servers are correct, and update if not
     counter=$(($counter + 1))
     if [[ $counter -ge 60 ]]; then
