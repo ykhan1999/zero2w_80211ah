@@ -118,36 +118,37 @@ if [[ "$MODE" == "client" ]]; then
   #counter var for use later
   counter=14
   while true; do
-      #get DHCP lease if it exists
+    #get DHCP lease if it exists
+    if ! ip addr show wlan1 | grep -q "inet "; then
+        dhclient -i wlan1 || true
+    fi
+    #at start and every minute, check that our dns servers are correct, and update if not
+    counter=$(($counter + 1))
+    if [[ $counter -ge 15 ]]; then
+      #reset counter
+      counter=0
+      #init variables to connect to host
+      HOST="192.168.50.1"
+      PORT=8080
+      REMOTE_FILE="nameservers.conf"
+      URL="http://${HOST}:${PORT}/${REMOTE_FILE}"
+      #get host DNS server file if it exists and we have an IP
+      if ip addr show wlan1 | grep -q "inet "; then
+      wget $URL --output-document=/tmp/dns_hosts_dl.txt || true
+      fi
+      #Does (host file contain a valid nameserver) AND (/etc/resolv.conf doesnt exist OR doesnt match host)
+      if grep -qE '^nameserver[[:space:]]+([0-9]{1,3}\.){3}[0-9]{1,3}$' /tmp/dns_hosts_dl.txt && \
+      { [[ ! -f /etc/resolv.conf ]] || ! cmp -s /etc/resolv.conf /tmp/dns_hosts_dl.txt; }; then
+          cp /tmp/dns_hosts_dl.txt /etc/resolv.conf
+      fi
+    #make sure we have an IP
       if ! ip addr show wlan1 | grep -q "inet "; then
-          dhclient -i wlan1 || true
+      systemctl restart systemd-networkd
       fi
-      #at start and every minute, check that our dns servers are correct, and update if not
-      counter=$(($counter + 1))
-      if [[ $counter -ge 15 ]]; then
-          #reset counter
-          counter=0
-          #init variables to connect to host
-          HOST="192.168.50.1"
-          PORT=8080
-          REMOTE_FILE="nameservers.conf"
-          URL="http://${HOST}:${PORT}/${REMOTE_FILE}"
-          #get host DNS server file if it exists and we have an IP
-          if ip addr show wlan1 | grep -q "inet "; then
-          wget $URL --output-document=/tmp/dns_hosts_dl.txt || true
-          fi
-          #Does (host file contain a valid nameserver) AND (/etc/resolv.conf doesnt exist OR doesnt match host)
-          if grep -qE '^nameserver[[:space:]]+([0-9]{1,3}\.){3}[0-9]{1,3}$' /tmp/dns_hosts_dl.txt && \
-          { [[ ! -f /etc/resolv.conf ]] || ! cmp -s /etc/resolv.conf /tmp/dns_hosts_dl.txt; }; then
-              cp /tmp/dns_hosts_dl.txt /etc/resolv.conf
-          fi
-          #make sure we have an IP
-          if ! ip addr show wlan1 | grep -q "inet "; then
-          systemctl restart systemd-networkd
-         fi
-      sleep 1
+    fi
+    sleep 1
   done
-      fi
-      sleep 1
+    fi
+    sleep 1
   done
 fi
