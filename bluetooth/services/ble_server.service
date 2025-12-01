@@ -1,0 +1,13 @@
+[Unit]
+Description=start ble server
+After=bluetooth.target
+Wants=bluetooth.target
+
+[Service]
+WorkingDirectory=/home/yousefk/dev/zero2w_80211ah/bluetooth/
+ExecStart=python3 ble_server.py
+Type=oneshot
+RemainAfterExit=yes
+
+[Install]
+WantedBy=multi-user.target
