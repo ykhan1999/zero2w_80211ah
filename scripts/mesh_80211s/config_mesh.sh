@@ -39,18 +39,6 @@ if [ ! -f "$CONF" ] || ! grep -qx "$LINE" "$CONF"; then
   echo "ipv4 forwarding capability enabled!"
 fi
 
-#4. Is NetMan being kept from wlan1?
-
-CONF="/etc/NetworkManager/conf.d/unmanaged.conf"
-LINE="unmanaged-devices=interface-name:wlan1"
-
-# create conf file if missing or corrupt
-if [ ! -f "$CONF" ] || ! grep -qx "$LINE" "$CONF"; then
-  echo "Keeping NetworkManager away from wlan1"
-  sudo cp /usr/local/etc/netman_unmanaged.conf.80211s.disabled $CONF
-  sudo systemctl restart NetworkManager
-fi
-
 # ----------- USER CONFIG -------------
 
 #init empty default variables
@@ -147,6 +135,12 @@ for f in "$SCRIPT_DIR"/config/*; do
   sudo cp "$f" /usr/local/etc/
 done
 
+# keep netman away from wlan1
+sudo cp /usr/local/etc/netman_unmanaged.conf.80211s.disabled /etc/NetworkManager/conf.d/unmanaged.conf
+
+# remove default systemd-networkd files
 sudo rm -r /etc/systemd/network/99-default.link 2>/dev/null || true
+
+#reload services if running
 sudo systemctl daemon-reload
 echo "done updating 80211s_mesh service!"
