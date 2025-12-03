@@ -6,20 +6,19 @@ A tested and working framework to add 802.11ah (WiFi HaLow) support to the Raspb
 ## Features
 
 ### Currently active
-* Scripts to quickly install kernel modules & drivers for AP and STA (client) support 
+* Scripts to quickly install kernel modules & drivers for 802.11ah support 
 * Easy mesh mode (802.11s)
-	* Gateway mode - essentially acts as an AP, with NAT forwarding from the connected 2.4GHz through the HaLow network
-        * Client mode - Can access resources on Gateway's 2.4Ghz network through the HaLow link
+	* Gateway mode - essentially acts as an AP, with forwarding from the connected 2.4GHz through the HaLow network
+    * Client mode - Acts as a hotspot, allowing access to resources forwarded from the gateway through the HaLow network
 
 ### TBD
 
 * Custom, open-source HAT for easy interfacing between Zero 2W and HT-HC01P
-	* Coming soon! Custom board is currently in testing.
-* Web GUI and iOS/Android app with...
-	* Easy configuration wizard & reset options
-	* Advanced options (channel, bandwidth, tx power, etc.)
-	* Stats monitoring
-	* Web terminal for direct CLI access
+	* Coming soon! Custom board is currently on the way. Once it's confirmed working, I'll upload the gerber files.
+* Web GUI and iOS/Android app
+	* iOS app in progress - see https://github.com/ykhan1999/zero2w_80211ah_iOS
+
+Note: I do not currently plan on adding AP/STA support right now, because I'd like to focus on bringing the project to a more polished and user-friendly state first. If you would like to add this functionality please feel free to submit a pull request. 
 
 ## Quick start guide
 
@@ -29,8 +28,8 @@ A tested and working framework to add 802.11ah (WiFi HaLow) support to the Raspb
 2. Heltec HT-HC01P or other SPI-based MM6108 board
 
 ### Step 1: Wiring
-Connect the SPI pins to the Raspberry Pi headers per the table below:
-* Notes: If using the HT-HC01P, prototyping the wiring is a lot easier if you use the official debug board. If you decide to use different RPi GPIO pins, you will have to update the device tree overlay accordingly.
+If using the HT-HC01P with the official debug board, connect the pins as follows:
+* Notes: Although the provided scripts should work with any SPI-based board, if you use another board, you will need to wire pins accordingly to the pinout of your board. You will also need to update the device tree overlay files to reflect your new wiring.
 ```
 #SPI interface (GPIO 7-11, only 8-11 used)
 #+----------------+--------------------+----------------------------+------------------------------+
@@ -105,7 +104,7 @@ See source_compile_instructions.txt; instructions are provided for compiling the
 
 ## Technical limitations
 
-This software currently only supports the Raspberry Pi Zero 2W and the Heltec HT-HC01P HaLow module. Those interested in seeing additional support are encouraged to contribute to the repo.
+This software currently only official supports the Raspberry Pi Zero 2W and the Heltec HT-HC01P HaLow module. Those interested in seeing additional support are encouraged to contribute to the repo.
 
 ## Acknowledgements
 
