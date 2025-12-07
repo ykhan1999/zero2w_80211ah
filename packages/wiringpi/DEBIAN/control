@@ -1,8 +1,8 @@
 Package: wiringpi
-Version: $VERSION
+Version: 1.0.0-1
 Section: libraries
 Priority: optional
-Architecture: $ARCH
+Architecture: arm64
 Depends: libc6
 Maintainer: Grazer Computer Club - GC2 <wiringpi@gc2.at>
 Uploaders: Grazer Computer Club - GC2 <wiringpi@gc2.at>
