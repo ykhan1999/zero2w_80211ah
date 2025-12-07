@@ -21,3 +21,6 @@
 [submodule "display/wiringPi"]
 	path = display/wiringPi
 	url = git@github.com:ykhan1999/WiringPi
+[submodule "display/Raspberry-ssd1306"]
+	path = display/Raspberry-ssd1306
+	url = git@github.com:ykhan1999/Raspberry-ssd1306.git
