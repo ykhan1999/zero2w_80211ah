@@ -21,3 +21,6 @@
 [submodule "display/wiringpi"]
     path = display/wiringpi
     url = git@github.com:ykhan1999/WiringPi
+[submodule "display/wiringPi"]
+	path = display/wiringPi
+	url = git@github.com:ykhan1999/WiringPi
