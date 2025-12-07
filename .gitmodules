@@ -18,3 +18,6 @@
 [submodule "drivers/morse_"]
 	path = drivers/morse_
 	url = git@github.com:ykhan1999/morse_cli
+[submodule "display/wiringpi"]
+    path = display/wiringpi
+    url = git@github.com:ykhan1999/WiringPi.git
