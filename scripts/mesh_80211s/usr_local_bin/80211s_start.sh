@@ -48,6 +48,10 @@ if [[ "$MODE" == "gateway" ]]; then
     #create a flag telling the system gateway mode is on
     echo "gateway=active" > /usr/local/etc/80211s_gateway_status.txt
 
+    #If display is enabled, notify user that we are in gateway mode and connecting
+    /usr/local/bin/disp_mode_gw.sh > /dev/null || true
+    /usr/local/bin/disp_mode_connecting.sh > /dev/null || true
+
     #Enable NAT forwarding
     /usr/local/bin/toggle_NAT_80211s.sh --on --gateway
 
@@ -84,11 +88,27 @@ if [[ "$MODE" == "gateway" ]]; then
   else
      systemctl restart 80211s_serve_dns
   fi
-  #make sure we have an IP
+  #make sure we have an IP and show on display whether we do
+  prev_connected=0
   while true; do
       if ! ip addr show wlan1 | grep -q "inet "; then
+        connected=0
         systemctl restart systemd-networkd
+      else
+        connected=1
       fi
+      #update display if needed
+      if [ "$connected" != "$prev_connected" ]; then
+          pkill -f "/usr/local/bin/disp_gateway_connected.sh" || true
+          if [ $connected == "0" ]; then
+              /usr/local/bin/disp_disconnected.sh > /dev/null || true
+          elif [ $connected == "1" ]; then
+              /usr/local/bin/disp_gateway_connected.sh > /dev/null || true &
+          else
+              /usr/local/bin/disp_disconnected.sh > /dev/null || true
+          fi
+      fi
+      prev_connected="$connected"
       sleep 1
   done
 fi
