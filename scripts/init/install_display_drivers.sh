@@ -25,8 +25,8 @@ for a in "${assets[@]}"; do
 done
 
 #add parameters to boot config file for display
-sudo echo "dtoverlay=i2c0" >> /boot/firmware/config.txt
-sudo echo "dtparam=i2c_arm=on" >> /boot/firmware/config.txt
+echo "dtoverlay=i2c0" | sudo tee -a /boot/firmware/config.txt
+echo "dtparam=i2c_arm=on" | sudo tee -a /boot/firmware/config.txt
 
 #copy over binaries to control display
 SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
