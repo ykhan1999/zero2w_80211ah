@@ -1,140 +1,81 @@
-#!/usr/bin/env node
-
-const express = require("express");
-const cors = require("cors");
-const bodyParser = require("body-parser");
-const { execFile } = require("child_process");
-const path = require("path");
+import express from "express";
+import cors from "cors";
+import { spawn } from "child_process";
+import path from "path";
+import { fileURLToPath } from "url";
 
 const app = express();
-const PORT = process.env.PORT || 3001;
-
-// ---------------------------------------------------------------------------
-// Middleware
-// ---------------------------------------------------------------------------
 app.use(cors());
-app.use(bodyParser.json());
+app.use(express.json());
 
-// ---------------------------------------------------------------------------
-// CURRENT CONFIG (in-memory)
-// ---------------------------------------------------------------------------
-let currentConfig = {
-  interface: "wlan1",
-  mode: "ap",             // "ap" | "sta" | "mesh"
-  ssid: "halow_ap",
-  bssid: "",
-  channel: 1,
-  bandwidth: 1,           // MHz: 1, 2, 4, 8, 16
-  country: "US",
-  txPowerDbm: 10,
-  ipv4Mode: "static",     // "static" | "dhcp"
-  ipv4Address: "192.168.50.1",
-  ipv4Netmask: "255.255.255.0",
-  ipv4Gateway: "",
-};
+// --- locate scripts dir ---
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+const SCRIPTS_DIR = path.join(__dirname, "scripts");
 
-// ---------------------------------------------------------------------------
-// FUNCTION TO APPLY CONFIG
-// Replace this with calls into your actual Pi scripts
-// ---------------------------------------------------------------------------
-function applyHalowConfig(config, callback) {
-  // Example wiring — replace with your real scripts
-  const args = [
-    config.interface,
-    config.mode,
-    config.ssid,
-    String(config.channel),
-    String(config.bandwidth),
-    config.country,
-    String(config.txPowerDbm),
-    config.ipv4Mode,
-    config.ipv4Address,
-    config.ipv4Netmask,
-    config.ipv4Gateway,
-  ];
+// --- simple allowlists for options (edit these for your real prompts) ---
+const MODES = new Set(["scan", "connect"]);
+const VERBOSITY = new Set(["quiet", "normal", "debug"]);
 
-  execFile(
-    "/usr/local/bin/configure_halow.sh", // change to your actual script
-    args,
-    { timeout: 30000 },
-    (error, stdout, stderr) => {
-      console.log("configure_halow stdout:", stdout);
-      console.error("configure_halow stderr:", stderr);
+// Map wizard answers -> script args (NO SHELL, NO STRING CONCAT COMMANDS)
+function buildArgsFromAnswers(answers) {
+  const args = [];
 
-      if (error) return callback(error);
-      callback(null);
-    }
-  );
+  // mode
+  if (!MODES.has(answers.mode)) throw new Error("Invalid mode");
+  args.push("--mode", answers.mode);
+
+  // target (example: hostname-ish / ssid-ish)
+  if (typeof answers.target !== "string" || answers.target.length < 1 || answers.target.length > 64) {
+    throw new Error("Invalid target");
+  }
+  // very conservative: allow letters/numbers/underscore/dash/dot/space
+  if (!/^[\w.\- ]+$/.test(answers.target)) throw new Error("Target has invalid characters");
+  args.push("--target", answers.target);
+
+  // verbosity
+  if (!VERBOSITY.has(answers.verbosity)) throw new Error("Invalid verbosity");
+  args.push("--verbosity", answers.verbosity);
+
+  // example toggle
+  if (typeof answers.dryRun !== "boolean") throw new Error("Invalid dryRun");
+  if (answers.dryRun) args.push("--dry-run");
+
+  return args;
 }
 
-// ---------------------------------------------------------------------------
-// REST API
-// ---------------------------------------------------------------------------
+app.post("/api/run", (req, res) => {
+  try {
+    const answers = req.body?.answers ?? {};
+    const args = buildArgsFromAnswers(answers);
 
-// Get current config
-app.get("/api/halow/config", (req, res) => {
-  res.json(currentConfig);
-});
+    // Pick which script to run (also allowlist this if you have multiple)
+    const scriptPath = path.join(SCRIPTS_DIR, "my_script.sh");
 
-// Update + apply config
-app.post("/api/halow/config", (req, res) => {
-  const incoming = req.body || {};
+    // spawn without shell to avoid injection
+    const child = spawn(scriptPath, args, {
+      shell: false,
+      stdio: ["ignore", "pipe", "pipe"]
+    });
 
-  if (!incoming.interface) {
-    return res.status(400).json({ error: "interface is required" });
+    let stdout = "";
+    let stderr = "";
+
+    child.stdout.on("data", (d) => (stdout += d.toString()));
+    child.stderr.on("data", (d) => (stderr += d.toString()));
+
+    child.on("close", (code) => {
+      res.json({ ok: code === 0, code, stdout, stderr, args });
+    });
+
+    child.on("error", (err) => {
+      res.status(500).json({ ok: false, error: err.message });
+    });
+  } catch (e) {
+    res.status(400).json({ ok: false, error: e.message });
   }
-
-  if (!["ap", "sta", "mesh"].includes(incoming.mode)) {
-    return res.status(400).json({ error: "mode must be ap|sta|mesh" });
-  }
-
-  // merge config
-  currentConfig = {
-    ...currentConfig,
-    ...incoming,
-    channel: Number(incoming.channel ?? currentConfig.channel),
-    bandwidth: Number(incoming.bandwidth ?? currentConfig.bandwidth),
-    txPowerDbm: Number(incoming.txPowerDbm ?? currentConfig.txPowerDbm),
-  };
-
-  // apply it
-  applyHalowConfig(currentConfig, (err) => {
-    if (err) {
-      return res.status(500).json({
-        error: "Failed to apply configuration",
-        details: err.message,
-      });
-    }
-    res.json({ ok: true, config: currentConfig });
-  });
 });
 
-// Reapply last config (e.g., after reboot)
-app.post("/api/halow/reapply", (req, res) => {
-  applyHalowConfig(currentConfig, (err) => {
-    if (err) {
-      return res.status(500).json({ error: "Failed to re-apply config" });
-    }
-    res.json({ ok: true, config: currentConfig });
-  });
-});
-
-// ---------------------------------------------------------------------------
-// STATIC FRONTEND SERVING (React build)
-// ---------------------------------------------------------------------------
-
-const distPath = path.join(__dirname, "..", "frontend", "dist");
-app.use(express.static(distPath));
-
-// FINAL FALLBACK: any request not matched above -> index.html
-// NOTE: no path string here, so path-to-regexp is never invoked.
-app.use((req, res) => {
-  res.sendFile(path.join(distPath, "index.html"));
-});
-
-// ---------------------------------------------------------------------------
-// START SERVER
-// ---------------------------------------------------------------------------
-app.listen(PORT, () => {
-  console.log(`HaLow config server listening on port ${PORT}`);
+app.listen(5174, "0.0.0.0", () => {
+  console.log("Backend listening on http://0.0.0.0:5174");
 });

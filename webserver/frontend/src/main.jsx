@@ -1,10 +1,15 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
-import App from "./App";
-import "./style.css";
+import { BrowserRouter } from "react-router-dom";
+import App from "./App.jsx";
+import { WizardProvider } from "./wizard/WizardContext.jsx";
 
 ReactDOM.createRoot(document.getElementById("root")).render(
   <React.StrictMode>
-    <App />
+    <BrowserRouter>
+      <WizardProvider>
+        <App />
+      </WizardProvider>
+    </BrowserRouter>
   </React.StrictMode>
 );
