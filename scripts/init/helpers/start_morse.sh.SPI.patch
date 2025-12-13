@@ -11,6 +11,8 @@ while true; do
     echo "Checking to see if driver loaded..."
     if dmesg --since "15 seconds ago" | grep "Driver loaded with kernel module parameters"; then
         echo "Morse driver loaded!"
+        pkill -f "/usr/local/bin/disp_boot.sh" || true
+        /usr/local/bin/module_loaded.sh &
         break 
     else
        echo "Morse driver failed to load, trying again..."

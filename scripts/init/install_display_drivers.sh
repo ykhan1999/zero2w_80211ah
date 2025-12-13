@@ -37,4 +37,8 @@ SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
 sudo cp -r ${SCRIPT_DIR}/../../display/fontx /usr/local/bin
 sudo cp ${SCRIPT_DIR}/../../display/scripts/* /usr/local/bin
 sudo chmod +x /usr/local/bin/disp*
+
+#copy system services and enable them
+sudo cp ${SCRIPT_DIR}/../../display/services/* /etc/systemd/system/
+sudo systemctl enable --now boot_display.service
 sudo reboot

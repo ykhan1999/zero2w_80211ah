@@ -1,0 +1,12 @@
+[Unit]
+Description=Initialize display
+After=systemd-modules-load.service
+
+[Service]
+Type=oneshot
+ExecStart=/usr/local/bin/disp_boot.sh
+User=root
+RemainAfterExit=yes
+
+[Install]
+WantedBy=multi-user.target
