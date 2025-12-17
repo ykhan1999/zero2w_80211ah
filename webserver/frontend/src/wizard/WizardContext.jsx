@@ -9,6 +9,7 @@ export function WizardProvider({ children }) {
     regpw: "",
     halowssid: "",
     halowpw: "",
+    optim: "distance"
   });
 
   const value = useMemo(() => ({ answers, setAnswers }), [answers]);

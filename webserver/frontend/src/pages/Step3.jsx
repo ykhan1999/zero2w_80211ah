@@ -36,8 +36,8 @@ export default function Step3() {
 
       <div style={{ marginTop: 20, display: "flex", gap: 8 }}>
         <button onClick={() => nav("/step/2")}>Back</button>
-        <button disabled={!canContinueSSID & !canContinuePW} onClick={() => nav("/review")}>
-          Review
+        <button disabled={!canContinueSSID || !canContinuePW} onClick={() => nav("/step/3")}>
+          Next
         </button>
       </div>
     </div>

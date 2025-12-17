@@ -15,6 +15,7 @@ const SCRIPTS_DIR = path.join(__dirname, "scripts");
 
 // --- simple allowlists for options ---
 const MODES = new Set(["gateway", "client"]);
+const OPTIM = new Set(["speed", "distance"]);
 
 // Map wizard answers -> script args (NO SHELL, NO STRING CONCAT COMMANDS)
 function buildArgsFromAnswers(answers) {
@@ -23,6 +24,10 @@ function buildArgsFromAnswers(answers) {
   // mode
   if (!MODES.has(answers.mode)) throw new Error("Invalid mode");
   args.push("--mode", answers.mode);
+
+  // optim
+  if (!OPTIM.has(answers.optim)) throw new Error("Invalid optimization");
+  args.push("--optim", answers.optim);
 
   // regular SSID
   if (typeof answers.regssid !== "string" || answers.regssid.length < 1 || answers.regssid.length > 64) {
