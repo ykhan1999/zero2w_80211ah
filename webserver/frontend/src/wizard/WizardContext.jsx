@@ -4,10 +4,11 @@ const WizardCtx = createContext(null);
 
 export function WizardProvider({ children }) {
   const [answers, setAnswers] = useState({
-    mode: "scan",
-    target: "",
-    verbosity: "normal",
-    dryRun: false
+    mode: "gateway",
+    regssid: "",
+    regpw: "",
+    halowssid: "",
+    halowpw: "",
   });
 
   const value = useMemo(() => ({ answers, setAnswers }), [answers]);

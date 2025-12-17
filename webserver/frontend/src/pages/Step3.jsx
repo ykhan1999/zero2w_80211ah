@@ -18,7 +18,7 @@ export default function Step3() {
           HaLow Name (SSID):&nbsp;
           <input
             value={answers.halowssid}
-            onChange={(e) => setAnswers((a) => ({ ...a, target: e.halowssid.value }))}
+            onChange={(e) => setAnswers((a) => ({ ...a, halowssid: e.halowssid.value }))}
             placeholder="Choose HaLow network name"
           />
         </label>
@@ -27,7 +27,7 @@ export default function Step3() {
           HaLow Password:&nbsp;
           <input
             value={answers.halowpw}
-            onChange={(e) => setAnswers((a) => ({ ...a, target: e.halowpw.value }))}
+            onChange={(e) => setAnswers((a) => ({ ...a, halowpw: e.halowpw.value }))}
             placeholder="Cannot be blank"
           />
         </label>
