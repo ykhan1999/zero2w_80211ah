@@ -8,7 +8,7 @@ export default function Step1() {
 
   return (
     <div>
-      <h2>Step 1: Choose optimization</h2>
+      <h2>Step 4: Choose optimization</h2>
 
       <label>
         Mode:&nbsp;

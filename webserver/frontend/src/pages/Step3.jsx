@@ -11,7 +11,7 @@ export default function Step3() {
 
   return (
     <div>
-      <h2>Step 2: Enter the HaLow network name and password</h2>
+      <h2>Step 3: Enter the HaLow network name and password</h2>
 
       <div style={{ display: "grid", gap: 12 }}>
         <label>
@@ -36,7 +36,7 @@ export default function Step3() {
 
       <div style={{ marginTop: 20, display: "flex", gap: 8 }}>
         <button onClick={() => nav("/step/2")}>Back</button>
-        <button disabled={!canContinueSSID || !canContinuePW} onClick={() => nav("/step/3")}>
+        <button disabled={!canContinueSSID || !canContinuePW} onClick={() => nav("/step/4")}>
           Next
         </button>
       </div>
