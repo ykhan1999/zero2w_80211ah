@@ -17,7 +17,7 @@ export default function Step2() {
           WiFi Name (SSID):&nbsp;
           <input
             value={answers.regssid}
-            onChange={(e) => setAnswers((a) => ({ ...a, regssid: e.regssid.value }))}
+            onChange={(e) => setAnswers((a) => ({ ...a, regssid: e.target.value }))}
             placeholder="Your WiFi network name"
           />
         </label>
@@ -26,7 +26,7 @@ export default function Step2() {
           WiFi Password:&nbsp;
           <input
             value={answers.regpw}
-            onChange={(e) => setAnswers((a) => ({ ...a, regpw: e.regpw.value }))}
+            onChange={(e) => setAnswers((a) => ({ ...a, regpw: e.target.value }))}
             placeholder="Leave blank if none"
           />
         </label>
@@ -36,7 +36,7 @@ export default function Step2() {
       <div style={{ marginTop: 20, display: "flex", gap: 8 }}>
         <button onClick={() => nav("/step/1")}>Back</button>
         <button disabled={!canContinue} onClick={() => nav("/step/3")}>
-          Review
+          Next
         </button>
       </div>
     </div>
