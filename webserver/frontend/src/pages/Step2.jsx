@@ -6,47 +6,36 @@ export default function Step2() {
   const nav = useNavigate();
   const { answers, setAnswers } = useWizard();
 
-  const canContinue = answers.target.trim().length > 0;
+  const canContinue = answers.regssid.trim().length > 0;
 
   return (
     <div>
-      <h2>Step 2: Target + options</h2>
+      <h2>Step 2: Enter your WiFi network name and password</h2>
 
       <div style={{ display: "grid", gap: 12 }}>
         <label>
-          Target:&nbsp;
+          WiFi Name (SSID):&nbsp;
           <input
-            value={answers.target}
-            onChange={(e) => setAnswers((a) => ({ ...a, target: e.target.value }))}
-            placeholder="e.g. rpi_zero2w_unnamed"
+            value={answers.regssid}
+            onChange={(e) => setAnswers((a) => ({ ...a, target: e.regssid.value }))}
+            placeholder="Your WiFi network name"
           />
         </label>
 
         <label>
-          Verbosity:&nbsp;
-          <select
-            value={answers.verbosity}
-            onChange={(e) => setAnswers((a) => ({ ...a, verbosity: e.target.value }))}
-          >
-            <option value="quiet">quiet</option>
-            <option value="normal">normal</option>
-            <option value="debug">debug</option>
-          </select>
+          WiFi Password:&nbsp;
+          <input
+            value={answers.regpw}
+            onChange={(e) => setAnswers((a) => ({ ...a, target: e.regpw.value }))}
+            placeholder="Leave blank if none"
+          />
         </label>
 
-        <label>
-          <input
-            type="checkbox"
-            checked={answers.dryRun}
-            onChange={(e) => setAnswers((a) => ({ ...a, dryRun: e.target.checked }))}
-          />
-          &nbsp;Dry run
-        </label>
       </div>
 
       <div style={{ marginTop: 20, display: "flex", gap: 8 }}>
         <button onClick={() => nav("/step/1")}>Back</button>
-        <button disabled={!canContinue} onClick={() => nav("/review")}>
+        <button disabled={!canContinue} onClick={() => nav("/step/3")}>
           Review
         </button>
       </div>

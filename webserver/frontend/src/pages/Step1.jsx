@@ -16,8 +16,8 @@ export default function Step1() {
           value={answers.mode}
           onChange={(e) => setAnswers((a) => ({ ...a, mode: e.target.value }))}
         >
-          <option value="scan">scan</option>
-          <option value="connect">connect</option>
+          <option value="gateway">gateway</option>
+          <option value="client">client</option>
         </select>
       </label>
 

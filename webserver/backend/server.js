@@ -13,9 +13,8 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const SCRIPTS_DIR = path.join(__dirname, "scripts");
 
-// --- simple allowlists for options (edit these for your real prompts) ---
-const MODES = new Set(["scan", "connect"]);
-const VERBOSITY = new Set(["quiet", "normal", "debug"]);
+// --- simple allowlists for options ---
+const MODES = new Set(["gateway", "client"]);
 
 // Map wizard answers -> script args (NO SHELL, NO STRING CONCAT COMMANDS)
 function buildArgsFromAnswers(answers) {
@@ -25,21 +24,38 @@ function buildArgsFromAnswers(answers) {
   if (!MODES.has(answers.mode)) throw new Error("Invalid mode");
   args.push("--mode", answers.mode);
 
-  // target (example: hostname-ish / ssid-ish)
-  if (typeof answers.target !== "string" || answers.target.length < 1 || answers.target.length > 64) {
-    throw new Error("Invalid target");
+  // regular SSID
+  if (typeof answers.regssid !== "string" || answers.regssid.length < 1 || answers.regssid.length > 64) {
+    throw new Error("Invalid SSID");
   }
-  // very conservative: allow letters/numbers/underscore/dash/dot/space
-  if (!/^[\w.\- ]+$/.test(answers.target)) throw new Error("Target has invalid characters");
-  args.push("--target", answers.target);
 
-  // verbosity
-  if (!VERBOSITY.has(answers.verbosity)) throw new Error("Invalid verbosity");
-  args.push("--verbosity", answers.verbosity);
+  // regular PW
+  if (typeof answers.regpw !== "string" || answers.regpw.length < 1 || answers.regpw.length > 64) {
+    throw new Error("Invalid Password");
+  }
 
-  // example toggle
-  if (typeof answers.dryRun !== "boolean") throw new Error("Invalid dryRun");
-  if (answers.dryRun) args.push("--dry-run");
+  // HaLow SSID
+  if (typeof answers.halowssid !== "string" || answers.halowssid.length < 1 || answers.halowssid.length > 64) {
+    throw new Error("Invalid SSID");
+  }
+
+  // HaLow PW
+  if (typeof answers.halowpw !== "string" || answers.halowpw.length < 1 || answers.halowpw.length > 64) {
+    throw new Error("Invalid Password");
+  }
+
+  // allow only letters/numbers/underscore/dash/dot/space
+  if (!/^[\w.\- ]+$/.test(answers.regssid)) throw new Error("SSID has invalid characters");
+  args.push("--ssid", answers.regssid);
+
+  if (!/^[\w.\- ]+$/.test(answers.regpw)) throw new Error("Password has invalid characters");
+  args.push("--pw", answers.regpw);
+
+  if (!/^[\w.\- ]+$/.test(answers.halowssid)) throw new Error("HaLow SSID has invalid characters");
+  args.push("--halow-ssid", answers.halowssid);
+
+  if (!/^[\w.\- ]+$/.test(answers.halowpw)) throw new Error("HaLow password has invalid characters");
+  args.push("--halow-pw", answers.halowpw);
 
   return args;
 }
@@ -50,7 +66,7 @@ app.post("/api/run", (req, res) => {
     const args = buildArgsFromAnswers(answers);
 
     // Pick which script to run (also allowlist this if you have multiple)
-    const scriptPath = path.join(SCRIPTS_DIR, "my_script.sh");
+    const scriptPath = path.join(SCRIPTS_DIR, "activate_config.sh");
 
     // spawn without shell to avoid injection
     const child = spawn(scriptPath, args, {
