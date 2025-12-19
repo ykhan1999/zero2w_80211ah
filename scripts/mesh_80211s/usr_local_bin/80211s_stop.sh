@@ -19,8 +19,7 @@ if [[ -f "$FILE" ]] && grep -q "gateway=active" "$FILE"; then
 
     #remove static IP daemon and DHCP server
     rm -r /etc/systemd/network/10-wlan1.network
-    systemctl stop systemd-networkd
-    systemctl disable systemd-networkd
+    systemctl restart systemd-networkd
 
     #disable gateway flag
     rm -r /usr/local/etc/80211s_gateway_status.txt
@@ -28,9 +27,8 @@ else
 ###for client mode
     #remove DHCP server
     rm -r /etc/systemd/network/10-wlan0.network
-    systemctl stop systemd-networkd
-    systemctl disable systemd-networkd
-    
+    systemctl restart systemd-networkd
+
     #stop wpa_supplicant
     pkill -f "wpa_supplicant"
 
