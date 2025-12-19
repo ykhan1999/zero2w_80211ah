@@ -15,6 +15,7 @@ while [[ $# -gt 0 ]]; do
     --pw) REG_PW="$2"; shift 2 ;;
     --halow-ssid) HALOW_SSID="$2"; shift 2 ;;
     --halow-pw) HALOW_PW="$2"; shift 2 ;;
+    --optim) OPTIM="$2"; shift 2 ;;
     *) echo "Unknown arg: $1" >&2; exit 2 ;;
   esac
 done
