@@ -1,5 +1,7 @@
 #!/usr/bin/bash
 
+SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
+
 #add device tree overlay to config
 sudo tee -a /boot/firmware/config.txt >/dev/null <<'EOF'
 dtoverlay=dwc2
@@ -26,6 +28,9 @@ EOF
 
 #enable service
 sudo systemctl enable --now usb0iface.service
+
+#enable DHCP server & static IP
+sudo cp ${SCRIPT_DIR}/helpers/11-usb0.network /etc/systemd/network/11-usb0.network
 
 #reboot
 sudo reboot
