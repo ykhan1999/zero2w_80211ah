@@ -57,13 +57,7 @@ if [[ "$MODE" == "gateway" ]]; then
 
     #assign persistent DHCP server and static IP
     cp /usr/local/etc/10-wlan1.network.80211s.disabled /etc/systemd/network/10-wlan1.network
-    #restart or start systemd-networkd
-    enabled="$(systemctl is-enabled systemd-networkd)"
-    if [[ "$enabled" != "enabled" ]]; then
-       systemctl enable --now systemd-networkd
-    else
-       systemctl restart systemd-networkd
-    fi
+    systemctl restart systemd-networkd
 fi
 
 #start wpa_supplicant
@@ -124,13 +118,8 @@ if [[ "$MODE" == "client" ]]; then
   wpa_supplicant -D nl80211 -i wlan0 -c /usr/local/etc/2.4_80211.conf -B
   #enable DHCP server on wlan0
   cp /usr/local/etc/10-wlan0.network.80211s.disabled /etc/systemd/network/10-wlan0.network
-  #restart or start systemd-networkd
-  enabled="$(systemctl is-enabled systemd-networkd)"
-  if [[ "$enabled" != "enabled" ]]; then
-      systemctl enable --now systemd-networkd
-  else
-      systemctl restart systemd-networkd
-  fi
+  #restart systemd-networkd
+  systemctl restart systemd-networkd
   #enable NAT forwarding
   /usr/local/bin/toggle_NAT_80211s.sh --on --client
 

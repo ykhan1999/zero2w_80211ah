@@ -31,6 +31,7 @@ sudo systemctl enable --now usb0iface.service
 
 #enable DHCP server & static IP
 sudo cp ${SCRIPT_DIR}/helpers/11-usb0.network /etc/systemd/network/11-usb0.network
+sudo systemctl enable --now systemd-networkd
 
 #reboot
 sudo reboot
