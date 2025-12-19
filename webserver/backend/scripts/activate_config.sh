@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-# Super tiny demo parser
+#parser
 MODE=""
 REG_SSID=""
 REG_PW=""
@@ -18,6 +18,11 @@ while [[ $# -gt 0 ]]; do
     *) echo "Unknown arg: $1" >&2; exit 2 ;;
   esac
 done
+
+#enable config
+SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
+
+${SCRIPT_DIR}/../../../scripts/mesh_80211s/config_mesh.sh --halow-ssid "${REG_SSID}" --halow-password "${REG_PW}"
 
 echo "$MODE"
 echo "$REG_SSID"
