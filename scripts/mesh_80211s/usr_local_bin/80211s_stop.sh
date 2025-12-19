@@ -23,6 +23,10 @@ if [[ -f "$FILE" ]] && grep -q "gateway=active" "$FILE"; then
 
     #disable gateway flag
     rm -r /usr/local/etc/80211s_gateway_status.txt
+
+    #stop networkmanager
+    systemctl stop NetworkManager
+    systemctl disable NetworkManager
 else
 ###for client mode
     #remove DHCP server
@@ -31,11 +35,6 @@ else
 
     #stop wpa_supplicant
     pkill -f "wpa_supplicant"
-
-    #restart netman and restore previous connection
-    sudo systemctl enable --now NetworkManager.service
-    nmcli dev down wlan0
-    sudo nmcli con up preconfigured
 
     #turn off NAT forwarding
     /usr/local/bin/toggle_NAT_80211s.sh --off --client
