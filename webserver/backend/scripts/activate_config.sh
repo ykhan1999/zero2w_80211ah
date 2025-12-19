@@ -28,10 +28,11 @@ ${SCRIPT_DIR}/../../../scripts/mesh_80211s/config_mesh.sh --hotspot-ssid "${REG_
 
 #now we differentiate
 if [ "$MODE" == "gateway" ]; then
-  #need to connect to gateway network
-  nmcli device wifi connect "${REG_SSID}" password "${REG_PW}" ifname wlan0
   #only one script active at a time
   ${SCRIPT_DIR}/../../../scripts/mesh_80211s/disable_mesh.sh
+  #need to connect to gateway network
+  systemctl enable --now NetworkManager
+  nmcli device wifi connect "${REG_SSID}" password "${REG_PW}" ifname wlan0
   ${SCRIPT_DIR}/../../../scripts/mesh_80211s/enable_mesh_gateway.sh
 elif [ "$MODE" == "client" ]; then
   ${SCRIPT_DIR}/../../../scripts/mesh_80211s/disable_mesh.sh
