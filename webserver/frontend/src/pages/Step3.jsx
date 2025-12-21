@@ -28,7 +28,7 @@ export default function Step3() {
           <input
             value={answers.halowpw}
             onChange={(e) => setAnswers((a) => ({ ...a, halowpw: e.target.value }))}
-            placeholder="Cannot be blank"
+            placeholder="Min 8 characters"
           />
         </label>
 

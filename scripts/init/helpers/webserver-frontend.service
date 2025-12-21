@@ -1,0 +1,11 @@
+[Unit]
+Description=Bring up webserver frontend
+Wants=network.target
+
+[Service]
+Type=simple
+WorkingDirectory=/usr/local/etc/webserver/frontend/
+ExecStart=/usr/bin/npm run dev
+
+[Install]
+WantedBy=multi-user.target

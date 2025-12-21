@@ -1,0 +1,10 @@
+[Unit]
+Description=Bring up webserver backend
+Wants=network.target
+
+[Service]
+Type=simple
+ExecStart=/usr/bin/node /usr/local/etc/webserver/backend/server.js
+
+[Install]
+WantedBy=multi-user.target
