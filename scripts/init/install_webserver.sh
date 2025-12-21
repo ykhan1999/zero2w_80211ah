@@ -10,7 +10,7 @@ npm run build
 cd ${SCRIPT_DIR}/../../webserver/backend/
 npm install
 
-sudo cp ${SCRIPT_DIR}/../../webserver /usr/local/etc/
+sudo cp -r ${SCRIPT_DIR}/../../webserver /usr/local/etc/
 sudo cp ${SCRIPT_DIR}/helpers/webserver-backend.service /etc/systemd/system/
 sudo cp ${SCRIPT_DIR}/helpers/webserver-frontend.service /etc/systemd/system/
 sudo systemctl daemon-reload
