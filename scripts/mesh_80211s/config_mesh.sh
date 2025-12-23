@@ -40,7 +40,7 @@ if [ ! -f "$CONF" ] || ! grep -qx "$LINE" "$CONF"; then
 fi
 
 #4. enable systemd-networkd
-systemctl enable --now systemd-networkd
+sudo systemctl enable --now systemd-networkd
 
 # ----------- USER CONFIG -------------
 
