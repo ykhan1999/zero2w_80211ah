@@ -39,6 +39,9 @@ if [ ! -f "$CONF" ] || ! grep -qx "$LINE" "$CONF"; then
   echo "ipv4 forwarding capability enabled!"
 fi
 
+#4. enable systemd-networkd
+systemctl enable systemd-networkd
+
 # ----------- USER CONFIG -------------
 
 #init empty default variables
