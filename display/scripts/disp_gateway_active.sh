@@ -1,12 +1,15 @@
 #!/usr/bin/bash
 cd /usr/local/bin
-oled +2  "ACTIVE | NO CLIENTS"
+oled +2  "NO INTERNET"
+oled +3  "NO CLIENTS"
 oled s
-previous_ssid=""
-previous_signal=""
+prev_internet=""
+prev_signal=""
 prev_peers=""
 DEBUG="1"
+INTERNET="NO INTERNET"
 
+i=15
 while true; do
   #get SSID
   SSID=$(iwgetid -r)
@@ -29,18 +32,28 @@ while true; do
   fi
   #get number of peers
   Peers=$(journalctl -u 80211s_serve_dns.service | tail -n 10 | grep -Po "192\\.168\\.50\\.[0-9]+" | sort -u | wc -l)
+  #get connectivity state
+  if [[ "$i" -ge 14 ]]; then
+    if ping -c1 -W2 8.8.8.8 &>/dev/null; then
+      INTERNET="INTERNET OK"
+    else
+      INTERNET="NO INTERNET"
+    fi
+    i=0
+  fi
   #refresh screen only with change
-  if [ "$SSID" != "$prev_ssid" ] || [ "$signalstatus" != "$prev_signal" ] || [ "$Peers" != "$prev_peers" ]; then
-    oled +3 "SSID: $SSID"
-    oled +4 "Signal: $signalstatus"
-    oled +2 "CLIENTS: ${Peers}"
+  if [ "$INTERNET" != "$prev_internet" ] || [ "$signalstatus" != "$prev_signal" ] || [ "$Peers" != "$prev_peers" ]; then
+    oled +2 "${INTERNET}"
+    oled +4 "SIGNAL: $signalstatus"
+    oled +3 "CLIENTS: ${Peers}"
     oled s
   fi
   #store new variables to check for change
-  prev_ssid="$SSID"
+  prev_internet="$INTERNET"
   prev_signal="$signalstatus"
   prev_peers="$Peers"
   #loop timer
   sleep 1
+  i=$(($i+1))
 done
 cd -

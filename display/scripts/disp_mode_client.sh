@@ -1,7 +1,6 @@
 #!/usr/bin/bash
 cd /usr/local/bin
-oled +2 "Starting..."
-oled +3 ""
-oled +4 ""
+oled r
+oled +1 "Mode: Client"
 oled s
 cd -
