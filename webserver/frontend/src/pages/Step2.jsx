@@ -27,7 +27,7 @@ export default function Step2() {
           <input
             value={answers.regpw}
             onChange={(e) => setAnswers((a) => ({ ...a, regpw: e.target.value }))}
-            placeholder="Leave blank if none"
+            placeholder="Cannot be blank"
           />
         </label>
 

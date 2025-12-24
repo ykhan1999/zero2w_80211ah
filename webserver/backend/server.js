@@ -45,21 +45,29 @@ function buildArgsFromAnswers(answers) {
   }
 
   // HaLow PW
-  if (typeof answers.halowpw !== "string" || answers.halowpw.length < 1 || answers.halowpw.length > 64) {
+  if (typeof answers.halowpw !== "string" || answers.halowpw.length < 8 || answers.halowpw.length > 64) {
     throw new Error("Invalid Password");
   }
 
-  // allow only letters/numbers/underscore/dash/dot/space
-  if (!/^[\w.\- ]+$/.test(answers.regssid)) throw new Error("SSID has invalid characters");
+// Characters that sed escapes: &, /, "
+  const INVALID_CHARS = /[&/"]/;
+
+  function assertValid(value, label) {
+   if (INVALID_CHARS.test(value)) {
+     throw new Error(`${label} contains invalid characters (&, /, ")`);
+   }
+  }
+
+  assertValid(answers.regssid, "SSID");
   args.push("--ssid", answers.regssid);
 
-  if (!/^[\w.\- ]+$/.test(answers.regpw)) throw new Error("Password has invalid characters");
+  assertValid(answers.regpw, "Password");
   args.push("--pw", answers.regpw);
 
-  if (!/^[\w.\- ]+$/.test(answers.halowssid)) throw new Error("HaLow SSID has invalid characters");
+  assertValid(answers.halowssid, "HaLow SSID");
   args.push("--halow-ssid", answers.halowssid);
 
-  if (!/^[\w.\- ]+$/.test(answers.halowpw)) throw new Error("HaLow password has invalid characters");
+  assertValid(answers.halowpw, "HaLow password");
   args.push("--halow-pw", answers.halowpw);
 
   return args;
