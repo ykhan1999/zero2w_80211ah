@@ -72,12 +72,12 @@ while [[ $# -gt 0 ]]; do
             shift 2
             ;;
         -h|--help)
-            echo "Usage: $0 [--halow-ssid HALOW_SSID_NAME] [--halow-password HALOW_SSID_PASS] [--wifi-ssid NAME] [--wifi-password PASS] [--optim <SPEED|DISTANCE>]"
+            echo "Usage: $0 [--halow-ssid HALOW_SSID_NAME] [--halow-password HALOW_SSID_PASS] [--wifi-ssid NAME] [--wifi-password PASS] [--optim <speed|distance>]"
             exit 0
             ;;
         *)
             echo "Unknown option: $1"
-            echo "Usage: $0 [--halow-ssid HALOW_SSID_NAME] [--halow-password HALOW_SSID_PASS] [--wifi-ssid NAME] [--wifi-password PASS] [--optim <SPEED|DISTANCE>]"
+            echo "Usage: $0 [--halow-ssid HALOW_SSID_NAME] [--halow-password HALOW_SSID_PASS] [--wifi-ssid NAME] [--wifi-password PASS] [--optim <speed|distance>]"
             exit 1
             ;;
     esac
@@ -93,9 +93,9 @@ if [[ -z "$SSID" || -z "$PASSWORD" || -z "$HSSID" || -z "$HPASSWORD" ]]; then
     read -rsp "Enter 2.4GHz password: " HPASSWORD
 fi
 
-if [[ "$OPTIM" != "SPEED" || "$OPTIM" != "DISTANCE" ]]; then
+if [[ "$OPTIM" != "speed" || "$OPTIM" != "distance" ]]; then
     #error out
-    echo "--optim can only be SPEED or DISTANCE"
+    echo "--optim can only be speed or distance"
     exit 1
 fi
 
@@ -132,13 +132,13 @@ echo "Updated SSID and password in $CONFIG_FILE_2" and "$CONFIG_FILE_3"
 
 #supply halow_80211s.conf with new optimization settings
 CONFIG_FILE=$SCRIPT_DIR/config/halow_80211s.conf
-if [[ "$OPTIM" == "SPEED" ]]; then
+if [[ "$OPTIM" == "speed" ]]; then
   sed -i \
     -e "s/channel=\"[^\"]*\"/channel=28/" \
     -e "s/op_class=\"[^\"]*\"/op_class=71/" \
     "$CONFIG_FILE"
 fi
-if [[ "$OPTIM" == "DISTANCE" ]]; then
+if [[ "$OPTIM" == "distance" ]]; then
   sed -i \
     -e "s/channel=\"[^\"]*\"/channel=27/" \
     -e "s/op_class=\"[^\"]*\"/op_class=68/" \
