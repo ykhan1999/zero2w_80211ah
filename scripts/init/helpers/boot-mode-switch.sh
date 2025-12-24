@@ -24,9 +24,8 @@ nmcli connection add \
 
 nmcli connection modify wifi-setup-open \
   802-11-wireless.mode ap \
-  802-11-wireless.band bg \
   wifi-sec.key-mgmt none \
-  ipv4.method shared \
+  ipv4.method auto \
   ipv6.method disabled
 
 nmcli connection up wifi-setup-open

@@ -141,10 +141,9 @@ if [[ "$MODE" == "client" ]]; then
 
   nmcli connection modify wifi-ap-${ssid} \
     802-11-wireless.mode ap \
-    802-11-wireless.band bg \
     wifi-sec.key-mgmt wpa-psk \
     wifi-sec.psk "$psk" \
-    ipv4.method shared \
+    ipv4.method auto \
     ipv6.method disabled
 
   nmcli connection up wifi-ap-${ssid}
