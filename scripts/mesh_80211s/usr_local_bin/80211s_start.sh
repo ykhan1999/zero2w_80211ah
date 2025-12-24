@@ -4,6 +4,10 @@
 # Default values
 MODE=""
 
+#2.4 ghz SSID and PW passed from config
+ssid=""
+psk=""
+
 # Parse arguments
 while [[ $# -gt 0 ]]; do
   case "$1" in
@@ -45,6 +49,28 @@ rm -r /var/run/wpa_supplicant_s1g/wlan1 || true
 
 #GATEWAY MODE: NAT FORWARD, DHCP, and static IP
 if [[ "$MODE" == "gateway" ]]; then
+
+    ##Bring up 2.4ghz network
+    #clean up old setting if present
+    nmcli connection down wifi-client-${ssid} || true
+    nmcli connection delete wifi-client-${ssid} || true
+
+    #add connection
+    nmcli connection add \
+      type wifi \
+      ifname wlan0 \
+      con-name wifi-client-${ssid} \
+      ssid "$ssid"
+
+    #add pw and disable ipv6
+    nmcli connection modify wifi-client-${ssid} \
+      wifi-sec.key-mgmt wpa-psk \
+      wifi-sec.psk "$psk" \
+      ipv6.method disabled
+
+    #bring up connection
+    nmcli connection up wifi-client-${ssid}
+
     #create a flag telling the system gateway mode is on
     echo "gateway=active" > /usr/local/etc/80211s_gateway_status.txt
 
@@ -109,18 +135,30 @@ fi
 
 #Additional settings for client conf
 if [[ "$MODE" == "client" ]]; then
-  #####start AP for wlan0
-  #keep netman out of the way
-  systemctl stop NetworkManager.service
-  systemctl disable NetworkManager.service
-  #Start AP on wlan0
-  rm -r /var/run/wpa_supplicant/wlan0 || true
-  wpa_supplicant -D nl80211 -i wlan0 -c /usr/local/etc/2.4_80211.conf -B
-  #enable DHCP server on wlan0
-  cp /usr/local/etc/10-wlan0.network.80211s.disabled /etc/systemd/network/10-wlan0.network
-  #restart systemd-networkd
-  systemctl restart systemd-networkd
-  #enable NAT forwarding
+
+  #####Create networkmanager connection
+  #clean up old AP
+  nmcli connection down wifi-ap-${ssid} || true
+  nmcli connection delete wifi-ap-${ssid} || true
+
+  nmcli connection add \
+    type wifi \
+    ifname wlan0 \
+    con-name wifi-ap-${ssid} \
+    autoconnect no \
+    ssid "$ssid"
+
+  nmcli connection modify wifi-ap-${ssid} \
+    802-11-wireless.mode ap \
+    802-11-wireless.band bg \
+    wifi-sec.key-mgmt wpa-psk \
+    wifi-sec.psk "$psk" \
+    ipv4.method shared \
+    ipv6.method disabled
+
+  nmcli connection up wifi-ap-${ssid}
+
+  ######enable NAT forwarding
   /usr/local/bin/toggle_NAT_80211s.sh --on --client
 
   #####DHCP settings for wlan0
@@ -130,10 +168,6 @@ if [[ "$MODE" == "client" ]]; then
     #get DHCP lease if it exists
     if ! ip addr show wlan1 | grep -q "inet "; then
         dhclient -i wlan1 || true
-    fi
-    #make sure we have an IP for wlan0
-    if ! ip addr show wlan0 | grep -q "inet "; then
-    systemctl restart systemd-networkd
     fi
     #at start and every minute, check that our dns servers are correct, and update if not
     counter=$(($counter + 1))

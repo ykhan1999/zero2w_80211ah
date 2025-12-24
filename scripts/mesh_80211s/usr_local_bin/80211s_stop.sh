@@ -1,5 +1,9 @@
 #!/usr/bin/env bash
 
+#get 2.4Ghz variables
+ssid=""
+psk=""
+
 ###for gateway or client
 #Stop wpa_supplicant
 pkill -f 'wpa_supplicant_s1g'
@@ -24,24 +28,22 @@ if [[ -f "$FILE" ]] && grep -q "gateway=active" "$FILE"; then
     #disable gateway flag
     rm -r /usr/local/etc/80211s_gateway_status.txt
 
-    #stop networkmanager
-    systemctl stop NetworkManager
-    systemctl disable NetworkManager
+    #remove netman connection
+    nmcli connection down wifi-client-${ssid}
+    nmcli connection delete wifi-client-${ssid}
 else
 ###for client mode
-    #remove DHCP server
-    rm -r /etc/systemd/network/10-wlan0.network
-    systemctl restart systemd-networkd
-
-    #stop wpa_supplicant
-    pkill -f "wpa_supplicant"
-
     #turn off NAT forwarding
     /usr/local/bin/toggle_NAT_80211s.sh --off --client
+
+    #remove netman connection
+    nmcli connection down wifi-ap-${ssid}
+    nmcli connection delete wifi-ap-${ssid}
 fi
 
 #flush current IP
 ip link set wlan1 down
 ip addr flush dev wlan1
 ip link set wlan1 up
+
 

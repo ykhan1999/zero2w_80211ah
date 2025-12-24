@@ -39,9 +39,6 @@ if [ ! -f "$CONF" ] || ! grep -qx "$LINE" "$CONF"; then
   echo "ipv4 forwarding capability enabled!"
 fi
 
-#4. enable systemd-networkd
-sudo systemctl enable --now systemd-networkd
-
 # ----------- USER CONFIG -------------
 
 #init empty default variables
@@ -49,6 +46,7 @@ SSID=""
 PASSWORD=""
 HSSID=""
 HPASSWORD=""
+OPTIM=""
 
 #parse flags
 while [[ $# -gt 0 ]]; do
@@ -61,21 +59,25 @@ while [[ $# -gt 0 ]]; do
             PASSWORD="$2"
             shift 2
             ;;
-        --hotspot-ssid)
+        --wifi-ssid)
             HSSID="$2"
             shift 2
             ;;
-        --hotspot-password)
+        --wifi-password)
             HPASSWORD="$2"
             shift 2
             ;;
+        --optim)
+            OPTIM="$2"
+            shift 2
+            ;;
         -h|--help)
-            echo "Usage: $0 [--halow-ssid HALOW_SSID_NAME] [--halow-password HALOW_SSID_PASS] [--hotspot-ssid NAME] [--hotspot-password PASS]"
+            echo "Usage: $0 [--halow-ssid HALOW_SSID_NAME] [--halow-password HALOW_SSID_PASS] [--wifi-ssid NAME] [--wifi-password PASS] [--optim <SPEED|DISTANCE>]"
             exit 0
             ;;
         *)
             echo "Unknown option: $1"
-            echo "Usage: $0 [--halow-ssid HALOW_SSID_NAME] [--halow-password HALOW_SSID_PASS] [--hotspot-ssid NAME] [--hotspot-password PASS]"
+            echo "Usage: $0 [--halow-ssid HALOW_SSID_NAME] [--halow-password HALOW_SSID_PASS] [--wifi-ssid NAME] [--wifi-password PASS] [--optim <SPEED|DISTANCE>]"
             exit 1
             ;;
     esac
@@ -86,8 +88,15 @@ if [[ -z "$SSID" || -z "$PASSWORD" || -z "$HSSID" || -z "$HPASSWORD" ]]; then
     #prompt user
     read -rp "Enter HaLow SSID: " SSID
     read -rsp "Enter HaLow password: " PASSWORD
-    read -rp "Enter Hotspot SSID: " HSSID
-    read -rsp "Enter Hotspot password: " HPASSWORD
+    echo ""
+    read -rp "Enter 2.4GHz SSID: " HSSID
+    read -rsp "Enter 2.4GHz password: " HPASSWORD
+fi
+
+if [[ "$OPTIM" != "SPEED" || "$OPTIM" != "DISTANCE" ]]; then
+    #error out
+    echo "--optim can only be SPEED or DISTANCE"
+    exit 1
 fi
 
 # Escape characters that might break sed
@@ -106,13 +115,37 @@ sed -i \
 echo "Updated SSID and password in $CONFIG_FILE"
 
 #Supply the 80211s_start file with the new hotspot SSID and pw
-CONFIG_FILE=$SCRIPT_DIR/config/2.4_80211.conf
+CONFIG_FILE_2=$SCRIPT_DIR/usr_local_bin/80211s_start.sh
 sed -i \
     -e "s/ssid=\"[^\"]*\"/ssid=\"$ESCAPED_HSSID\"/" \
     -e "s/psk=\"[^\"]*\"/psk=\"$ESCAPED_HPASS\"/" \
-    "$CONFIG_FILE"
+    "$CONFIG_FILE_2"
 
-echo "Updated SSID and password in $CONFIG_FILE"
+#Supply the 80211s_stop file with the new hotspot SSID and pw
+CONFIG_FILE_3=$SCRIPT_DIR/usr_local_bin/80211s_stop.sh
+sed -i \
+    -e "s/ssid=\"[^\"]*\"/ssid=\"$ESCAPED_HSSID\"/" \
+    -e "s/psk=\"[^\"]*\"/psk=\"$ESCAPED_HPASS\"/" \
+    "$CONFIG_FILE_3"
+
+echo "Updated SSID and password in $CONFIG_FILE_2" and "$CONFIG_FILE_3"
+
+#supply halow_80211s.conf with new optimization settings
+CONFIG_FILE=$SCRIPT_DIR/config/halow_80211s.conf
+if [[ "$OPTIM" == "SPEED" ]]; then
+  sed -i \
+    -e "s/channel=\"[^\"]*\"/channel=28/" \
+    -e "s/op_class=\"[^\"]*\"/op_class=71/" \
+    "$CONFIG_FILE"
+fi
+if [[ "$OPTIM" == "DISTANCE" ]]; then
+  sed -i \
+    -e "s/channel=\"[^\"]*\"/channel=27/" \
+    -e "s/op_class=\"[^\"]*\"/op_class=68/" \
+    "$CONFIG_FILE"
+fi
+
+echo "Updated channel and bandwidth in $CONFIG_FILE"
 
 # ----------- Install updated config -------------
 
@@ -146,4 +179,11 @@ sudo rm -r /etc/systemd/network/99-default.link 2>/dev/null || true
 
 #reload services if running
 sudo systemctl daemon-reload
+
+# enable systemd-networkd
+sudo systemctl enable --now systemd-networkd
+
+#enable network manager
+sudo systemctl enable --now NetworkManager
+
 echo "done updating 80211s_mesh service!"
