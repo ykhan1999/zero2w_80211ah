@@ -34,7 +34,7 @@ nmcli connection up wifi-setup-open
 log "Starting webserver services: $WEB_FRONTEND $WEB_BACKEND"
 systemctl enable --now "$WEB_FRONTEND" "$WEB_BACKEND" || true
 
-if [[ $(systemctl is-enabled --quiet "$GW") || $(systemctl is-enabled --quiet "$CL") ]]; then
+if [[ $(systemctl is-enabled "$GW") == "enabled" || $(systemctl is-enabled "$CL") == "enabled" ]]; then
   i=0
   while true; do
     /usr/local/bin/disp_setup_timer.sh $((60-$i))
@@ -49,7 +49,7 @@ if [[ $(systemctl is-enabled --quiet "$GW") || $(systemctl is-enabled --quiet "$
   systemctl stop "$WEB_FRONTEND" "$WEB_BACKEND" || true
   systemctl disable "$WEB_FRONTEND" "$WEB_BACKEND" || true
 
-  if [[ $(systemctl is-enabled --quiet "$GW") ]]; then
+  if [[ $(systemctl is-enabled "$GW") == "enabled" ]]; then
     log "Starting $GW"
     systemctl start "$GW"
     nmcli connection down wifi-setup-open
