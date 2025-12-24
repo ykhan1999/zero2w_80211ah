@@ -21,5 +21,8 @@ sudo cp ${SCRIPT_DIR}/helpers/boot-mode-switch.service /etc/systemd/system/
 sudo systemctl daemon-reload
 sudo systemctl enable --now boot-mode-switch.service
 
+sudo nmcli con down preconfigured || true
+sudo nmcli con delete preconfigured || true
+
 cd -
 cd -
