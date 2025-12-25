@@ -37,6 +37,7 @@ log "Starting webserver services: $WEB_FRONTEND $WEB_BACKEND"
 systemctl enable --now "$WEB_FRONTEND" "$WEB_BACKEND" || true
 
 if [[ $(systemctl is-enabled "$GW") == "enabled" || $(systemctl is-enabled "$CL") == "enabled" ]]; then
+  /usr/local/bin/disp_setup.sh || true
   i=0
   while true; do
     /usr/local/bin/disp_setup_timer.sh $((60-$i))
@@ -66,6 +67,7 @@ if [[ $(systemctl is-enabled "$GW") == "enabled" || $(systemctl is-enabled "$CL"
   fi
 
 else
+  /usr/local/bin/disp_setup.sh || true
   log "Neither $GW nor $CL is enabled. Keeping webserver running."
 
 fi
