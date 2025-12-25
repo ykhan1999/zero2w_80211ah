@@ -54,16 +54,16 @@ if [[ $(systemctl is-enabled "$GW") == "enabled" || $(systemctl is-enabled "$CL"
 
   if [[ $(systemctl is-enabled "$GW") == "enabled" ]]; then
     log "Starting $GW"
-    systemctl start "$GW"
+    rm -f /run/boot-mode/lock
+    systemctl start "$GW" &
     nmcli connection down wifi-setup-open
     nmcli connection delete wifi-setup-open
-    rm -f /run/boot-mode/lock
  else
     log "Starting $CL"
-    systemctl start "$CL"
+    rm -f /run/boot-mode/lock
+    systemctl start "$CL" &
     nmcli connection down wifi-setup-open
     nmcli connection delete wifi-setup-open
-    rm -f /run/boot-mode/lock
   fi
 
 else
