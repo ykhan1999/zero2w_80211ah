@@ -53,9 +53,10 @@ if [[ -z "$SSID" || -z "$PASSWORD" || -z "$HSSID" || -z "$HPASSWORD" ]]; then
     echo ""
     read -rp "Enter 2.4GHz SSID: " HSSID
     read -rsp "Enter 2.4GHz password: " HPASSWORD
+    read -rp "Enter optim (<speed|distance>): " OPTIM
 fi
 
-if [[ "$OPTIM" != "speed" || "$OPTIM" != "distance" ]]; then
+if [[ "$OPTIM" != "speed" && "$OPTIM" != "distance" ]]; then
     #error out
     echo "--optim can only be speed or distance"
     exit 1
