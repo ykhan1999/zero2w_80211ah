@@ -7,96 +7,99 @@ A tested and working framework to add 802.11ah (WiFi HaLow) support to the Raspb
 
 ### Currently active
 * Scripts to quickly install kernel modules & drivers for 802.11ah support 
-* Easy mesh mode (802.11s)
+* Support for SSD1306 display
+* Web GUI for easy configuration
+* mesh mode (802.11s)
 	* Gateway mode - essentially acts as an AP, with forwarding from the connected 2.4GHz through the HaLow network
     * Client mode - Acts as a hotspot, allowing access to resources forwarded from the gateway through the HaLow network
 
-### TBD
-
-* Custom, open-source HAT for easy interfacing between Zero 2W and HT-HC01P
-	* Coming soon! Custom board is currently on the way. Once it's confirmed working, I'll upload the gerber files.
-* Web GUI and iOS/Android app
-	* iOS app in progress - see https://github.com/ykhan1999/zero2w_80211ah_iOS
-
-Note: I do not currently plan on adding AP/STA support right now, because I'd like to focus on bringing the project to a more polished and user-friendly state first. If you would like to add this functionality please feel free to submit a pull request. 
+Note: I do not currently plan on adding AP/STA support right now, mostly because of time limitations on my end. If anyone wants to add this functionality I would be thrilled for them to submit a pull request. 
 
 ## Quick start guide
 
 ### Step 0: Prerequisites
 
-1. Raspberry Pi Zero 2W device
-2. Heltec HT-HC01P or other SPI-based MM6108 board
+1. Raspberry Pi Zero 2W
+2. MM6108 module in SPI mode - I used the Heltec HT-HC01P board
+3. (Optional) SSD1306-driven 128x64 OLED display - I used a cheap Amazon module
 
-### Step 1: Wiring
-If using the HT-HC01P with the official debug board, connect the pins as follows:
-* Notes: Although the provided scripts should work with any SPI-based board, if you use another board, you will need to wire pins accordingly to the pinout of your board. You will also need to update the device tree overlay files to reflect your new wiring.
+### Step 1: Wiring the MM6108
+Keep in mind that this wiring is for SPI, not GPIO interfacing!
 ```
-#SPI interface (GPIO 7-11, only 8-11 used)
 #+----------------+--------------------+----------------------------+------------------------------+
-#| HC01P Pin      | SPI Role           | RPi Signal / GPIO          | Notes                        |
+#| MM6108         | Role               | RPi Signal / GPIO          | Notes                        |
 #+----------------+--------------------+----------------------------+------------------------------+
-#| 3V3            | Power              | 3V3 (Pin 1 or 17)          | Module VDD 3.3 V             |
+#| 3V3            | Power              | 3.3 (Pin 1 or 17)          | Module VDD 3.3 V             |
 #| GND            | Ground             | Any GND (6/9/14/20/25/30…) | Common ground                |
 #| INT            | Host IRQ           | GPIO 25  (Pin 22)          | Module -> host interrupt     |
-#| RESET          | Reset              | GPIO 5   (Pin 29)          | Active LOW                   |
-#| BUSY           |  Wake sequence     | GPIO 7   (Pin 26)          | In POWER device tree overlay |
-#| WAKE           | WL_REG_ON / EN     | GPIO 3   (Pin 5)           | Active HIGH                  |
+#| RESET          | Reset              | GPIO 5   (Pin 29)          | Active LOW  --> resets module|
+#| BUSY           |  Wake sequence     | GPIO 7   (Pin 26)          | \*See below                   |
+#| WAKE           | WL_REG_ON / EN     | GPIO 3   (Pin 5)           | Active HIGH --> wakes module |
 #| CLK            | SPI0 SCLK          | GPIO 11  (Pin 23)          | SPI clock                    |
-#| MISO           | SPI0 MISO          | GPIO 9   (Pin 21)          | 1-bit data line              |
+#| MISO           | SPI0 MISO          | GPIO 9   (Pin 21)          | SPI data line                |
 #| MOSI           | SPI0 MOSI          | GPIO 10  (Pin 19)          | SPI command line             |
 #| CS             | SPI0 CEO0          | GPIO 8   (Pin 24)          |                              |
 #+----------------+--------------------+----------------------------+------------------------------+
+\*I'm not actually sure what this does but it's included in the wake sequence of the device tree overlay per the documentation so I left it
 ```
+
+### Step 1.5 (Optional): Wiring the SSD1306 128x64 display
+Because we are using the main I2C interface pins for our MM6108 module, we have to use the alternate I2C pins as below:
+```
+#+----------------+--------------------+----------------------------+------------------------------+
+#| SSD1306        | Role               | RPi Signal / GPIO          | Notes                        |
+#+----------------+--------------------+----------------------------+------------------------------+
+#| VCC            | 3.3V or 5V Power   | 3V3 (Pin 1 or 17)          | Module VDD 3.3 V             |
+#| GND            | Ground             | Any GND (6/9/14/20/25/30…) | Common ground                |
+#| SCL            | I2C clock          | GPIO 1  (Pin 28)           | clock line                   |
+#| SDA            | I2C data           | GPIO 0  (Pin 27)           | data line                    |
+#+----------------+--------------------+----------------------------+------------------------------+
+\*I'm not actually sure what this does but it's included in the wake sequence of the device tree overlay per the documentation so I left it
+```
+
 ### Step 2: Installing the kernel & drivers
+
+**TBD - to provide option of custom image to flash**
+
 1. Using your preferred imaging tool (ex., Raspberry Pi Imager), flash the Pi Zero 2W with the official 2025-10-01 Raspberry Pi OS Lite release: https://downloads.raspberrypi.com/raspios_lite_arm64/images/raspios_lite_arm64-2025-10-02/2025-10-01-raspios-trixie-arm64-lite.img.xz
+
+Note: You will want to set up SSH and WiFi if you plan to configure headlessly. This is fine, the scripts will remove the preconfigured WiFi info once setup completes. 
+
 2. Connect to the Raspberry Pi, either via SSH or physically with a display and keyboard
-3. Clone the repo and run the kernel install script
+
+3. Clone the repo
 ```bash
 sudo apt-get update
 sudo apt install git
 git clone https://github.com/ykhan1999/zero2w_80211ah
+```
+
+4. Run the install scripts in the following order
+```bash
 ./zero2w_80211ah/scripts/init/install_kernel.sh
 #Wait for system reboot before proceeding
-```
-4. Install the drivers
-```bash
 ./zero2w_80211ah/scripts/init/install_drivers.sh
-```
-5. Install the device tree overlay and patches for the SPI interface
-```bash
 ./zero2w_80211ah/scripts/init/install_SPI_overlays.sh
-#Wait for reboot before proceeding
-```
-Done! Your module should be brought up now, and you should see the interface "wlan1" when you run ifconfig. 
-
-## Mesh mode
-
-Currently only supports 802.11s over IBSS. First, run the configuration script:
-```bash
-./zero2w_80211ah/scripts/mesh_80211s/config_mesh.sh
+#Wait for reboot
+./zero2w_80211ah/scripts/init/install_mesh_helpers.sh
+./zero2w_80211ah/scripts/init/install_display_drivers.sh
+#Wait for reboot. Can unplug device after ~30s and plug back in if it does not reboot automatically.
+./zero2w_80211ah/scripts/init/install_webserver.sh
+#Wait for reboot
 ```
 
-You will be prompted to set up a HaLow SSID and password, and a Hotspot SSID and password. The HaLow SSID and password will be used by both the mesh client and the mesh gateway, whereas the Hotspot SSID and password will be used by the mesh client for the 2.4GHz network.
+### Step 3: Configuration
 
-### Enable gateway mode with NAT forwarding
+1. Once all the install scripts are run, after 2-3 minutes, you should see a WiFi network "ExtendFi". Connect to the network.
 
-```bash
-./zero2w_80211ah/scripts/mesh_80211s/enable_mesh_gateway.sh
-```
-Will essentially act as an AP, forwarding traffic from the HaLow network through the 2.4GHz network (ie., the one connected to the internet)
+2. Go to http://10.42.0.1:5173
 
-### Enable client mode
+3. Follow the prompts to configure as either a gateway or a client.
 
-```bash
-./zero2w_80211ah/scripts/mesh_80211s/enable_mesh_client.sh
-```
-Acts as a hotspot for the HaLow network, forwarding traffic from the 2.4GHz hotspot through the HaLow network
+For gateway mode, for the Wifi SSID and password, you will input your home network WiFi SSID and password. For client mode, you will input the SSID and password of the hotspot you want to create. The HaLow SSID and password can be anything but they must match between the client and gateway.
 
-### Disable
+4. Your device will reboot, and you should be all set! Note that for a functional system you will need both a gateway and receiver.
 
-```bash
-./zero2w_80211ah/scripts/mesh_80211s/disable_mesh.sh
-```
 
 ## Building from source (advanced)
 
@@ -104,7 +107,9 @@ See source_compile_instructions.txt; instructions are provided for compiling the
 
 ## Technical limitations
 
-This software currently only official supports the Raspberry Pi Zero 2W and the Heltec HT-HC01P HaLow module. Those interested in seeing additional support are encouraged to contribute to the repo.
+* This software currently only official supports the Raspberry Pi Zero 2W and the Heltec HT-HC01P HaLow module. Those interested in seeing additional support are encouraged to contribute to the repo.
+
+* No support yet for open WiFi networks or captive WiFi networks
 
 ## Acknowledgements
 
