@@ -56,11 +56,13 @@ if [[ $(systemctl is-enabled "$GW") == "enabled" || $(systemctl is-enabled "$CL"
     log "Starting $GW"
     nmcli connection down wifi-setup-open
     nmcli connection delete wifi-setup-open
+    /usr/local/bin/80211s_stop.sh
     /usr/local/bin/80211s_start.sh --gateway
   else
     log "Starting $CL"
     nmcli connection down wifi-setup-open
     nmcli connection delete wifi-setup-open
+    /usr/local/bin/80211s_stop.sh
     /usr/local/bin/80211s_start.sh --client
   fi
 
