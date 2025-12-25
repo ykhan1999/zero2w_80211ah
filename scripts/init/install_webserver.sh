@@ -24,5 +24,8 @@ sudo systemctl enable --now boot-mode-switch.service
 sudo nmcli con down preconfigured || true
 sudo nmcli con delete preconfigured || true
 
+sudo mkdir -p /usr/local/etc/zero2w_80211ah
+sudo cp -r ${SCRIPT_DIR}/../../* /usr/local/etc/zero2w_80211ah
+
 cd -
 cd -
