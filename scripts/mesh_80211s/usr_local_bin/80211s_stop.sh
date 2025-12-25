@@ -31,6 +31,8 @@ if [[ -f "$FILE" ]] && grep -q "gateway=active" "$FILE"; then
     #remove netman connection
     nmcli connection down wifi-client-${ssid}
     nmcli connection delete wifi-client-${ssid}
+
+    pkill -f "/usr/local/bin/disp_gateway_active.sh"
 else
 ###for client mode
     #turn off NAT forwarding
@@ -39,6 +41,8 @@ else
     #remove netman connection
     nmcli connection down wifi-ap-${ssid}
     nmcli connection delete wifi-ap-${ssid}
+
+    pkill -f "/usr/local/bin/disp_client_active.sh"
 fi
 
 #flush current IP

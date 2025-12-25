@@ -34,12 +34,12 @@ fi
 
 if [[ "$MODE" == "gateway" ]]; then
   #If display is enabled, notify user that we are in gateway mode and connecting
-  /usr/local/bin/disp_mode_gw.sh > /dev/null || true
-  /usr/local/bin/disp_mode_connecting.sh > /dev/null || true
+  /usr/local/bin/disp_mode_gw.sh > /dev/null 2>&1 & || true
+  /usr/local/bin/disp_mode_connecting.sh > /dev/null 2>&1 & || true
 fi
 if [[ "$MODE" == "client" ]]; then
-  /usr/local/bin/disp_mode_client.sh > /dev/null || true
-  /usr/local/bin/disp_mode_connecting.sh > /dev/null || true
+  /usr/local/bin/disp_mode_client.sh > /dev/null 2>&1 & || true
+  /usr/local/bin/disp_mode_connecting.sh > /dev/null 2>&1 & || true
 fi
 
 #restart driver module for fresh bringup
@@ -114,7 +114,7 @@ if [[ "$MODE" == "gateway" ]]; then
      systemctl restart 80211s_serve_dns
   fi
   #notify user the service is active
-  /usr/local/bin/disp_gateway_active.sh > /dev/null || true
+  /usr/local/bin/disp_gateway_active.sh > /dev/null 2>&1 & || true
   #make sure we have an IP and show on display whether we do
   while true; do
     if ! ip addr show wlan1 | grep -q "inet "; then
@@ -152,7 +152,7 @@ if [[ "$MODE" == "client" ]]; then
   /usr/local/bin/toggle_NAT_80211s.sh --on --client
 
   #####notify user the service is active
-  /usr/local/bin/disp_client_active.sh > /dev/null || true
+  /usr/local/bin/disp_client_active.sh > /dev/null 2>&1 & || true
 
   #####DHCP settings for wlan0
   #counter var for use later
