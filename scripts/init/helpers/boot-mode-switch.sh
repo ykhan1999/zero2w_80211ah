@@ -23,7 +23,7 @@ nmcli connection add \
   type wifi \
   ifname wlan0 \
   con-name wifi-setup-open \
-  ssid "WiFi Setup"
+  ssid "ExtendFi"
 
 nmcli connection modify wifi-setup-open \
   802-11-wireless.mode ap \
