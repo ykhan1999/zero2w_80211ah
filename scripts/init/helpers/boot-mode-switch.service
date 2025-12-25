@@ -1,8 +1,9 @@
 [Unit]
 Description=Start webserver on boot, then switch to 80211s mode if enabled
-After=network-online.target
-Before=80211s_client.service 80211s_gateway.service
+After=network-online.target start_morse.service
+Requires=start_morse.service
 Wants=network-online.target
+Before=80211s_client.service 80211s_gateway.service
 
 [Service]
 Type=oneshot

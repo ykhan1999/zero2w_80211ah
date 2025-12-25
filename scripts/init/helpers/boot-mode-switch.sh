@@ -16,6 +16,9 @@ touch /run/boot-mode/lock
 /usr/local/bin/disp_setup.sh || true
 
 #start WiFi Setup
+nmcli connection down wifi-setup-open || true
+nmcli connection delete wifi-setup-open || true
+
 nmcli connection add \
   type wifi \
   ifname wlan0 \
@@ -24,7 +27,6 @@ nmcli connection add \
 
 nmcli connection modify wifi-setup-open \
   802-11-wireless.mode ap \
-  wifi-sec.key-mgmt none \
   ipv4.method auto \
   ipv6.method disabled
 
