@@ -1,7 +1,7 @@
 
 ## Overview
 
-A tested and working framework to add 802.11ah (WiFi HaLow) support to the Raspberry Pi Zero 2W using the Heltec HT-HC01P module (and possibly other SPI-based modules) in SPI mode.
+A tested and working framework to add 802.11ah (WiFi HaLow) support to the Raspberry Pi Zero 2W using the MM6108 module in SPI mode.
 
 ## Features
 
