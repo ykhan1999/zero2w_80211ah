@@ -54,19 +54,18 @@ if [[ $(systemctl is-enabled "$GW") == "enabled" || $(systemctl is-enabled "$CL"
 
   if [[ $(systemctl is-enabled "$GW") == "enabled" ]]; then
     log "Starting $GW"
-    rm -f /run/boot-mode/lock
-    systemctl start "$GW" &
     nmcli connection down wifi-setup-open
     nmcli connection delete wifi-setup-open
- else
+    /usr/local/bin/80211s_start.sh --gateway
+  else
     log "Starting $CL"
-    rm -f /run/boot-mode/lock
-    systemctl start "$CL" &
     nmcli connection down wifi-setup-open
     nmcli connection delete wifi-setup-open
+    /usr/local/bin/80211s_start.sh --client
   fi
 
 else
+
   /usr/local/bin/disp_setup.sh || true
   log "Neither $GW nor $CL is enabled. Keeping webserver running."
 
