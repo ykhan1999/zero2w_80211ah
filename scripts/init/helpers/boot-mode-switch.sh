@@ -48,7 +48,7 @@ if [[ $(systemctl is-enabled "$GW") == "enabled" || $(systemctl is-enabled "$CL"
         fi
   done
 
-  log "Mesh mode enabled (gateway=$gw_enabled client=$cl_enabled). Stopping webserver..."
+  log "Mesh mode enabled. Stopping webserver..."
   systemctl stop "$WEB_FRONTEND" "$WEB_BACKEND" || true
   systemctl disable "$WEB_FRONTEND" "$WEB_BACKEND" || true
 
