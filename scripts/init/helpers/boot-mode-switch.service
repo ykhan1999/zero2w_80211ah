@@ -8,8 +8,9 @@ Before=80211s_client.service 80211s_gateway.service
 [Service]
 Type=oneshot
 ExecStart=/usr/local/bin/boot-mode-switch.sh
-ExecStopPost=/usr/local/bin/80211s_stop.sh
+User=root
 RemainAfterExit=yes
+Restart=no
 
 [Install]
 WantedBy=multi-user.target

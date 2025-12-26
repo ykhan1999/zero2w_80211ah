@@ -34,3 +34,13 @@ if [ ! -f "$CONF" ] || ! grep -qx "$LINE" "$CONF"; then
   sudo sysctl --system >/dev/null
   echo "ipv4 forwarding capability enabled!"
 fi
+
+#copy scripts
+SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
+
+sudo cp ${SCRIPT_DIR}/../mesh_80211s/disable_mesh.sh /usr/local/bin/
+sudo cp ${SCRIPT_DIR}/../mesh_80211s/enable_mesh_gateway.sh /usr/local/bin/
+sudo cp ${SCRIPT_DIR}/../mesh_80211s/enable_mesh_client.sh /usr/local/bin/
+sudo chmod +x /usr/local/bin/disable_mesh.sh
+sudo chmod +x /usr/local/bin/enable_mesh_gateway.sh
+sudo chmod +x /usr/local/bin/enable_mesh_client.sh

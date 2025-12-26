@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
-set -euo pipefail
 
+#set env variables
 WEB_FRONTEND="webserver-frontend.service"
 WEB_BACKEND="webserver-backend.service"
 GW="80211s_gateway.service"
@@ -56,14 +56,14 @@ if [[ $(systemctl is-enabled "$GW") == "enabled" || $(systemctl is-enabled "$CL"
     log "Starting $GW"
     nmcli connection down wifi-setup-open
     nmcli connection delete wifi-setup-open
-    /usr/local/bin/80211s_stop.sh
-    /usr/local/bin/80211s_start.sh --gateway
+    /usr/local/bin/disable_mesh.sh
+    /usr/local/bin/enable_mesh_gateway.sh
   else
     log "Starting $CL"
     nmcli connection down wifi-setup-open
     nmcli connection delete wifi-setup-open
-    /usr/local/bin/80211s_stop.sh
-    /usr/local/bin/80211s_start.sh --client
+    /usr/local/bin/disable_mesh.sh
+    /usr/local/bin/enable_mesh_client.sh
   fi
 
 else

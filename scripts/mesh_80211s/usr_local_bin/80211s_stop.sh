@@ -13,7 +13,7 @@ pkill -f 'wpa_supplicant_s1g'
 FILE="/usr/local/etc/80211s_gateway_status.txt"
 if [[ -f "$FILE" ]] && grep -q "gateway=active" "$FILE"; then
     #stop serving DNS names
-    pkill -f "python3 -m http.server $PORT" 2>/dev/null
+    pkill -f "python3 -m http.server" 2>/dev/null
     systemctl stop 80211s_serve_dns
     systemctl disable 80211s_serve_dns
 
