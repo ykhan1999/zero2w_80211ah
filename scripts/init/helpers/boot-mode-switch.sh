@@ -59,7 +59,7 @@ if [[ $(systemctl is-enabled "$GW") == "enabled" || $(systemctl is-enabled "$CL"
     nmcli connection down wifi-setup-open
     nmcli connection delete wifi-setup-open
     log "stopped hotspot"
-    /usr/local/bin/enable_mesh_gateway.sh
+    /usr/local/bin/enable_mesh_gateway.sh &
     log "launched gateway service"
   else
     log "Starting $CL"
@@ -68,7 +68,7 @@ if [[ $(systemctl is-enabled "$GW") == "enabled" || $(systemctl is-enabled "$CL"
     nmcli connection down wifi-setup-open
     nmcli connection delete wifi-setup-open
     log "stopped hotspot"
-    /usr/local/bin/enable_mesh_client.sh
+    /usr/local/bin/enable_mesh_client.sh &
     log "launched client service"
   fi
 
