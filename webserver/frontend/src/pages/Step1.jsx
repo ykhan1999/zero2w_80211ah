@@ -21,7 +21,9 @@ export default function Step1() {
           <div className="field">
             <div className="labelRow">
               <label>Mode</label>
-              <span className="hint">In gateway mode, your device will use the signal from your WiFi router to extend your network. In client mode, your device will receive the extended signal and set up a hotspot for you to use.</span>
+              <span className="hint"> <br/>
+              In gateway mode, your device will use the signal from your WiFi router to extend your network. <br/>
+              In client mode, your device will receive the extended signal and set up a hotspot for you to use.</span>
             </div>
             <select
               value={answers.mode}

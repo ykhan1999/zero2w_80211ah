@@ -13,7 +13,7 @@ export default function Step2() {
       <div className="cardHeader">
         <div>
           <h2>Regular WiFi credentials</h2>
-          <div className="sub">Gateway mode: Enter the SSID and password for your regular WiFi network. \n 
+          <div className="sub">Gateway mode: Enter the SSID and password for your regular WiFi network.<br/> 
             Client mode: Enter the SSID and password of the hotspot that you want to create..</div>
         </div>
         <div className="badge">Step 2</div>
