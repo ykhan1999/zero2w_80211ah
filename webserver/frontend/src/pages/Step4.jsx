@@ -2,30 +2,41 @@ import React from "react";
 import { useNavigate } from "react-router-dom";
 import { useWizard } from "../wizard/WizardContext.jsx";
 
-export default function Step1() {
+export default function Step4() {
   const nav = useNavigate();
   const { answers, setAnswers } = useWizard();
 
   return (
-    <div>
-      <h2>Step 4: Choose optimization</h2>
+    <div className="card">
+      <div className="cardHeader">
+        <div>
+          <h2>Optimization</h2>
+          <div className="sub">Choose whether to prioritize speed or distance.</div>
+        </div>
+        <div className="badge">Step 4</div>
+      </div>
 
-      <label>
-        Mode:&nbsp;
-        <select
-          value={answers.optim}
-          onChange={(e) => setAnswers((a) => ({ ...a, optim: e.target.value }))}
-        >
-          <option value="speed">speed</option>
-          <option value="distance">distance</option>
-        </select>
-      </label>
+      <div className="cardBody">
+        <div className="grid">
+          <div className="field">
+            <div className="labelRow">
+              <label>Optimization mode</label>
+              <span className="hint">Used by the backend script</span>
+            </div>
+            <select
+              value={answers.optim}
+              onChange={(e) => setAnswers((a) => ({ ...a, optim: e.target.value }))}
+            >
+              <option value="speed">speed</option>
+              <option value="distance">distance</option>
+            </select>
+          </div>
 
-      <div style={{ marginTop: 20, display: "flex", gap: 8 }}>
-        <button onClick={() => nav("/step/3")}>Back</button>
-        <button onClick={() => nav("/review")}>
-          Review
-        </button>
+          <div className="actions">
+            <button onClick={() => nav("/step/3")}>Back</button>
+            <button className="primary" onClick={() => nav("/review")}>Review</button>
+          </div>
+        </div>
       </div>
     </div>
   );

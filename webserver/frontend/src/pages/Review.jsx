@@ -4,7 +4,6 @@ import { useWizard } from "../wizard/WizardContext.jsx";
 
 const BACKEND_URL = `${window.location.protocol}//${window.location.hostname}:5174`;
 
-
 export default function Review() {
   const nav = useNavigate();
   const { answers } = useWizard();
@@ -18,7 +17,7 @@ export default function Review() {
       const resp = await fetch(`${BACKEND_URL}/api/run`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ answers })
+        body: JSON.stringify({ answers }),
       });
       const data = await resp.json();
       setResult(data);
@@ -30,27 +29,43 @@ export default function Review() {
   }
 
   return (
-    <div>
-      <h2>Review</h2>
-      <pre style={{ background: "#f6f6f6", padding: 12, borderRadius: 8 }}>
-        {JSON.stringify(answers, null, 2)}
-      </pre>
-
-      <div style={{ display: "flex", gap: 8 }}>
-        <button onClick={() => nav("/step/2")}>Back</button>
-        <button onClick={run} disabled={running}>
-          {running ? "Running..." : "Run Script"}
-        </button>
+    <div className="card">
+      <div className="cardHeader">
+        <div>
+          <h2>Review</h2>
+          <div className="sub">Double-check everything, then run the backend script.</div>
+        </div>
+        <div className="badge">Final</div>
       </div>
 
-      {result && (
-        <div style={{ marginTop: 16 }}>
-          <h3>Result</h3>
-          <pre style={{ background: "#f6f6f6", padding: 12, borderRadius: 8 }}>
-            {JSON.stringify(result, null, 2)}
-          </pre>
+      <div className="cardBody">
+        <div className="grid">
+          <div className="field">
+            <div className="labelRow">
+              <label>Current answers</label>
+              <span className="hint">Sent to /api/run</span>
+            </div>
+            <pre>{JSON.stringify(answers, null, 2)}</pre>
+          </div>
+
+          <div className="actions">
+            <button onClick={() => nav("/step/2")}>Back</button>
+            <button className="primary" onClick={run} disabled={running}>
+              {running ? "Running..." : "Run Script"}
+            </button>
+          </div>
+
+          {result && (
+            <div className="field">
+              <div className="labelRow">
+                <label>Result</label>
+                <span className="hint">{result.ok ? "Success" : "Error"}</span>
+              </div>
+              <pre>{JSON.stringify(result, null, 2)}</pre>
+            </div>
+          )}
         </div>
-      )}
+      </div>
     </div>
   );
 }

@@ -7,22 +7,35 @@ export default function Step1() {
   const { answers, setAnswers } = useWizard();
 
   return (
-    <div>
-      <h2>Step 1: Choose mode</h2>
+    <div className="card">
+      <div className="cardHeader">
+        <div>
+          <h2>Choose mode</h2>
+          <div className="sub">Pick whether this device will act as a gateway or a client.</div>
+        </div>
+        <div className="badge">Step 1</div>
+      </div>
 
-      <label>
-        Mode:&nbsp;
-        <select
-          value={answers.mode}
-          onChange={(e) => setAnswers((a) => ({ ...a, mode: e.target.value }))}
-        >
-          <option value="gateway">gateway</option>
-          <option value="client">client</option>
-        </select>
-      </label>
+      <div className="cardBody">
+        <div className="grid">
+          <div className="field">
+            <div className="labelRow">
+              <label>Mode</label>
+              <span className="hint">Affects how the script configures networking</span>
+            </div>
+            <select
+              value={answers.mode}
+              onChange={(e) => setAnswers((a) => ({ ...a, mode: e.target.value }))}
+            >
+              <option value="gateway">gateway</option>
+              <option value="client">client</option>
+            </select>
+          </div>
 
-      <div style={{ marginTop: 20 }}>
-        <button onClick={() => nav("/step/2")}>Next</button>
+          <div className="actions">
+            <button className="primary" onClick={() => nav("/step/2")}>Next</button>
+          </div>
+        </div>
       </div>
     </div>
   );
