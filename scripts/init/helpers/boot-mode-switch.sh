@@ -40,7 +40,7 @@ if [[ $(systemctl is-enabled "$GW") == "enabled" || $(systemctl is-enabled "$CL"
   /usr/local/bin/disp_setup.sh || true
   i=0
   while true; do
-    /usr/local/bin/disp_setup_timer.sh $((60-$i))
+    /usr/local/bin/disp_setup_timer.sh $((60-$i)) || true
     sleep 1
     i=$(($i+1))
         if [ $i -gt 59 ]; then
@@ -54,16 +54,22 @@ if [[ $(systemctl is-enabled "$GW") == "enabled" || $(systemctl is-enabled "$CL"
 
   if [[ $(systemctl is-enabled "$GW") == "enabled" ]]; then
     log "Starting $GW"
+    /usr/local/bin/disp_mode_gw.sh || true
+    /usr/local/bin/disp_connecting.sh || true
     nmcli connection down wifi-setup-open
     nmcli connection delete wifi-setup-open
-    /usr/local/bin/disable_mesh.sh
+    log "stopped hotspot"
     /usr/local/bin/enable_mesh_gateway.sh
+    log "launched gateway service"
   else
     log "Starting $CL"
+    /usr/local/bin/disp_mode_gw.sh || true
+    /usr/local/bin/disp_connecting.sh || true
     nmcli connection down wifi-setup-open
     nmcli connection delete wifi-setup-open
-    /usr/local/bin/disable_mesh.sh
+    log "stopped hotspot"
     /usr/local/bin/enable_mesh_client.sh
+    log "launched client service"
   fi
 
 else

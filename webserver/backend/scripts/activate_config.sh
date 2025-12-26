@@ -29,11 +29,11 @@ done
 #now we differentiate
 if [ "$MODE" == "gateway" ]; then
   #only one script active at a time
-  /usr/local/etc/zero2w_80211ah/scripts/mesh_80211s/disable_mesh.sh
-  /usr/local/etc/zero2w_80211ah/scripts/mesh_80211s/enable_mesh_gateway.sh
+  /usr/local/bin/disable_mesh.sh
+  /usr/local/bin/enable_mesh_gateway.sh
 elif [ "$MODE" == "client" ]; then
-  /usr/local/etc/zero2w_80211ah/scripts/mesh_80211s/disable_mesh.sh
-  /usr/local/etc/zero2w_80211ah/scripts/mesh_80211s/enable_mesh_client.sh
+  /usr/local/bin/disable_mesh.sh
+  /usr/local/bin/enable_mesh_client.sh
 else
   exit 1
 fi

@@ -1,7 +1,6 @@
 [Unit]
 Description=Start 80211ah mesh mode (80211s protocol)
-After=network.target start_morse.service boot-mode-switch.service
-Requires=boot-mode-switch.service
+After=boot-mode-switch.service
 ConditionPathExists=!/run/boot-mode/lock
 
 [Service]

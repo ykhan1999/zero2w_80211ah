@@ -1,2 +1,3 @@
 rm -f /run/boot-mode/lock || true
-systemctl enable --now 80211s_gateway.service
+systemctl enable 80211s_gateway.service
+systemctl start 80211s_gateway.service
