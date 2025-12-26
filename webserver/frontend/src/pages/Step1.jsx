@@ -11,7 +11,7 @@ export default function Step1() {
       <div className="cardHeader">
         <div>
           <h2>Choose mode</h2>
-          <div className="sub">Pick whether this device will act as a gateway or a client.</div>
+          <div className="sub">Please select whether to set up as a gateway (connects to your wifi) or a client (creates a hotspot)</div>
         </div>
         <div className="badge">Step 1</div>
       </div>
@@ -21,7 +21,7 @@ export default function Step1() {
           <div className="field">
             <div className="labelRow">
               <label>Mode</label>
-              <span className="hint">Affects how the script configures networking</span>
+              <span className="hint">In gateway mode, your device will use the signal from your WiFi router to extend your network. In client mode, your device will receive the extended signal and set up a hotspot for you to use.</span>
             </div>
             <select
               value={answers.mode}

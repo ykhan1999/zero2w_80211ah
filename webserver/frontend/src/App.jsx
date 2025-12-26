@@ -5,6 +5,7 @@ import Step2 from "./pages/Step2.jsx";
 import Step3 from "./pages/Step3.jsx";
 import Step4 from "./pages/Step4.jsx";
 import Review from "./pages/Review.jsx";
+import Applying from "./pages/Applying.jsx";
 
 function stepFromPath(pathname) {
   if (pathname.startsWith("/step/1")) return 1;
@@ -23,8 +24,7 @@ export default function App() {
     <div className="container">
       <div className="topbar">
         <div className="brand">
-          <h1>Wizard Runner</h1>
-          <p>Configure WiFi + HaLow settings, then run the backend script.</p>
+          <h1>ExtendFi</h1>
         </div>
         {step && <div className="badge">Step {Math.min(step, 4)} / 4</div>}
       </div>
@@ -36,6 +36,7 @@ export default function App() {
         <Route path="/step/3" element={<Step3 />} />
         <Route path="/step/4" element={<Step4 />} />
         <Route path="/review" element={<Review />} />
+        <Route path="/applying" element={<Applying />} />
         <Route path="*" element={<div className="card"><div className="cardBody">Not found</div></div>} />
       </Routes>
     </div>

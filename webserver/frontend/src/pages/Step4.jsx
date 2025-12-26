@@ -21,7 +21,7 @@ export default function Step4() {
           <div className="field">
             <div className="labelRow">
               <label>Optimization mode</label>
-              <span className="hint">Used by the backend script</span>
+              <span className="hint">Distance mode will allow for connections of up to 1km but may be slower, whereas speed mode allows connections up to 300-500 meters at a faster throughput.</span>
             </div>
             <select
               value={answers.optim}

@@ -14,7 +14,7 @@ export default function Step3() {
       <div className="cardHeader">
         <div>
           <h2>HaLow credentials</h2>
-          <div className="sub">Choose the HaLow network name and a password (min 8 chars).</div>
+          <div className="sub">Choose a name and password for the HaLow network. All connected devices will use this name and password to talk to each other.</div>
         </div>
         <div className="badge">Step 3</div>
       </div>
