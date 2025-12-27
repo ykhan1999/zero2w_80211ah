@@ -30,6 +30,9 @@ nmcli connection modify wifi-setup-open \
   ipv4.method auto \
   ipv6.method disabled
 
+nmcli connection modify wifi-setup-open ipv4.dns "10.42.0.1"
+nmcli connection modify wifi-setup-open ipv4.ignore-auto-dns yes
+
 nmcli connection up wifi-setup-open
 
 # Start webserver right away if not already started
