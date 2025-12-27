@@ -20,7 +20,6 @@ no-dhcp-interface=wlan0
 # Bind only on the AP interface + IP
 interface=wlan0
 bind-interfaces
-listen-address=10.42.0.1
 
 # Don't use /etc/hosts or upstream resolv.conf
 no-hosts
