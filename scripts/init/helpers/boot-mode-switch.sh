@@ -32,10 +32,13 @@ nmcli connection modify wifi-setup-open \
 
 nmcli connection up wifi-setup-open
 
-# Start webserver right away
+# Start webserver right away if not already started
 log "Starting webserver services: $WEB_FRONTEND $WEB_BACKEND"
 systemctl enable --now "$WEB_FRONTEND" "$WEB_BACKEND" || true
+# bring up dns redirect
+dnsmasq --conf-file=/etc/dnsmasq.d/setup-dns-only.conf || true
 
+#if gateway or client already enabled, give the user some time to reconfigure if desired, otherwise continue with previous settings
 if [[ $(systemctl is-enabled "$GW") == "enabled" || $(systemctl is-enabled "$CL") == "enabled" ]]; then
   i=0
   while true; do
@@ -53,10 +56,13 @@ if [[ $(systemctl is-enabled "$GW") == "enabled" || $(systemctl is-enabled "$CL"
         fi
   done
 
+  #stop server and dns redirect
   log "Mesh mode enabled. Stopping webserver..."
   systemctl stop "$WEB_FRONTEND" "$WEB_BACKEND" || true
   systemctl disable "$WEB_FRONTEND" "$WEB_BACKEND" || true
+  pkill dnsmasq
 
+  #enable gateway or client depending on what was configured, reboot if both are configured
   if [[ $(systemctl is-enabled "$GW") == "enabled" ]]; then
     log "Starting $GW"
     /usr/local/bin/disp_mode_gw.sh || true
@@ -79,6 +85,7 @@ if [[ $(systemctl is-enabled "$GW") == "enabled" || $(systemctl is-enabled "$CL"
     reboot
   fi
 
+#logic for first time setup
 else
 
   log "Neither $GW nor $CL is enabled. Keeping webserver running."
