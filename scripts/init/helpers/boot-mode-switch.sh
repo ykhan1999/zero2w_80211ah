@@ -37,14 +37,19 @@ log "Starting webserver services: $WEB_FRONTEND $WEB_BACKEND"
 systemctl enable --now "$WEB_FRONTEND" "$WEB_BACKEND" || true
 
 if [[ $(systemctl is-enabled "$GW") == "enabled" || $(systemctl is-enabled "$CL") == "enabled" ]]; then
-  /usr/local/bin/disp_setup.sh || true
   i=0
   while true; do
-    /usr/local/bin/disp_setup_timer.sh $((60-$i)) || true
+    /usr/local/bin/disp_setup_timer.sh $((100-$i)) || true
     sleep 1
     i=$(($i+1))
-        if [ $i -gt 59 ]; then
-            break
+        if [ $i -gt 99 ]; then
+          if [[ $(systemctl is-enabled "$GW") == "enabled" ]]; then
+            /usr/local/bin/disp_custom_msg.sh --line4 "Starting gateway..."
+          fi
+          if [[ $(systemctl is-enabled "$CL") == "enabled" ]]; then
+            /usr/local/bin/disp_custom_msg.sh --line4 "Starting client..."
+          fi
+        break
         fi
   done
 
@@ -61,7 +66,7 @@ if [[ $(systemctl is-enabled "$GW") == "enabled" || $(systemctl is-enabled "$CL"
     log "stopped hotspot"
     /usr/local/bin/enable_mesh_gateway.sh &
     log "launched gateway service"
-  else
+  elif [[ $(systemctl is-enabled "$CL") == "enabled" ]]; then
     log "Starting $CL"
     /usr/local/bin/disp_mode_gw.sh || true
     /usr/local/bin/disp_connecting.sh || true
@@ -70,11 +75,12 @@ if [[ $(systemctl is-enabled "$GW") == "enabled" || $(systemctl is-enabled "$CL"
     log "stopped hotspot"
     /usr/local/bin/enable_mesh_client.sh &
     log "launched client service"
+  else
+    reboot
   fi
 
 else
 
-  /usr/local/bin/disp_setup.sh || true
   log "Neither $GW nor $CL is enabled. Keeping webserver running."
 
 fi
