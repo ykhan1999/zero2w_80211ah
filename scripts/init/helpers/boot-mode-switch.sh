@@ -36,7 +36,8 @@ nmcli connection up wifi-setup-open
 log "Starting webserver services: $WEB_FRONTEND $WEB_BACKEND"
 systemctl enable --now "$WEB_FRONTEND" "$WEB_BACKEND" || true
 # bring up dns redirect
-dnsmasq --conf-file=/etc/dnsmasq.d/setup-dns-only.conf || true
+systemctl enable unbound.service
+systemctl start unbound.service
 
 #if gateway or client already enabled, give the user some time to reconfigure if desired, otherwise continue with previous settings
 if [[ $(systemctl is-enabled "$GW") == "enabled" || $(systemctl is-enabled "$CL") == "enabled" ]]; then
@@ -60,7 +61,9 @@ if [[ $(systemctl is-enabled "$GW") == "enabled" || $(systemctl is-enabled "$CL"
   log "Mesh mode enabled. Stopping webserver..."
   systemctl stop "$WEB_FRONTEND" "$WEB_BACKEND" || true
   systemctl disable "$WEB_FRONTEND" "$WEB_BACKEND" || true
-  pkill dnsmasq
+  systemctl stop unbound.service
+  systemctl disable unbound.service
+  pkill -f "unbound"
 
   #enable gateway or client depending on what was configured, reboot if both are configured
   if [[ $(systemctl is-enabled "$GW") == "enabled" ]]; then

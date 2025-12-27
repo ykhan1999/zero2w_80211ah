@@ -5,30 +5,24 @@ SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
 
 #install dnsmasq for redirects
 sudo apt update
-sudo apt install dnsmasq
-
-#disable global config
-sudo systemctl stop dnsmasq
-sudo systemctl disable dnsmasq
+sudo apt install unbound
 
 #setup DNS redirect config
 sudo tee /etc/dnsmasq.d/setup-dns-only.conf >/dev/null <<'EOF'
-# DNS only (no DHCP)
-port=53
-no-dhcp-interface=wlan0
+server:
+  interface: 0.0.0.0
+  port: 53
+  access-control: 0.0.0.0/0 allow
 
-# Bind only on the AP interface + IP
-interface=wlan0
-bind-interfaces
+  do-ip4: yes
+  do-ip6: no
 
-# Don't use /etc/hosts or upstream resolv.conf
-no-hosts
-no-resolv
-
-# ONLY redirect this hostname
-address=/setup.com/10.42.0.1
-address=/www.setup.com/10.42.0.1
+  # Don't rely on upstream DNS at all
+  local-zone: "." redirect
+  local-data: ". A 10.42.0.1"
 EOF
+
+systemctl restart unbound
 
 #install node.js files
 cd ${SCRIPT_DIR}/../../webserver/frontend/
