@@ -77,9 +77,6 @@ if [[ "$MODE" == "gateway" ]]; then
     #bring up connection
     nmcli connection up wifi-client-${ssid}
 
-    #create a flag telling the system gateway mode is on
-    echo "gateway=active" > /usr/local/etc/80211s_gateway_status.txt
-
     #Enable NAT forwarding
     /usr/local/bin/toggle_NAT_80211s.sh --on --gateway
 

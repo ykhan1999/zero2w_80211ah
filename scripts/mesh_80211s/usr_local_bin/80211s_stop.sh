@@ -9,8 +9,6 @@ psk=""
 pkill -f 'wpa_supplicant_s1g'
 
 ###for gateway
-#deactivate NAT forwarding
-FILE="/usr/local/etc/80211s_gateway_status.txt"
 #stop serving DNS names
 pkill -f "python3 -m http.server" || true
 systemctl stop 80211s_serve_dns || true
@@ -22,9 +20,6 @@ systemctl disable 80211s_serve_dns || true
 #remove static IP daemon and DHCP server
 rm -r /etc/systemd/network/10-wlan1.network || true
 systemctl restart systemd-networkd || true
-
-#disable gateway flag
-rm -r /usr/local/etc/80211s_gateway_status.txt || true
 
 #remove netman connection
 nmcli connection down wifi-client-${ssid} || true
