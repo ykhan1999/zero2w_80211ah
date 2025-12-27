@@ -3,27 +3,6 @@ sudo apt install -y npm
 
 SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
 
-#install dnsmasq for redirects
-sudo apt update
-sudo apt install unbound
-
-#setup DNS redirect config
-sudo tee /etc/dnsmasq.d/setup-dns-only.conf >/dev/null <<'EOF'
-server:
-  interface: 0.0.0.0
-  port: 53
-  access-control: 0.0.0.0/0 allow
-
-  do-ip4: yes
-  do-ip6: no
-
-  # Don't rely on upstream DNS at all
-  local-zone: "." redirect
-  local-data: ". A 10.42.0.1"
-EOF
-
-systemctl restart unbound
-
 #install node.js files
 cd ${SCRIPT_DIR}/../../webserver/frontend/
 npm install
