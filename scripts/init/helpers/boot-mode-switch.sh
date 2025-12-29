@@ -71,7 +71,7 @@ if [[ $(systemctl is-enabled "$GW") == "enabled" || $(systemctl is-enabled "$CL"
     log "launched gateway service"
   elif [[ $(systemctl is-enabled "$CL") == "enabled" ]]; then
     log "Starting $CL"
-    /usr/local/bin/disp_mode_gw.sh || true
+    /usr/local/bin/disp_mode_client.sh || true
     /usr/local/bin/disp_connecting.sh || true
     nmcli connection down wifi-setup-open
     nmcli connection delete wifi-setup-open
