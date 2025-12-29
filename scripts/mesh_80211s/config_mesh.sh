@@ -97,14 +97,14 @@ echo "Updated SSID and password in $CONFIG_FILE_2" and "$CONFIG_FILE_3"
 CONFIG_FILE=$SCRIPT_DIR/config/halow_80211s.conf
 if [[ "$OPTIM" == "speed" ]]; then
   sed -i \
-    -e "s/channel=\"[^\"]*\"/channel=28/" \
-    -e "s/op_class=\"[^\"]*\"/op_class=71/" \
+    -e "s/^[[:space:]]*channel[[:space:]]*=.*/    channel=28/" \
+    -e "s/^[[:space:]]*op_class[[:space:]]*=.*/    op_class=71/" \
     "$CONFIG_FILE"
 fi
 if [[ "$OPTIM" == "distance" ]]; then
   sed -i \
-    -e "s/channel=\"[^\"]*\"/channel=27/" \
-    -e "s/op_class=\"[^\"]*\"/op_class=68/" \
+    -e "s/^[[:space:]]*channel[[:space:]]*=.*/    channel=27/" \
+    -e "s/^[[:space:]]*op_class[[:space:]]*=.*/    op_class=68/" \
     "$CONFIG_FILE"
 fi
 
