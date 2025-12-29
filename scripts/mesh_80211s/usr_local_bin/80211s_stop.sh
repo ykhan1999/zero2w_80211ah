@@ -6,7 +6,7 @@ psk=""
 
 ###for gateway or client
 #Stop wpa_supplicant
-pkill -f 'wpa_supplicant_s1g'
+pkill -f 'wpa_supplicant_s1g' || true
 
 ###for gateway
 #stop serving DNS names
