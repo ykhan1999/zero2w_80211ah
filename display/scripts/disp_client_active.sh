@@ -5,6 +5,7 @@ oled +3  "NO INTERNET"
 oled s
 prev_conn=""
 prev_signal=""
+prev_internet=""
 DEBUG="1"
 CONNECTED="NO GATEWAY"
 
@@ -29,8 +30,6 @@ while true; do
       signalstatus="$Signal"
     fi
   fi
-  #get number of peers
-  Peers=$(journalctl -u 80211s_serve_dns.service | tail -n 10 | grep -Po "192\\.168\\.50\\.[0-9]+" | sort -u | wc -l)
   #get internet and connectivity status
   if [[ "$i" -ge 14 ]]; then
     if ping -c1 -W2 8.8.8.8 &>/dev/null; then
@@ -38,7 +37,7 @@ while true; do
     else
       INTERNET="NO INTERNET"
     fi
-    if ip -4 addr show wlan1 | grep -q "inet "; then
+    if ping -c1 -W2 192.160.50.1 &>/dev/null; then
       CONNECTED="GATEWAY OK"
     else
       CONNECTED="NO GATEWAY"
@@ -46,7 +45,7 @@ while true; do
     i=0
   fi
   #refresh screen only with change
-  if [ "$CONNECTED" != "$prev_conn" ] || [ "$signalstatus" != "$prev_signal" ] || [ "$Peers" != "$prev_peers" ]; then
+  if [ "$CONNECTED" != "$prev_conn" ] || [ "$signalstatus" != "$prev_signal" ] || [ "$INTERNET" != "$prev_internet" ]; then
     oled +3 "$INTERNET"
     oled +4 "Signal: $signalstatus"
     oled +2 "$CONNECTED"
@@ -55,6 +54,7 @@ while true; do
   #store new variables to check for change
   prev_conn="$CONNECTED"
   prev_signal="$signalstatus"
+  prev_internet="$INTERNET"
   #loop timer
   sleep 1
   i=$(($i+1))
