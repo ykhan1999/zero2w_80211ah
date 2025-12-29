@@ -85,6 +85,26 @@ if [[ "$MODE" == "gateway" ]]; then
     systemctl restart systemd-networkd
 fi
 
+#CLIENT MODE: Bring up 2.4ghz hotspot
+if [[ "$MODE" == "client" ]]; then
+  #####Create networkmanager connection
+  nmcli connection add \
+    type wifi \
+    ifname wlan0 \
+    con-name wifi-ap-${ssid} \
+    autoconnect no \
+    ssid "$ssid"
+
+  nmcli connection modify wifi-ap-${ssid} \
+    802-11-wireless.mode ap \
+    wifi-sec.key-mgmt wpa-psk \
+    wifi-sec.psk "$psk" \
+    ipv4.method auto \
+    ipv6.method disabled
+
+  nmcli connection up wifi-ap-${ssid}
+fi
+
 #start wpa_supplicant
 wpa_supplicant_s1g -D nl80211 -i wlan1 -c /usr/local/etc/halow_80211s.conf -B
 
@@ -120,24 +140,6 @@ fi
 
 #Additional settings for client conf
 if [[ "$MODE" == "client" ]]; then
-
-  #####Create networkmanager connection
-  nmcli connection add \
-    type wifi \
-    ifname wlan0 \
-    con-name wifi-ap-${ssid} \
-    autoconnect no \
-    ssid "$ssid"
-
-  nmcli connection modify wifi-ap-${ssid} \
-    802-11-wireless.mode ap \
-    wifi-sec.key-mgmt wpa-psk \
-    wifi-sec.psk "$psk" \
-    ipv4.method auto \
-    ipv6.method disabled
-
-  nmcli connection up wifi-ap-${ssid}
-
   ######enable NAT forwarding
   /usr/local/bin/toggle_NAT_80211s.sh --on --client
 
