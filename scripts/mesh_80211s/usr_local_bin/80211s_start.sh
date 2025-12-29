@@ -129,12 +129,18 @@ if [[ "$MODE" == "gateway" ]]; then
   fi
   #notify user the service is active
   /usr/local/bin/disp_gateway_active.sh > /dev/null 2>&1 &
-  #make sure we have an IP and show on display whether we do
+  #make sure we have an IP on wlan1
   while true; do
     if ! ip addr show wlan1 | grep -q "inet "; then
       systemctl restart systemd-networkd
     fi
-    sleep 1
+  #same for wlan0
+    sleep 10
+    if ! ip addr show wlan0 | grep -q "inet "; then
+      systemctl restart systemd-networkd
+      nmcli connection up wifi-client-${ssid}
+    fi
+    sleep 20
   done
 fi
 
@@ -154,11 +160,16 @@ if [[ "$MODE" == "client" ]]; then
     if ! ip addr show wlan1 | grep -q "inet "; then
         dhclient -i wlan1 || true
     fi
-    #at start and every minute, check that our dns servers are correct, and update if not
+    #at start and every minute, perform several checks
     counter=$(($counter + 1))
     if [[ $counter -ge 60 ]]; then
       #reset counter
       counter=0
+      #if hotspot is not active, re-enable it
+        if ! ip addr show wlan0 | grep -q "inet "; then
+          nmcli connection up wifi-ap-${ssid}
+        fi
+      ##get DNS server from host
       #init variables to connect to host
       HOST="192.168.50.1"
       PORT=8080
