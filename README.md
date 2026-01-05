@@ -59,8 +59,6 @@ Because we are using the main I2C interface pins for our MM6108 module, we have 
 
 ### Step 2: Installing the kernel & drivers
 
-**TBD - to provide option of custom image to flash**
-
 1. Using your preferred imaging tool (ex., Raspberry Pi Imager), flash the Pi Zero 2W with the official 2025-10-01 Raspberry Pi OS Lite release: https://downloads.raspberrypi.com/raspios_lite_arm64/images/raspios_lite_arm64-2025-10-02/2025-10-01-raspios-trixie-arm64-lite.img.xz
 
 Note: You will want to set up SSH and WiFi if you plan to configure headlessly. This is fine, the scripts will remove the preconfigured WiFi info once setup completes. 
@@ -70,7 +68,7 @@ Note: You will want to set up SSH and WiFi if you plan to configure headlessly. 
 3. Clone the repo
 ```bash
 sudo apt-get update
-sudo apt install git
+sudo apt install -y git=1:2.47.3-0+deb13u1
 git clone https://github.com/ykhan1999/zero2w_80211ah
 ```
 

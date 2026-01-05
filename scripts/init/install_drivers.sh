@@ -1,6 +1,15 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
+#update package cache
+sudo apt-get update
+
+#install dependencies
+sudo apt-get install -y libnl-route-3-dev=3.7.0-2
+sudo apt-get install -y libnl-3-dev=3.7.0-2
+sudo apt-get install -y libnl-genl-3-dev=3.7.0-2
+sudo apt-get install -y openssl=3.5.4-1~deb13u1+rpt1
+
 ### Download assets
 #get latest release
 REPO="ykhan1999/zero2w_80211ah"
@@ -11,28 +20,6 @@ URL=$(cat "/tmp/url")
 # Download assets from the latest release (filenames must be consistent across releases)
 assets=(
   hostapd.deb
-)
-
-for a in "${assets[@]}"; do
-  echo "Downloading ${a} from latest release…"
-  wget "${URL}/${a}"
-done
-
-sudo apt-get update
-for a in "${assets[@]}"; do
-  echo "Installing ${a} from latest release…"
-  sudo apt install -y ./${a}
-done
-
-#for some reason, wpa_supplicant_s1g and morse_firmware don't play nice with package manager
-
-#install deps
-sudo apt-get install -y libnl-route-3-dev
-sudo apt-get install -y libnl-3-dev
-sudo apt-get install -y libnl-genl-3-dev
-sudo apt-get install -y openssl
-
-assets=(
   wpa_supplicant.deb
   morse_cli.deb
   morse_firmware.deb
@@ -43,10 +30,9 @@ for a in "${assets[@]}"; do
   wget "${URL}/${a}"
 done
 
-sudo apt-get update
 for a in "${assets[@]}"; do
   echo "Installing ${a} from latest release…"
-  sudo dpkg -i ./${a}
+  sudo apt install -y ./${a}
 done
 
 sudo depmod -a

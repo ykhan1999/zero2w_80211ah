@@ -1,28 +1,12 @@
 #!/usr/bin/env bash
 
-# ----------- FIRST TIME CONFIG -------------
+#update package cache
+sudo apt-get update
 
-#1. Is python3 installed?
-PKG="python3"
+#install dependencies for mesh scripts
+sudo apt install -y isc-dhcp-client=4.4.3-P1-8
 
-if ! dpkg -s "$PKG" >/dev/null 2>&1; then
-  echo "First time setup: installing $PKG now..."
-  sudo apt-get update -y
-  sudo apt-get install -y "$PKG"
-  echo "$PKG installed!"
-fi
-
-#2. Is dhclient installed?
-PKG="isc-dhcp-client"
-
-if ! dpkg -s "$PKG" >/dev/null 2>&1; then
-  echo "First time setup: installing $PKG now..."
-  sudo apt-get update -y
-  sudo apt-get install -y "$PKG"
-  echo "$PKG installed!"
-fi
-
-#3. Is IPv4 forwarding enabled at the kernel level?
+#Enable IPv4 forwarding at kernel level
 
 CONF="/etc/sysctl.d/99-ipforward.conf"
 LINE="net.ipv4.ip_forward=1"
@@ -35,7 +19,7 @@ if [ ! -f "$CONF" ] || ! grep -qx "$LINE" "$CONF"; then
   echo "ipv4 forwarding capability enabled!"
 fi
 
-#copy scripts
+#copy scripts to system directories
 SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
 
 sudo cp ${SCRIPT_DIR}/../mesh_80211s/disable_mesh.sh /usr/local/bin/
