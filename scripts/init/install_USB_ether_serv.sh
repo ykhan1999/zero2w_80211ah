@@ -12,26 +12,22 @@ sudo sed -i '1{
 /modules-load=dwc2,g_ether/! s/$/ modules-load=dwc2,g_ether/
 }' /boot/firmware/cmdline.txt
 
-#create systemd service to bring up on start if we can
-sudo tee /etc/systemd/system/usb0iface.service >/dev/null <<'EOF'
-[Unit]
-Description=Bring up usb0
-After=systemd-modules-load.service
+#enable shared connection through NetworkManager for clients
+nmcli connection add \
+    type ethernet \
+    ifname usb0 \
+    con-name usb0-host \
+    autoconnect yes
 
-[Service]
-Type=oneshot
-ExecStart=/usr/sbin/ip link set up usb0
+#bring up connection now if possible
+nmcli con up usb0-host || true
 
-[Install]
-WantedBy=multi-user.target
-EOF
+#add udev rule to try to bring up the connection when any usb device connects
+sudo cp ${SCRIPT_DIR}/helpers/USB-trigger.sh /usr/local/bin/USB-trigger.sh
+sudo chmod +x /usr/local/bin/USB-trigger.sh
+sudo cp ${SCRIPT_DIR}/helpers/99-usb-connect.rules /etc/udev/rules.d/
+sudo udevadm control --reload-rules
+sudo udevadm trigger
 
-#enable service
-sudo systemctl enable --now usb0iface.service
-
-#enable DHCP server & static IP
-sudo cp ${SCRIPT_DIR}/helpers/11-usb0.network /etc/systemd/network/11-usb0.network
-sudo systemctl enable --now systemd-networkd
-
-#reboot
+#reboot to apply changes
 sudo reboot
