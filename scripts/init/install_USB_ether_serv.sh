@@ -19,6 +19,10 @@ sudo nmcli connection add \
     con-name usb0-host \
     autoconnect yes
 
+sudo nmcli connection modify usb0-host \
+    ipv4.method shared \
+    ipv6.method disabled
+
 #bring up connection now if possible
 sudo nmcli con up usb0-host || true
 
