@@ -1,6 +1,7 @@
 flush ruleset
 define wan = "wlan1"
 define lan = "wlan0"
+define lan2 = "usb0"
 
 table inet filter {
   chain input {
@@ -22,9 +23,11 @@ table inet filter {
 
     # Allow forwarding from LAN to WAN
     iifname $lan oifname $wan accept
+    iifname $lan2 oifname $wan accept
 
     # Allow forwarding from WAN to LAN (for all ports)
     iifname $wan oifname $lan accept
+    iifname $wan oifname $lan2 accept
   }
 }
 
