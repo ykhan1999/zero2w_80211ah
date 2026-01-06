@@ -13,14 +13,14 @@ sudo sed -i '1{
 }' /boot/firmware/cmdline.txt
 
 #enable shared connection through NetworkManager for clients
-nmcli connection add \
+sudo nmcli connection add \
     type ethernet \
     ifname usb0 \
     con-name usb0-host \
     autoconnect yes
 
 #bring up connection now if possible
-nmcli con up usb0-host || true
+sudo nmcli con up usb0-host || true
 
 #add udev rule to try to bring up the connection when any usb device connects
 sudo cp ${SCRIPT_DIR}/helpers/USB-trigger.sh /usr/local/bin/USB-trigger.sh
