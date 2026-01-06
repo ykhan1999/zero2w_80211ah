@@ -81,14 +81,14 @@ git clone https://github.com/ykhan1999/zero2w_80211ah
 #Wait for reboot
 ./zero2w_80211ah/scripts/init/install_mesh_helpers.sh
 ./zero2w_80211ah/scripts/init/install_display_drivers.sh
+./zero2w_80211ah/scripts/init/install_USB_ether_serv.sh
 #Wait for reboot. Can unplug device after ~30s and plug back in if it does not reboot automatically.
 ./zero2w_80211ah/scripts/init/install_webserver.sh
-#Wait for reboot
 ```
 
 ### Step 3: Configuration
 
-1. Once all the install scripts are run, after 2-3 minutes, you should see a WiFi network "ExtendFi". Connect to the network.
+1. Once all the install scripts are run, after 2-3 minutes, you should see a WiFi network "ExtendFi". Connect to the network. Alternatively, you may connect via USB, as the device will automatically act as a USB ethernet server - just make sure you use the usb data port and not the power only port.
 
 2. Go to http://10.42.0.1:5173
 
