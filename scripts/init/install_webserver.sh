@@ -32,5 +32,8 @@ sudo nmcli con delete preconfigured || true
 sudo mkdir -p /usr/local/etc/zero2w_80211ah
 sudo cp -r ${SCRIPT_DIR}/../../* /usr/local/etc/zero2w_80211ah
 
+#shorten boot time
+sudo systemctl disable NetworkManager-wait-online.service
+
 cd -
 cd -
