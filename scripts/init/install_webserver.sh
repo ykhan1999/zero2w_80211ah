@@ -35,5 +35,8 @@ sudo cp -r ${SCRIPT_DIR}/../../* /usr/local/etc/zero2w_80211ah
 #shorten boot time
 sudo systemctl disable NetworkManager-wait-online.service
 
-cd -
-cd -
+#secure device by disabling SSH access
+sudo systemctl disable sshd
+
+#reboot to show webserver
+sudo reboot
