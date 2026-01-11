@@ -6,7 +6,7 @@ oled s
 prev_internet=""
 prev_signal=""
 prev_peers=""
-DEBUG="1"
+DEBUG=""
 INTERNET="NO INTERNET"
 
 i=15
@@ -18,12 +18,22 @@ while true; do
   if [ "$DEBUG" -eq "1" ]; then
     signalstatus="$Signal"
   else
-    if [ "$Signal" -gt "-40" ]; then
-      signalstatus="Strong"
-    elif [ "$Signal" -gt "-80" ] && [ "$Signal" -lt "-39" ]; then
-      signalstatus="Moderate"
-    elif [ "$Signal" -gt "-100" ] && [ "$Signal" -lt "-79" ]; then
-      signalstatus="Weak"
+    if [ "$Signal" -ge "-30" ]; then
+      signalstatus="████████"
+    elif [ "$Signal" -ge "-40" ] && [ "$Signal" -lt "-30" ]; then
+      signalstatus="███████"
+    elif [ "$Signal" -ge "-50" ] && [ "$Signal" -lt "-40" ]; then
+      signalstatus="██████"
+    elif [ "$Signal" -ge "-60" ] && [ "$Signal" -lt "-50" ]; then
+      signalstatus="█████"
+    elif [ "$Signal" -ge "-70" ] && [ "$Signal" -lt "-60" ]; then
+      signalstatus="████"
+    elif [ "$Signal" -ge "-80" ] && [ "$Signal" -lt "-70" ]; then
+      signalstatus="███"
+    elif [ "$Signal" -ge "-90" ] && [ "$Signal" -lt "-80" ]; then
+      signalstatus="██"
+    elif [ "$Signal" -ge "-100" ] && [ "$Signal" -lt "-90" ]; then
+      signalstatus="█"
     elif [ "$Signal" -lt "-100" ]; then
       signalstatus="None"
     else
