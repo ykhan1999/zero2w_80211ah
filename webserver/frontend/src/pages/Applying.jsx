@@ -10,7 +10,7 @@ export default function Applying() {
         <div>
           <h2>Applying your settings</h2>
           <div className="sub">
-            Your settings are now applying — please check your device's screen for the current status.
+            Your settings have been sent to the device — please check your device's screen for the current status.
           </div>
         </div>
         <div className="badge">Status</div>
@@ -29,7 +29,7 @@ export default function Applying() {
               fontSize: 13,
             }}
           >
-            Note - this may take up to 1 minute, and this page may go down during the process.
+            Note - once the process is completed, your device may reboot with the new settings.
           </div>
 
           <div className="actions">

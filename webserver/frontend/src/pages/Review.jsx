@@ -85,7 +85,6 @@ export default function Review() {
           <div className="field">
             <div className="labelRow">
               <label>Settings summary</label>
-              <span className="hint">No raw JSON—just the essentials ✨</span>
             </div>
 
             <div style={{ display: "flex", gap: 8, flexWrap: "wrap", marginBottom: 10 }}>
@@ -115,8 +114,7 @@ export default function Review() {
           {error && (
             <div className="field">
               <div className="labelRow">
-                <label>Couldn’t apply settings</label>
-                <span className="hint">Check backend + network</span>
+                <label>Settings applied - please wait 1 minute and check device display</label>
               </div>
               <pre>{error}</pre>
             </div>
