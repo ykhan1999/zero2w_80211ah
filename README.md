@@ -90,7 +90,7 @@ git clone https://github.com/ykhan1999/zero2w_80211ah
 
 1. Once all the install scripts are run, after 2-3 minutes, you should see a WiFi network "ExtendFi". Connect to the network. Alternatively, you may connect via USB, as the device will automatically act as a USB ethernet server - just make sure you use the usb data port and not the power only port.
 
-2. Go to http://10.42.0.1:5173
+2. Go to http://10.42.0.1
 
 3. Follow the prompts to configure as either a gateway or a client.
 
