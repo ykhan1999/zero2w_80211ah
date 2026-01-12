@@ -81,9 +81,11 @@ git clone https://github.com/ykhan1999/zero2w_80211ah
 #Wait for reboot
 ./zero2w_80211ah/scripts/init/install_mesh_helpers.sh
 ./zero2w_80211ah/scripts/init/install_display_drivers.sh
+#Wait for reboot
 ./zero2w_80211ah/scripts/init/install_USB_ether_serv.sh
-#Wait for reboot. Can unplug device after ~30s and plug back in if it does not reboot automatically.
+#Wait for reboot
 ./zero2w_80211ah/scripts/init/install_webserver.sh
+#On reboot, the webserver should be up, proceed to step 3
 ```
 
 ### Step 3: Configuration
