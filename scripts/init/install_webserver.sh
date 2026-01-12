@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-sudo apt-cache update
+sudo apt update
 sudo apt install -y npm=9.2.0~ds1-3
 
 SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
