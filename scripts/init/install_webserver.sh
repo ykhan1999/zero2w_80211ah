@@ -22,7 +22,7 @@ sudo chmod +x /usr/local/bin/boot-mode-switch.sh
 
 sudo cp ${SCRIPT_DIR}/helpers/boot-mode-switch.service /etc/systemd/system/
 sudo systemctl daemon-reload
-sudo systemctl enable --now boot-mode-switch.service
+sudo systemctl enable --now boot-mode-switch.service &
 
 #bring down preconfigured wifi if flashed using rpi imager
 sudo nmcli con down preconfigured || true
