@@ -29,10 +29,3 @@ for a in "${assets[@]}"; do
   echo "Downloading ${a} from latest release…"
   wget "${URL}/${a}"
 done
-
-for a in "${assets[@]}"; do
-  echo "Installing ${a} from latest release…"
-  sudo apt install -y ./${a}
-done
-
-sudo depmod -a

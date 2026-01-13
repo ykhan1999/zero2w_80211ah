@@ -76,7 +76,8 @@ git clone https://github.com/ykhan1999/zero2w_80211ah
 ```bash
 ./zero2w_80211ah/scripts/init/install_kernel.sh
 #Wait for system reboot before proceeding
-./zero2w_80211ah/scripts/init/install_drivers.sh
+./zero2w_80211ah/scripts/init/install_drivers_1.sh
+./zero2w_80211ah/scripts/init/install_drivers_2.sh
 ./zero2w_80211ah/scripts/init/install_SPI_overlays.sh
 #Wait for reboot
 ./zero2w_80211ah/scripts/init/install_mesh_helpers.sh
