@@ -42,6 +42,10 @@ if [[ "$MODE" == "client" ]]; then
   /usr/local/bin/disp_connecting.sh > /dev/null 2>&1
 fi
 
+#stop config webserver if running
+systemctl stop webserver-frontend.service webserver-backend.service || true
+systemctl disable webserver-frontend.service webserver-backend.service || true
+
 #restart driver module for fresh bringup
 systemctl stop start_morse
 modprobe -r morse

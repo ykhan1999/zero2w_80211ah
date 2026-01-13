@@ -54,11 +54,6 @@ if [[ $(systemctl is-enabled "$GW") == "enabled" || $(systemctl is-enabled "$CL"
         fi
   done
 
-  #stop server and dns redirect
-  log "Mesh mode enabled. Stopping webserver..."
-  systemctl stop "$WEB_FRONTEND" "$WEB_BACKEND" || true
-  systemctl disable "$WEB_FRONTEND" "$WEB_BACKEND" || true
-
   #enable gateway or client depending on what was configured, reboot if both are configured
   if [[ $(systemctl is-enabled "$GW") == "enabled" ]]; then
     log "Starting $GW"
