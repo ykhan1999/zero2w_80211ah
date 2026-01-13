@@ -35,7 +35,13 @@ while true; do
     elif [ "$Signal" -ge "-100" ] && [ "$Signal" -lt "-90" ]; then
       signalstatus="*"
     elif [ "$Signal" -lt "-100" ]; then
-      signalstatus="None"
+      sleep 1
+      if [ "$Signal" -lt "-100" ]; then
+        sleep 1
+        if [ "$Signal" -lt "-100" ]; then
+        signalstatus="None"
+        fi
+      fi
     else
       signalstatus="$Signal"
     fi
