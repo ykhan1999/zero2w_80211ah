@@ -19,21 +19,21 @@ while true; do
     signalstatus="$Signal"
   else
     if [ "$Signal" -ge "-30" ]; then
-      signalstatus="████████"
+      signalstatus="********"
     elif [ "$Signal" -ge "-40" ] && [ "$Signal" -lt "-30" ]; then
-      signalstatus="███████"
+      signalstatus="*******"
     elif [ "$Signal" -ge "-50" ] && [ "$Signal" -lt "-40" ]; then
-      signalstatus="██████"
+      signalstatus="******"
     elif [ "$Signal" -ge "-60" ] && [ "$Signal" -lt "-50" ]; then
-      signalstatus="█████"
+      signalstatus="*****"
     elif [ "$Signal" -ge "-70" ] && [ "$Signal" -lt "-60" ]; then
-      signalstatus="████"
+      signalstatus="****"
     elif [ "$Signal" -ge "-80" ] && [ "$Signal" -lt "-70" ]; then
-      signalstatus="███"
+      signalstatus="***"
     elif [ "$Signal" -ge "-90" ] && [ "$Signal" -lt "-80" ]; then
-      signalstatus="██"
+      signalstatus="**"
     elif [ "$Signal" -ge "-100" ] && [ "$Signal" -lt "-90" ]; then
-      signalstatus="█"
+      signalstatus="*"
     elif [ "$Signal" -lt "-100" ]; then
       signalstatus="None"
     else
