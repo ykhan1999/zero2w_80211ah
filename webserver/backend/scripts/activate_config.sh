@@ -28,11 +28,18 @@ done
 
 #now we differentiate
 if [ "$MODE" == "gateway" ]; then
-  #only one script active at a time
   /usr/local/bin/disable_mesh.sh
+  /usr/local/bin/disp_mode_gw.sh || true
+  /usr/local/bin/disp_connecting.sh || true
+  nmcli connection down wifi-setup-open
+  nmcli connection delete wifi-setup-open
   /usr/local/bin/enable_mesh_gateway.sh
 elif [ "$MODE" == "client" ]; then
   /usr/local/bin/disable_mesh.sh
+  /usr/local/bin/disp_mode_client.sh || true
+  /usr/local/bin/disp_connecting.sh || true
+  nmcli connection down wifi-setup-open
+  nmcli connection delete wifi-setup-open
   /usr/local/bin/enable_mesh_client.sh
 else
   exit 1
