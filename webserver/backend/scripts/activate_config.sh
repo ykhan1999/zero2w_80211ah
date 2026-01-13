@@ -30,10 +30,13 @@ done
 if [ "$MODE" == "gateway" ]; then
   #only one script active at a time
   /usr/local/bin/disable_mesh.sh
-  /usr/local/bin/enable_mesh_gateway.sh
+  /usr/local/bin/enable_mesh_gateway.sh &
 elif [ "$MODE" == "client" ]; then
   /usr/local/bin/disable_mesh.sh
-  /usr/local/bin/enable_mesh_client.sh
+  /usr/local/bin/enable_mesh_client.sh &
 else
   exit 1
 fi
+
+systemctl stop webserver-frontend.service webserver-backend.service || true
+systemctl disable webserver-frontend.service webserver-backend.service || true
