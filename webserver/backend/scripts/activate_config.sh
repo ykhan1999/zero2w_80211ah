@@ -28,18 +28,20 @@ done
 
 #now we differentiate
 if [ "$MODE" == "gateway" ]; then
-  /usr/local/bin/disable_mesh.sh
   /usr/local/bin/disp_mode_gw.sh || true
-  /usr/local/bin/disp_connecting.sh || true
+  /usr/local/bin/disp_custom_msg.sh --line2 "Applying settings..." || true
   nmcli connection down wifi-setup-open
   nmcli connection delete wifi-setup-open
+  /usr/local/bin/disable_mesh.sh
+  /usr/local/bin/disp_connecting.sh || true
   /usr/local/bin/enable_mesh_gateway.sh
 elif [ "$MODE" == "client" ]; then
-  /usr/local/bin/disable_mesh.sh
   /usr/local/bin/disp_mode_client.sh || true
-  /usr/local/bin/disp_connecting.sh || true
+  /usr/local/bin/disp_custom_msg.sh --line2 "Applying settings..." || true
   nmcli connection down wifi-setup-open
   nmcli connection delete wifi-setup-open
+  /usr/local/bin/disable_mesh.sh
+  /usr/local/bin/disp_connecting.sh || true
   /usr/local/bin/enable_mesh_client.sh
 else
   exit 1

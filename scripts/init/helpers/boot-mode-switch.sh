@@ -12,9 +12,6 @@ log() { echo "[boot-mode-switch] $*"; }
 mkdir -p /run/boot-mode
 touch /run/boot-mode/lock
 
-#show setup prompt on screen
-/usr/local/bin/disp_setup.sh || true
-
 #start WiFi Setup
 nmcli connection down wifi-setup-open || true
 nmcli connection delete wifi-setup-open || true
@@ -38,17 +35,21 @@ systemctl enable --now "$WEB_FRONTEND" "$WEB_BACKEND" || true
 
 #if gateway or client already enabled, give the user some time to reconfigure if desired, otherwise continue with previous settings
 if [[ $(systemctl is-enabled "$GW") == "enabled" || $(systemctl is-enabled "$CL") == "enabled" ]]; then
+  #show reconfigure prompt on screen
+  /usr/local/bin/disp_setup.sh || true
+  /usr/local/bin/disp_custom_msg.sh --line1 "To reconfigure:" || true
   i=0
+  #wait 100 seconds
   while true; do
     /usr/local/bin/disp_setup_timer.sh $((100-$i)) || true
     sleep 1
     i=$(($i+1))
         if [ $i -gt 99 ]; then
           if [[ $(systemctl is-enabled "$GW") == "enabled" ]]; then
-            /usr/local/bin/disp_custom_msg.sh --line4 "Starting gateway..."
+            /usr/local/bin/disp_custom_msg.sh --line4 "Starting gateway..." || true
           fi
           if [[ $(systemctl is-enabled "$CL") == "enabled" ]]; then
-            /usr/local/bin/disp_custom_msg.sh --line4 "Starting client..."
+            /usr/local/bin/disp_custom_msg.sh --line4 "Starting client..." || true
           fi
         break
         fi
@@ -79,9 +80,9 @@ if [[ $(systemctl is-enabled "$GW") == "enabled" || $(systemctl is-enabled "$CL"
 
 #logic for first time setup
 else
-
+  #show setup prompt on screen
+  /usr/local/bin/disp_setup.sh || true
   log "Neither $GW nor $CL is enabled. Keeping webserver running."
-
 fi
 
 log "Done."
