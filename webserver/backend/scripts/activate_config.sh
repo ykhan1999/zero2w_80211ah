@@ -38,5 +38,5 @@ else
   exit 1
 fi
 
-systemctl stop webserver-frontend.service webserver-backend.service || true
-systemctl disable webserver-frontend.service webserver-backend.service || true
+systemctl stop webserver-frontend.service webserver-backend.service &
+systemctl disable webserver-frontend.service webserver-backend.service &
