@@ -16,6 +16,9 @@ touch /run/boot-mode/lock
 nmcli connection down wifi-setup-open || true
 nmcli connection delete wifi-setup-open || true
 
+#random pw
+psk=$(cat /dev/urandom | tr -dc A-Za-z0-9 | head -c 8)
+
 nmcli connection add \
   type wifi \
   ifname wlan0 \
@@ -24,10 +27,14 @@ nmcli connection add \
 
 nmcli connection modify wifi-setup-open \
   802-11-wireless.mode ap \
+  wifi-sec.key-mgmt wpa-psk \
+  wifi-sec.psk "$psk" \
   ipv4.method auto \
   ipv6.method disabled
 
 nmcli connection up wifi-setup-open
+/usr/local/bin/disp_setup.sh || true
+/usr/local/bin/disp_custom_msg.sh --line1 "PW: ${psk}" || true
 
 # Start webserver right away if not already started
 log "Starting webserver services: $WEB_FRONTEND $WEB_BACKEND"
@@ -36,7 +43,6 @@ systemctl enable --now "$WEB_FRONTEND" "$WEB_BACKEND" || true
 #if gateway or client already enabled, give the user some time to reconfigure if desired, otherwise continue with previous settings
 if [[ $(systemctl is-enabled "$GW") == "enabled" || $(systemctl is-enabled "$CL") == "enabled" ]]; then
   #show reconfigure prompt on screen
-  /usr/local/bin/disp_setup.sh || true
   /usr/local/bin/disp_custom_msg.sh --line1 "To reconfigure:" || true
   i=0
   #wait 100 seconds
@@ -81,7 +87,6 @@ if [[ $(systemctl is-enabled "$GW") == "enabled" || $(systemctl is-enabled "$CL"
 #logic for first time setup
 else
   #show setup prompt on screen
-  /usr/local/bin/disp_setup.sh || true
   log "Neither $GW nor $CL is enabled. Keeping webserver running."
 fi
 
