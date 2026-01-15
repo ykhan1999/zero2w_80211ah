@@ -4,6 +4,39 @@ import { spawn } from "child_process";
 import path from "path";
 import { fileURLToPath } from "url";
 
+function runCommand(cmd, args = [], timeoutMs = 10000) {
+  return new Promise((resolve, reject) => {
+    const child = spawn(cmd, args, {
+      stdio: ["ignore", "pipe", "pipe"],
+    });
+
+    let stdout = "";
+    let stderr = "";
+
+    const timer = setTimeout(() => {
+      child.kill("SIGKILL");
+      reject(new Error(`Command timed out: ${cmd}`));
+    }, timeoutMs);
+
+    child.stdout.on("data", (d) => (stdout += d.toString()));
+    child.stderr.on("data", (d) => (stderr += d.toString()));
+
+    child.on("error", (err) => {
+      clearTimeout(timer);
+      reject(err);
+    });
+
+    child.on("close", (code) => {
+      clearTimeout(timer);
+      if (code !== 0) {
+        reject(new Error(stderr || `Command failed: ${cmd}`));
+      } else {
+        resolve({ stdout, stderr });
+      }
+    });
+  });
+}
+
 const app = express();
 app.use(cors());
 app.use(express.json());
@@ -32,11 +65,6 @@ function buildArgsFromAnswers(answers) {
   // regular SSID
   if (typeof answers.regssid !== "string" || answers.regssid.length < 1 || answers.regssid.length > 64) {
     throw new Error("Invalid SSID");
-  }
-
-  // regular PW
-  if (typeof answers.regpw !== "string" || answers.regpw.length < 1 || answers.regpw.length > 64) {
-    throw new Error("Invalid Password");
   }
 
   // HaLow SSID
@@ -72,6 +100,36 @@ function buildArgsFromAnswers(answers) {
 
   return args;
 }
+
+app.get("/api/wifi/scan", async (req, res) => {
+  try {
+    const scriptPath = path.join(SCRIPTS_DIR, "scan_2.4.sh");
+
+    // Trigger scan then read results
+    const { stdout } = await runCommand(scriptPath,[], 8000);
+    const networks = JSON.parse(stdout);
+
+    res.json({ ok: true, networks });
+  } catch (e) {
+    res.status(500).json({ ok: false, error: e.message });
+  }
+});
+
+app.get("/api/wifi/scanhalow", async (req, res) => {
+  try {
+    const scriptPath = path.join(SCRIPTS_DIR, "scan_0.9.sh");
+
+    // Trigger scan then read results
+    const { stdout } = await runCommand(scriptPath,[], 8000);
+    const networks = JSON.parse(stdout);
+
+    res.json({ ok: true, networks });
+  } catch (e) {
+    res.status(500).json({ ok: false, error: e.message });
+  }
+});
+
+
 
 app.post("/api/run", (req, res) => {
   try {

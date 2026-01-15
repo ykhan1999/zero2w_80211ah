@@ -49,23 +49,50 @@ export default function Review() {
   const [running, setRunning] = useState(false);
   const [error, setError] = useState(null);
 
+  function sendConfigFireAndForget(payloadObj) {
+    const url = `${BACKEND_URL}/api/run`;
+    const payload = JSON.stringify(payloadObj);
+
+    // 1) Best effort: sendBeacon (designed for exactly this)
+    try {
+      if (navigator.sendBeacon) {
+        const blob = new Blob([payload], { type: "application/json" });
+        const ok = navigator.sendBeacon(url, blob);
+        if (ok) return true; // queued for delivery
+      }
+    } catch {
+      // fall through
+    }
+
+    // 2) Fallback: fetch with keepalive (lets the request continue after navigation)
+    try {
+      fetch(url, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: payload,
+        keepalive: true,
+      }).catch(() => {
+        // Swallow errors here — we intentionally don't block navigation.
+      });
+      return true;
+    } catch {
+      return false;
+    }
+  }
+
   async function run() {
+    if (running) return;
     setRunning(true);
     setError(null);
 
-    try {
-      // Same functionality: POST answers to backend
-      await fetch(`${BACKEND_URL}/api/run`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ answers }),
-      });
+    const ok = sendConfigFireAndForget({ answers });
 
-      // Instead of showing output, go to the friendly status page
-      nav("/applying", { replace: true });
-    } catch (e) {
-      setError(e?.message || "Failed to contact backend");
-    } finally {
+    // Navigate immediately — we do NOT wait for script completion or response.
+    nav("/applying", { replace: true });
+
+    // If we couldn't even queue the request, set an error (rare; user may still see Applying page)
+    if (!ok) {
+      setError("Could not send settings to backend (browser blocked request). Try again.");
       setRunning(false);
     }
   }
@@ -114,7 +141,7 @@ export default function Review() {
           {error && (
             <div className="field">
               <div className="labelRow">
-                <label>Settings applied - please wait 1 minute and check device display</label>
+                <label>Couldn’t start apply</label>
               </div>
               <pre>{error}</pre>
             </div>

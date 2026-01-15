@@ -192,3 +192,58 @@ pre{
   font-size: 12px;
   line-height: 1.45;
 }
+
+.networkList {
+  margin-top: 12px;
+  display: flex;
+  flex-direction: column;   /* one per line */
+  gap: 6px;
+  max-height: 100px;        /* ~5 items */
+  overflow-y: auto;
+  padding-right: 4px;       /* space for scrollbar */
+}
+
+/* Optional: nicer scrollbar */
+.networkList::-webkit-scrollbar {
+  width: 6px;
+}
+.networkList::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.25);
+  border-radius: 4px;
+}
+
+.listItem {
+  width: 100%;
+  text-align: left;
+  padding: 10px 12px;
+  border-radius: 10px;
+}
+
+.sig {
+  display: inline-flex;
+  align-items: flex-end;
+  gap: 3px;
+  height: 14px;
+}
+
+.sig .bar {
+  width: 3px;
+  border-radius: 2px;
+  opacity: 0.35;
+  background: rgba(255, 255, 255, 0.35);
+}
+
+/* increasing heights */
+.sig .bar:nth-child(1) { height: 4px; }
+.sig .bar:nth-child(2) { height: 7px; }
+.sig .bar:nth-child(3) { height: 10px; }
+.sig .bar:nth-child(4) { height: 13px; }
+
+.sig .bar.on {
+  opacity: 1;
+  background: rgba(255, 255, 255, 0.9);
+}
+
+.listItem.selected .sig .bar.on {
+  background: rgba(255, 255, 255, 1);
+}
