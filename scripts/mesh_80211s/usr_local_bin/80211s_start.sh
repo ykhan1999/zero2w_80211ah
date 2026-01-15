@@ -72,11 +72,16 @@ if [[ "$MODE" == "gateway" ]]; then
       con-name wifi-client-${ssid} \
       ssid "$ssid"
 
-    #add pw and disable ipv6
+    if [ -n "$psk" ]; then
+    #add pw if provided and disable ipv6
     nmcli connection modify wifi-client-${ssid} \
       wifi-sec.key-mgmt wpa-psk \
       wifi-sec.psk "$psk" \
       ipv6.method disabled
+    else
+    nmcli connection modify wifi-client-${ssid} \
+      ipv6.method disabled
+    fi
 
     #bring up connection
     nmcli connection up wifi-client-${ssid}
