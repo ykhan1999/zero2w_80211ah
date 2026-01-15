@@ -34,7 +34,7 @@ nmcli connection modify wifi-setup-open \
 
 nmcli connection up wifi-setup-open
 /usr/local/bin/disp_setup.sh || true
-/usr/local/bin/disp_custom_msg.sh --line1 "PW: ${psk}" || true
+/usr/local/bin/disp_custom_msg.sh --line3 "PW: ${psk}" || true
 
 # Start webserver right away if not already started
 log "Starting webserver services: $WEB_FRONTEND $WEB_BACKEND"
