@@ -30,6 +30,7 @@ done
 if [ "$MODE" == "gateway" ]; then
   /usr/local/bin/disp_mode_gw.sh || true
   /usr/local/bin/disp_custom_msg.sh --line2 "Applying settings..." || true
+  /usr/local/bin/disp_loading_bar.sh 3 > /dev/null 2>&1 &
   nmcli connection down wifi-setup-open
   nmcli connection delete wifi-setup-open
   /usr/local/bin/disable_mesh.sh
@@ -38,6 +39,7 @@ if [ "$MODE" == "gateway" ]; then
 elif [ "$MODE" == "client" ]; then
   /usr/local/bin/disp_mode_client.sh || true
   /usr/local/bin/disp_custom_msg.sh --line2 "Applying settings..." || true
+  /usr/local/bin/disp_loading_bar.sh 3 > /dev/null 2>&1 &
   nmcli connection down wifi-setup-open
   nmcli connection delete wifi-setup-open
   /usr/local/bin/disable_mesh.sh

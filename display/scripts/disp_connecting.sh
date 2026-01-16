@@ -5,4 +5,5 @@ oled +2 "Starting..."
 oled +3 ""
 oled +4 ""
 oled s
+/usr/local/bin/disp_loading_bar.sh 3 > /dev/null 2>&1 &
 cd -

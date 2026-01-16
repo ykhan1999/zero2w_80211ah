@@ -36,10 +36,13 @@ if [[ "$MODE" == "gateway" ]]; then
   #If display is enabled, notify user that we are in gateway mode and connecting
   /usr/local/bin/disp_mode_gw.sh > /dev/null 2>&1
   /usr/local/bin/disp_connecting.sh > /dev/null 2>&1
+  /usr/local/bin/disp_loading_bar.sh 3 > /dev/null 2>&1 &
+  
 fi
 if [[ "$MODE" == "client" ]]; then
   /usr/local/bin/disp_mode_client.sh > /dev/null 2>&1
   /usr/local/bin/disp_connecting.sh > /dev/null 2>&1
+  /usr/local/bin/disp_loading_bar.sh 3 > /dev/null 2>&1 &
 fi
 
 #stop config webserver if running
