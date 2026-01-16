@@ -1,5 +1,5 @@
 #!/usr/bin/bash
-pkill -f "loading_bar.sh" || true
+pkill -f "disp_loading_bar.sh" || true
 cd /usr/local/bin
 oled +2  "NO GATEWAY"
 oled +3  "NO INTERNET"
