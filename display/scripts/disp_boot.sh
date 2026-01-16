@@ -6,4 +6,5 @@ oled +U 1
 oled +3 "Welcome!"
 oled +4 "System starting"
 oled s
+/usr/local/bin/disp_loading_bar.sh 2 &
 cd -

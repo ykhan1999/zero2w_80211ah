@@ -6,5 +6,4 @@ oled +1 "Connect to WiFi"
 oled +2 "Name: ExtendFi"
 oled +4 "http://10.42.0.1"
 oled s
-/usr/local/bin/disp_loading_bar.sh &
 cd -
