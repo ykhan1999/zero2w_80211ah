@@ -15,7 +15,7 @@ while true; do
   #get SSID
   SSID=$(iwgetid -r)
   #get signal strength
-  Signal=$(morse_cli -i wlan1 stats | grep Received | grep -Po '\-[[:digit:]]+')
+  Signal=$(iw dev wlan0 link | awk '/signal:/ {print $2}')
   if [ "$DEBUG" -eq "1" ]; then
     signalstatus="$Signal"
   else
@@ -32,9 +32,9 @@ while true; do
     elif [ "$Signal" -ge "-80" ] && [ "$Signal" -lt "-70" ]; then
       signalstatus="***"
     elif [ "$Signal" -ge "-90" ] && [ "$Signal" -lt "-80" ]; then
-      signalstatus="**"
+      signalstatus="LOW"
     elif [ "$Signal" -ge "-100" ] && [ "$Signal" -lt "-90" ]; then
-      signalstatus="*"
+      signalstatus="LOW"
     elif [ "$Signal" -lt "-100" ]; then
       sleep 1
       if [ "$Signal" -lt "-100" ]; then
