@@ -114,7 +114,7 @@ export default function Review() {
           {error && (
             <div className="field">
               <div className="labelRow">
-                <label>Settings applied - please wait 1 minute and check device display</label>
+                <label>Error applying your settings - please try again</label>
               </div>
               <pre>{error}</pre>
             </div>

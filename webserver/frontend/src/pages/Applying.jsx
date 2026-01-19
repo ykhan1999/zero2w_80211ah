@@ -8,7 +8,7 @@ export default function Applying() {
     <div className="card">
       <div className="cardHeader">
         <div>
-          <h2>Applying your settings</h2>
+          <h2>Settings sent to device!</h2>
           <div className="sub">
             Your settings have been sent to the device — please check your device's screen for the current status.
           </div>
@@ -29,13 +29,13 @@ export default function Applying() {
               fontSize: 13,
             }}
           >
-            Note - once the process is completed, your device may reboot with the new settings.
+            Note - it may take up to 2 minutes for the process to complete.
           </div>
 
           <div className="actions">
             <button onClick={() => nav("/step/1")}>Start Over</button>
             <button className="primary" onClick={() => nav("/review")}>
-              View Review
+              Review my settings
             </button>
           </div>
         </div>

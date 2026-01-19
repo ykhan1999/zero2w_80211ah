@@ -46,7 +46,7 @@ while [[ $# -gt 0 ]]; do
 done
 
 #prompt user if no input to flags
-if [[ -z "$SSID" || -z "$PASSWORD" || -z "$HSSID" || -z "$HPASSWORD" ]]; then
+if [[ -z "$SSID" || -z "$PASSWORD" || -z "$HSSID" ]]; then
     #prompt user
     read -rp "Enter HaLow SSID: " SSID
     read -rsp "Enter HaLow password: " PASSWORD
@@ -54,6 +54,10 @@ if [[ -z "$SSID" || -z "$PASSWORD" || -z "$HSSID" || -z "$HPASSWORD" ]]; then
     read -rp "Enter 2.4GHz SSID: " HSSID
     read -rsp "Enter 2.4GHz password: " HPASSWORD
     read -rp "Enter optim (<speed|distance>): " OPTIM
+fi
+
+if [[ -z "$HPASSWORD" ]]; then
+  HPASSWORD=""
 fi
 
 if [[ "$OPTIM" != "speed" && "$OPTIM" != "distance" ]]; then

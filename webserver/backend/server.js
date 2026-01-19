@@ -129,35 +129,27 @@ app.get("/api/wifi/scanhalow", async (req, res) => {
   }
 });
 
-
-
 app.post("/api/run", (req, res) => {
   try {
     const answers = req.body?.answers ?? {};
     const args = buildArgsFromAnswers(answers);
 
-    // Pick which script to run (also allowlist this if you have multiple)
     const scriptPath = path.join(SCRIPTS_DIR, "activate_config.sh");
 
-    // spawn without shell to avoid injection
     const child = spawn(scriptPath, args, {
       shell: false,
-      stdio: ["ignore", "pipe", "pipe"]
+      stdio: ["ignore", "ignore", "ignore"], // don’t block waiting on output
+      detached: true,                        // allow it to keep running
     });
 
-    let stdout = "";
-    let stderr = "";
+    res.json({ ok: true, pid: child.pid, args });
 
-    child.stdout.on("data", (d) => (stdout += d.toString()));
-    child.stderr.on("data", (d) => (stderr += d.toString()));
-
-    child.on("close", (code) => {
-      res.json({ ok: code === 0, code, stdout, stderr, args });
-    });
+    child.unref();
 
     child.on("error", (err) => {
-      res.status(500).json({ ok: false, error: err.message });
+      console.error("Spawn error:", err);
     });
+
   } catch (e) {
     res.status(400).json({ ok: false, error: e.message });
   }
