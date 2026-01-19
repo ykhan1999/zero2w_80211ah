@@ -11,6 +11,7 @@ DEBUG=""
 CONNECTED="NO GATEWAY"
 
 i=15
+j=0
 while true; do
   #get SSID
   SSID=$(iwgetid -r)
@@ -32,9 +33,9 @@ while true; do
     elif [ "$Signal" -ge "-80" ] && [ "$Signal" -lt "-70" ]; then
       signalstatus="***"
     elif [ "$Signal" -ge "-90" ] && [ "$Signal" -lt "-80" ]; then
-      signalstatus="**"
+      signalstatus="LOW"
     elif [ "$Signal" -ge "-100" ] && [ "$Signal" -lt "-90" ]; then
-      signalstatus="*"
+      signalstatus="LOW"
     elif [ "$Signal" -lt "-100" ]; then
       sleep 1
       if [ "$Signal" -lt "-100" ]; then
@@ -61,16 +62,23 @@ while true; do
     fi
     i=0
   fi
+  #only update signal with actual change
+  if [ "$signalstatus" != "$prev_signal" ]; then
+    j=$(( j + 1 ))
+    if [[ "$j" -ge 3 ]]
+        oled +4 "Signal: $signalstatus"
+        prev_signal="$signalstatus"
+        j=0
+    fi
+  fi
   #refresh screen only with change
-  if [ "$CONNECTED" != "$prev_conn" ] || [ "$signalstatus" != "$prev_signal" ] || [ "$INTERNET" != "$prev_internet" ]; then
+  if [ "$CONNECTED" != "$prev_conn" ] || [ "$INTERNET" != "$prev_internet" ]; then
     oled +3 "$INTERNET"
-    oled +4 "Signal: $signalstatus"
     oled +2 "$CONNECTED"
     oled s
   fi
   #store new variables to check for change
   prev_conn="$CONNECTED"
-  prev_signal="$signalstatus"
   prev_internet="$INTERNET"
   #loop timer
   sleep 1
