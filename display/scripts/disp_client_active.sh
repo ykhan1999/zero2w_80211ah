@@ -15,7 +15,7 @@ while true; do
   #get SSID
   SSID=$(iwgetid -r)
   #get signal strength
-  Signal=$(sudo iw dev wlan1 station dump | awk '/signal:/ {print $2}')
+  Signal=$(iw dev wlan1 station dump | awk '/signal:/ {print $2}')
   if [ "$DEBUG" -eq "1" ]; then
     signalstatus="$Signal"
   else
