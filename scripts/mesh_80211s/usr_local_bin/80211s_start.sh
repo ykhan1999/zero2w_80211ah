@@ -65,27 +65,30 @@ rm -r /var/run/wpa_supplicant_s1g/wlan1 || true
 #GATEWAY MODE: NAT FORWARD, DHCP, and static IP
 if [[ "$MODE" == "gateway" ]]; then
     ##Bring up 2.4ghz network
-
+    
+    #clean up old connection
+    nmcli con del wifi-client || true
+ 
     #add connection
     nmcli connection add \
       type wifi \
       ifname wlan0 \
-      con-name wifi-client-${ssid} \
+      con-name wifi-client \
       ssid "$ssid"
 
     if [ -n "$psk" ]; then
     #add pw if provided and disable ipv6
-    nmcli connection modify wifi-client-${ssid} \
+    nmcli connection modify wifi-client \
       wifi-sec.key-mgmt wpa-psk \
       wifi-sec.psk "$psk" \
       ipv6.method disabled
     else
-    nmcli connection modify wifi-client-${ssid} \
+    nmcli connection modify wifi-client \
       ipv6.method disabled
     fi
 
     #bring up connection
-    nmcli connection up wifi-client-${ssid}
+    nmcli connection up wifi-client
 
     #Enable NAT forwarding
     /usr/local/bin/toggle_NAT_80211s.sh --on --gateway
@@ -97,22 +100,24 @@ fi
 
 #CLIENT MODE: Bring up 2.4ghz hotspot
 if [[ "$MODE" == "client" ]]; then
+  #clean up old connection
+  nmcli con del wifi-ap || true
   #####Create networkmanager connection
   nmcli connection add \
     type wifi \
     ifname wlan0 \
-    con-name wifi-ap-${ssid} \
+    con-name wifi-ap \
     autoconnect no \
     ssid "$ssid"
 
-  nmcli connection modify wifi-ap-${ssid} \
+  nmcli connection modify wifi-ap \
     802-11-wireless.mode ap \
     wifi-sec.key-mgmt wpa-psk \
     wifi-sec.psk "$psk" \
     ipv4.method auto \
     ipv6.method disabled
 
-  nmcli connection up wifi-ap-${ssid}
+  nmcli connection up wifi-ap
 fi
 
 #start wpa_supplicant
@@ -148,7 +153,7 @@ if [[ "$MODE" == "gateway" ]]; then
     sleep 10
     if ! ip addr show wlan0 | grep -q "inet "; then
       systemctl restart systemd-networkd
-      nmcli connection up wifi-client-${ssid}
+      nmcli connection up wifi-client
     fi
     sleep 20
   done
@@ -177,7 +182,7 @@ if [[ "$MODE" == "client" ]]; then
       counter=0
       #if hotspot is not active, re-enable it
         if ! ip addr show wlan0 | grep -q "inet "; then
-          nmcli connection up wifi-ap-${ssid}
+          nmcli connection up wifi-ap
         fi
       ##get DNS server from host
       #init variables to connect to host
