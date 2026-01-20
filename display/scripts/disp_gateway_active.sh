@@ -7,7 +7,7 @@ oled s
 prev_internet=""
 prev_signal=""
 prev_peers=""
-DEBUG=""
+DEBUG="0"
 INTERNET="NO INTERNET"
 
 i=15
@@ -44,7 +44,7 @@ while true; do
         fi
       fi
     else
-      signalstatus="$Signal"
+      signalstatus="None"
     fi
   fi
   #get number of peers

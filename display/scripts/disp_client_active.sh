@@ -7,16 +7,15 @@ oled s
 prev_conn=""
 prev_signal=""
 prev_internet=""
-DEBUG=""
+DEBUG="0"
 CONNECTED="NO GATEWAY"
 
 i=15
-j=0
 while true; do
   #get SSID
   SSID=$(iwgetid -r)
   #get signal strength
-  Signal=$(morse_cli -i wlan1 stats | grep Received | grep -Po '\-[[:digit:]]+')
+  Signal=$(sudo iw dev wlan1 station dump | awk '/signal:/ {print $2}')
   if [ "$DEBUG" -eq "1" ]; then
     signalstatus="$Signal"
   else
@@ -45,7 +44,7 @@ while true; do
         fi
       fi
     else
-      signalstatus="$Signal"
+      signalstatus="None"
     fi
   fi
   #get internet and connectivity status
@@ -62,24 +61,17 @@ while true; do
     fi
     i=0
   fi
-  #only update signal with actual change
-  if [ "$signalstatus" != "$prev_signal" ]; then
-    j=$(( j + 1 ))
-    if [[ "$j" -ge 3 ]]
-        oled +4 "Signal: $signalstatus"
-        prev_signal="$signalstatus"
-        j=0
-    fi
-  fi
   #refresh screen only with change
-  if [ "$CONNECTED" != "$prev_conn" ] || [ "$INTERNET" != "$prev_internet" ]; then
+  if [ "$CONNECTED" != "$prev_conn" ] || [ "$INTERNET" != "$prev_internet" ] || [ "$signalstatus" != "$prev_signal" ]; then
     oled +3 "$INTERNET"
+    oled +4 "Signal: $signalstatus"
     oled +2 "$CONNECTED"
     oled s
   fi
   #store new variables to check for change
   prev_conn="$CONNECTED"
   prev_internet="$INTERNET"
+  prev_signal="$signalstatus"
   #loop timer
   sleep 1
   i=$(($i+1))
