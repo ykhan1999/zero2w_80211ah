@@ -17,7 +17,7 @@ nmcli connection down wifi-setup-open || true
 nmcli connection delete wifi-setup-open || true
 
 #random pw
-psk=$(cat /dev/urandom | tr -dc A-Za-z0-9 | head -c 8)
+psk=$(cat /dev/urandom | tr -dc a-z0-9 | head -c 8)
 
 nmcli connection add \
   type wifi \
