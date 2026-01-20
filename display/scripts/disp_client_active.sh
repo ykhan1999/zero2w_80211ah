@@ -9,31 +9,32 @@ prev_signal=""
 prev_internet=""
 DEBUG="0"
 CONNECTED="NO GATEWAY"
+INTERNET="NO INTERNET"
 
 i=15
 while true; do
   #get SSID
   SSID=$(iwgetid -r)
   #get signal strength
-  Signal=$(morse_cli -i wlan1 stats | grep Received | grep -Po '\-[[:digit:]]+')
+  Signal=$(iw dev wlan1 station dump | awk '/signal:/ {print $2}')
   if [ "$DEBUG" -eq "1" ]; then
     signalstatus="$Signal"
   else
-    if [ "$Signal" -ge "-30" ]; then
+    if [ "$Signal" -ge "-30" ] && [ "${CONNECTED}" == "GATEWAY OK" ]; then
       signalstatus="********"
-    elif [ "$Signal" -ge "-40" ] && [ "$Signal" -lt "-30" ]; then
+    elif [ "$Signal" -ge "-40" ] && [ "$Signal" -lt "-30" ] && [ "${CONNECTED}" == "GATEWAY OK" ]; then
       signalstatus="*******"
-    elif [ "$Signal" -ge "-50" ] && [ "$Signal" -lt "-40" ]; then
+    elif [ "$Signal" -ge "-50" ] && [ "$Signal" -lt "-40" ] && [ "${CONNECTED}" == "GATEWAY OK" ]; then
       signalstatus="******"
-    elif [ "$Signal" -ge "-60" ] && [ "$Signal" -lt "-50" ]; then
+    elif [ "$Signal" -ge "-60" ] && [ "$Signal" -lt "-50" ] && [ "${CONNECTED}" == "GATEWAY OK" ]; then
       signalstatus="*****"
-    elif [ "$Signal" -ge "-70" ] && [ "$Signal" -lt "-60" ]; then
+    elif [ "$Signal" -ge "-70" ] && [ "$Signal" -lt "-60" ] && [ "${CONNECTED}" == "GATEWAY OK" ]; then
       signalstatus="****"
-    elif [ "$Signal" -ge "-80" ] && [ "$Signal" -lt "-70" ]; then
+    elif [ "$Signal" -ge "-80" ] && [ "$Signal" -lt "-70" ] && [ "${CONNECTED}" == "GATEWAY OK" ]; then
       signalstatus="***"
-    elif [ "$Signal" -ge "-90" ] && [ "$Signal" -lt "-80" ]; then
+    elif [ "$Signal" -ge "-90" ] && [ "$Signal" -lt "-80" ] && [ "${CONNECTED}" == "GATEWAY OK" ]; then
       signalstatus="LOW"
-    elif [ "$Signal" -ge "-100" ] && [ "$Signal" -lt "-90" ]; then
+    elif [ "$Signal" -ge "-100" ] && [ "$Signal" -lt "-90" ] && [ "${CONNECTED}" == "GATEWAY OK" ]; then
       signalstatus="LOW"
     elif [ "$Signal" -lt "-100" ]; then
       sleep 1
