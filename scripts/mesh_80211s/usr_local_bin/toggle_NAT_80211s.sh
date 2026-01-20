@@ -53,6 +53,9 @@ if [[ "$MODE" == "on" ]]; then
     enabled="$(systemctl is-enabled nftables)"
     if [[ "$enabled" != "enabled" ]]; then
       systemctl enable --now nftables
+      #patch to make sure settings applied
+      sleep 10
+      systemctl restart nftables
     else
       systemctl restart nftables
     fi
@@ -66,6 +69,9 @@ if [[ "$MODE" == "on" ]]; then
     enabled="$(systemctl is-enabled nftables)"
     if [[ "$enabled" != "enabled" ]]; then
       systemctl enable --now nftables
+      #patch to make sure settings applied
+      sleep 10
+      systemctl restart nftables
     else
       systemctl restart nftables
     fi
