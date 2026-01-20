@@ -15,7 +15,7 @@ while true; do
   #get SSID
   SSID=$(iwgetid -r)
   #get signal strength
-  Signal=$(iw dev wlan1 station dump | awk '/signal:/ {print $2}')
+  Signal=$(morse_cli -i wlan1 stats | grep Received | grep -Po '\-[[:digit:]]+')
   if [ "$DEBUG" -eq "1" ]; then
     signalstatus="$Signal"
   else
