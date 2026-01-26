@@ -33,7 +33,6 @@ nmcli connection modify wifi-setup-open \
   ipv6.method disabled
 
 nmcli connection up wifi-setup-open
-/usr/local/bin/disp_setup.sh || true
 /usr/local/bin/disp_custom_msg.sh --line3 "PW: ${psk}" || true
 
 # Start webserver right away if not already started
@@ -43,6 +42,7 @@ systemctl enable --now "$WEB_FRONTEND" "$WEB_BACKEND" || true
 #if gateway or client already enabled, give the user some time to reconfigure if desired, otherwise continue with previous settings
 if [[ $(systemctl is-enabled "$GW") == "enabled" || $(systemctl is-enabled "$CL") == "enabled" ]]; then
   #show reconfigure prompt on screen
+  /usr/local/bin/disp_setup.sh || true
   /usr/local/bin/disp_custom_msg.sh --line1 "To reconfigure:" || true
   i=0
   #wait 100 seconds
@@ -88,6 +88,7 @@ if [[ $(systemctl is-enabled "$GW") == "enabled" || $(systemctl is-enabled "$CL"
 else
   #show setup prompt on screen
   log "Neither $GW nor $CL is enabled. Keeping webserver running."
+  /usr/local/bin/disp_setup.sh || true
 fi
 
 log "Done."
