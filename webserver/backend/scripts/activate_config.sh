@@ -20,6 +20,10 @@ while [[ $# -gt 0 ]]; do
   esac
 done
 
+#kill boot mode switch script
+pkill -f "boot-mode-switch.sh" || true
+pkill -f "disp_setup_timer.sh" || true
+
 #now we differentiate
 if [ "$MODE" == "gateway" ]; then
   /usr/local/bin/disp_mode_gw.sh || true

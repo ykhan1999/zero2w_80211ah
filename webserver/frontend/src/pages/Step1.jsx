@@ -2,9 +2,20 @@ import React from "react";
 import { useNavigate } from "react-router-dom";
 import { useWizard } from "../wizard/WizardContext.jsx";
 
+const BACKEND_URL = `${window.location.protocol}//${window.location.hostname}:5174`;
+
 export default function Step1() {
   const nav = useNavigate();
   const { answers, setAnswers } = useWizard();
+
+    useEffect(() => {
+      // fire once when this page is visited
+      fetch("${BACKEND_URL}/api/stoptimer", {
+        method: "POST",
+      }).catch(err => {
+        console.error("Failed to stop timer:", err);
+      });
+    }, []);
 
   return (
     <div className="card">

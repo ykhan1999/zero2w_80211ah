@@ -155,6 +155,29 @@ app.post("/api/run", (req, res) => {
   }
 });
 
+app.post("/api/stoptimer", (req, res) => {
+  try {
+    const scriptPath = path.join(SCRIPTS_DIR, "stop_timer.sh");
+
+    const child = spawn(scriptPath, args, {
+      shell: false,
+      stdio: ["ignore", "ignore", "ignore"], // don’t block waiting on output
+      detached: true,                        // allow it to keep running
+    });
+
+    res.json({ ok: true, pid: child.pid, args });
+
+    child.unref();
+
+    child.on("error", (err) => {
+      console.error("Spawn error:", err);
+    });
+
+  } catch (e) {
+    res.status(400).json({ ok: false, error: e.message });
+  }
+});
+
 app.listen(5174, "0.0.0.0", () => {
   console.log("Backend listening on http://0.0.0.0:5174");
 });
