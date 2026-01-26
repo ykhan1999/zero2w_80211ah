@@ -129,16 +129,27 @@ app.get("/api/wifi/scanhalow", async (req, res) => {
   }
 });
 
-app.get("/api/stoptimer", async (req, res) => {
+let stopTimerInFlight = null;
+
+app.all("/api/stoptimer", async (req, res) => {
   try {
-    const scriptPath = path.join(SCRIPTS_DIR, "stop_timer.sh");
+    // If one is already running, just wait for it instead of spawning another
+    if (!stopTimerInFlight) {
+      const scriptPath = path.join(SCRIPTS_DIR, "stop_timer.sh");
 
-    // Trigger scan then read results
-    const { stdout } = await runCommand(scriptPath,[], 8000);
-    const out = JSON.parse(stdout);
+      stopTimerInFlight = (async () => {
+        const { stdout } = await runCommand(scriptPath, [], 8000);
+        return JSON.parse(stdout);
+      })().finally(() => {
+        stopTimerInFlight = null;
+      });
+    }
 
-    res.json({ ok: true, out });
+    const out = await stopTimerInFlight;
+    res.set("Cache-Control", "no-store"); // avoid any weird caching/replays
+    res.json({ ok: true, out, deduped: true });
   } catch (e) {
+    stopTimerInFlight = null;
     res.status(500).json({ ok: false, error: e.message });
   }
 });
