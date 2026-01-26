@@ -129,35 +129,26 @@ app.get("/api/wifi/scanhalow", async (req, res) => {
   }
 });
 
+app.get("/api/stoptimer", async (req, res) => {
+  try {
+    const scriptPath = path.join(SCRIPTS_DIR, "stop_timer.sh");
+
+    // Trigger scan then read results
+    const { stdout } = await runCommand(scriptPath,[], 8000);
+    const out = JSON.parse(stdout);
+
+    res.json({ ok: true, out });
+  } catch (e) {
+    res.status(500).json({ ok: false, error: e.message });
+  }
+});
+
 app.post("/api/run", (req, res) => {
   try {
     const answers = req.body?.answers ?? {};
     const args = buildArgsFromAnswers(answers);
 
     const scriptPath = path.join(SCRIPTS_DIR, "activate_config.sh");
-
-    const child = spawn(scriptPath, args, {
-      shell: false,
-      stdio: ["ignore", "ignore", "ignore"], // don’t block waiting on output
-      detached: true,                        // allow it to keep running
-    });
-
-    res.json({ ok: true, pid: child.pid, args });
-
-    child.unref();
-
-    child.on("error", (err) => {
-      console.error("Spawn error:", err);
-    });
-
-  } catch (e) {
-    res.status(400).json({ ok: false, error: e.message });
-  }
-});
-
-app.post("/api/stoptimer", (req, res) => {
-  try {
-    const scriptPath = path.join(SCRIPTS_DIR, "stop_timer.sh");
 
     const child = spawn(scriptPath, args, {
       shell: false,

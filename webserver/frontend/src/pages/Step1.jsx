@@ -11,7 +11,7 @@ export default function Step1() {
   useEffect(() => {
     // fire once when this page is visited
     fetch(`${BACKEND_URL}/api/stoptimer`, {
-      method: "POST",
+      method: "GET",
     }).catch((err) => {
       console.error("Failed to stop timer:", err);
     });
