@@ -243,6 +243,7 @@ export default function Step3() {
 
                 {useHidden ? (
                   <input
+                    autoComplete="username"
                     value={answers.halowssid || ""}
                     onChange={(e) => setAnswers((a) => ({ ...a, halowssid: e.target.value }))}
                     placeholder="Enter hidden HaLow SSID"
@@ -259,6 +260,7 @@ export default function Step3() {
                 </div>
                 <input
                   type="password"
+                  autoComplete="current-password"
                   value={answers.halowpw || ""}
                   onChange={(e) => setAnswers((a) => ({ ...a, halowpw: e.target.value }))}
                   placeholder="Min 8 characters"
@@ -276,6 +278,7 @@ export default function Step3() {
                   <span className="hint">Required</span>
                 </div>
                 <input
+                  autoComplete="username"
                   value={answers.halowssid || ""}
                   onChange={(e) => setAnswers((a) => ({ ...a, halowssid: e.target.value }))}
                   placeholder="Choose HaLow network name"
@@ -289,6 +292,7 @@ export default function Step3() {
                 </div>
                 <input
                   type="password"
+                  autoComplete="current-password"
                   value={answers.halowpw || ""}
                   onChange={(e) => setAnswers((a) => ({ ...a, halowpw: e.target.value }))}
                   placeholder="Min 8 characters"
