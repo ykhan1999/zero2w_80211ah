@@ -17,7 +17,7 @@ A tested and working framework to add 802.11ah (WiFi HaLow) support to the Raspb
 
 Download the software image contained at the link below, download the [Raspberry Pi Imager](https://www.raspberrypi.com/software/) utility, and use the imager to flash the image to a micro SD card. 
 
-http://y3782016.eero.online/4dedf43.img.xz
+http://y3782016.eero.online/extendfi/4dedf43.img.xz
 
 Insert the micro SD card into your raspberry pi, and if all is successful, you should see a welcome message on the SSD1306 display. If you don't have a display, you can connect via USB and go to http://10.42.0.1 to begin the configuration wizard.
 
