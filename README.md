@@ -7,19 +7,25 @@ A tested and working framework to add 802.11ah (WiFi HaLow) support to the Raspb
 
 ### Currently active
 * Scripts to quickly install kernel modules & drivers for 802.11ah support 
-* Support for SSD1306 display
-* Web GUI for easy configuration
 * mesh mode (802.11s)
 	* Gateway mode - essentially acts as an AP, with forwarding from the connected 2.4GHz through the HaLow network
     * Client mode - Acts as a hotspot, allowing access to resources forwarded from the gateway through the HaLow network
+* (Optional) Support for SSD1306 display
+* (Optional) Web GUI for easy configuration
 
 ## Quick start
+
+### For Web GUI and display support:
 
 Download the software image contained at the link below, download the [Raspberry Pi Imager](https://www.raspberrypi.com/software/) utility, and use the imager to flash the image to a micro SD card. 
 
 http://y3782016.eero.online/extendfi/4dedf43.img.xz
 
 Insert the micro SD card into your raspberry pi, and if all is successful, you should see a welcome message on the SSD1306 display. If you don't have a display, you can connect via USB and go to http://10.42.0.1 to begin the configuration wizard.
+
+### For kernel, drivers, and mesh mode scripts only:
+
+TBD
 
 ## Full setup without using quick start image
 
@@ -87,10 +93,12 @@ git clone https://github.com/ykhan1999/zero2w_80211ah
 ./zero2w_80211ah/scripts/init/install_SPI_overlays.sh
 #Wait for reboot
 ./zero2w_80211ah/scripts/init/install_mesh_helpers.sh
+#Run the below script only if you plan to use an SSD1306 display with your setup
 ./zero2w_80211ah/scripts/init/install_display_drivers.sh
 #Wait for reboot
 ./zero2w_80211ah/scripts/init/install_USB_ether_serv.sh
 #Wait for reboot
+#Run the below script only if you would like to have the GUI setup
 ./zero2w_80211ah/scripts/init/install_webserver.sh
 #On reboot, the webserver should be up, proceed to step 3
 ```
