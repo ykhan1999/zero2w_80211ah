@@ -23,9 +23,11 @@ http://y3782016.eero.online/extendfi/4dedf43.img.xz
 
 Insert the micro SD card into your raspberry pi, and if all is successful, you should see a welcome message on the SSD1306 display. If you don't have a display, you can connect via USB and go to http://10.42.0.1 to begin the configuration wizard.
 
-### For kernel, drivers, and mesh mode scripts only:
+### For kernel and drivers only:
 
-TBD
+http://y3782016.eero.online/extendfi/2025-10-01-raspios-morse-spi.img.xz
+
+The default SSH username and password are "default" and "default"
 
 ## Full setup without using quick start image
 
