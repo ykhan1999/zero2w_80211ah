@@ -21,11 +21,15 @@ Download the software image contained at the link below, download the [Raspberry
 
 http://y3782016.eero.online/extendfi/4dedf43.img.xz
 
+sha256sum: 5fac875b5c9df711e3825dd82978b4bd7fa873c5dd1f073e3e00d8bf1cf843e3  4dedf43.img.xz
+
 Insert the micro SD card into your raspberry pi, and if all is successful, you should see a welcome message on the SSD1306 display. If you don't have a display, you can connect via USB and go to http://10.42.0.1 to begin the configuration wizard.
 
 ### For kernel and drivers only:
 
 http://y3782016.eero.online/extendfi/2025-10-01-raspios-morse-spi.img.xz
+
+sha256sum: 2c3758f2036981d669ce65b3ee2531ee523dd35343918f3e8f8dd891f66b5883  2025-10-01-raspios-morse-spi.img.xz
 
 The default SSH username and password are "default" and "default"
 
